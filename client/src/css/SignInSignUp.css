@@ -1,0 +1,14 @@
+.generalPosition{
+    margin : 0;
+    position : absolute;
+    top : 50%;
+    left: 50%;
+    transform : translate(-50%, -68%);
+    display : inline-block;
+    width : 100%;
+}
+
+.headText{
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
