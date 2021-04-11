@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import {Navbar, NavDropdown, Nav, Button, Form} from "react-bootstrap";
+import {Navbar, NavDropdown, Nav, Button, Image} from "react-bootstrap";
 import {UserContext} from "../hooks/UserContext";
 
 function NavigationBar(){
@@ -8,7 +8,16 @@ function NavigationBar(){
 
     return(
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-            <Navbar.Brand href="/homepage">AskMeAnything</Navbar.Brand>
+            <Navbar.Brand href="/homepage">
+                <img
+                    alt=""
+                    src="../../favicon.ico"
+                    width="30"
+                    height="30"
+                    className="d-inline-block align-top"
+                />{' '}
+                AskMeAnything
+            </Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mr-auto">
@@ -21,7 +30,17 @@ function NavigationBar(){
                 </Nav>
                 <Nav>
                     <Navbar.Text >Signed in as:</Navbar.Text>
-                    <Nav.Link className="font-weight-bold text-info"   href="/my_ask_me_anything">{user}</Nav.Link>
+                    <Nav.Link className="font-weight-bold text-info" href="/my_ask_me_anything">
+                        <Image
+                            alt=""
+                            src="../../favicon.ico"
+                            width="30"
+                            height="30"
+                            className="d-inline-block align-top"
+                            roundedCircle
+                        />{' '}
+                        {user}
+                    </Nav.Link>
                 </Nav>
 
                     <Button variant="outline-info" href={'./'}>Sign Out</Button>

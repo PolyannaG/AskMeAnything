@@ -7,7 +7,16 @@ function NavigationBarNotSignedIn(){
     return(
         <div>
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-            <Navbar.Brand href="/">AskMeAnything</Navbar.Brand>
+            <Navbar.Brand href="/">
+                <img
+                    alt=""
+                    src="../../favicon.ico"
+                    width="30"
+                    height="30"
+                    className="d-inline-block align-top"
+                />{' '}
+                AskMeAnything
+            </Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mr-auto">
