@@ -12,6 +12,7 @@ import SignUp from "./pages/SignUp"
 import useFindUser from './hooks/useFindUser'
 import PrivateRoute from "./components/PrivateRoute";
 import { UserContext } from './hooks/UserContext'
+import AnswersNotSignedIn from "./pages/AnswersNotSignedIn";
 
 
 //export const UserContext = createContext([]);
@@ -33,6 +34,7 @@ function App() {
                         <Route exact path="/" component={LandingPage}/>
                         <Route path="/sign_in" component={SignIn}/>
                         <Route path="/sign_up" component={SignUp}/>
+                        <Route path="/see_answers_not_user" component={AnswersNotSignedIn}/>
                         <PrivateRoute exact path="/homepage" component={Home}/>
                         <PrivateRoute path="/ask_a_question" component={NewQuestion}/>
                         <PrivateRoute path="/answer_a_question" component={NewAnswer}/>

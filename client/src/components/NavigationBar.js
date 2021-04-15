@@ -1,10 +1,12 @@
 import React, {useContext} from "react";
 import {Navbar, NavDropdown, Nav, Button, Image} from "react-bootstrap";
 import {UserContext} from "../hooks/UserContext";
+import {useHistory} from "react-router-dom";
 
 function NavigationBar(){
 
     const { user, isLoading } = useContext(UserContext);
+    const history = useHistory();
 
     return(
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
@@ -25,7 +27,12 @@ function NavigationBar(){
                     <NavDropdown title="More" id="collasible-nav-dropdown" >
                         <NavDropdown.Item href="/ask_a_question">Ask a question</NavDropdown.Item>
                         <NavDropdown.Divider />
-                        <NavDropdown.Item href="/answer_a_question">Answer a question</NavDropdown.Item>
+                        <NavDropdown.Item onClick={()=>{
+                            history.push({
+                                pathname: '/answer_a_question',
+                                state: {questionID : null}
+                            })
+                        }}>Answer a question</NavDropdown.Item>
                     </NavDropdown>
                 </Nav>
                 <Nav>
