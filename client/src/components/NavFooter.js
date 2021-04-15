@@ -6,7 +6,7 @@ import {Button, Nav, Navbar, NavDropdown, Row, Col, Container, Collapse} from "r
 function NavFooter(){
     return(
 
-        <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="bottom">
+        <Navbar style={{marginTop : '50px'}} collapseOnSelect expand="lg" bg="dark" variant="dark"  sticky="bottom">
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Row style={{width : "100%"}}  xs={1} md={1} lg={5}>
