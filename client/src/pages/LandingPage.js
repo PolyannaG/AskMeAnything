@@ -30,11 +30,11 @@ function Home(){
         //value can be used to fetch the appropriate words
         if (value) {  //will fetch some keywords based on search
             console.log("user has typed something")
-            let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+            //let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
 
             //will change when backend created:
-            resp = resp.json()
-            resp = [
+            //resp = resp.json()
+            let resp = [
                 {label: 'Shark', value: 'Shark'},
                 {label: 'Dolphin', value: 'Dolphin'},
                 {label: 'Whale', value: 'Whale'},
@@ -47,11 +47,11 @@ function Home(){
     }
 
     const getQuestionsPerDay=async()=>{
-        let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+        //let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
         return questions_per_day
     }
     const getQuestionsPerMonth=async()=>{
-        let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+        //let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
         return questions_per_month
     }
 
@@ -78,8 +78,8 @@ function Home(){
                 //only by keyword
             }
             //this will vary depending on case
-            let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
-            resp = resp.json()
+            //let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+            //resp = resp.json()
             setQuestionsForShow(questions)
         }
         else if (dateTo!==undefined || dateFrom!==undefined){  //only by date
@@ -94,8 +94,8 @@ function Home(){
             }
 
             //this will vary depending on case
-            let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
-            resp = resp.json()
+            //let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+            //resp = resp.json()
             setQuestionsForShow(questions)
         }
         else {

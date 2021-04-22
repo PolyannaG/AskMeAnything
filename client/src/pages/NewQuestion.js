@@ -17,11 +17,11 @@ function NewQuestion(){
         //value can be used to fetch the appropriate words
         if (value) {  //will fetch some keywords based on search
             console.log("user has typed something")
-            let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+            //let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
 
             //will change when backend created:
-            resp = resp.json()
-            resp = [
+            //resp = resp.json()
+            let resp = [
                 {label: 'Shark', value: 'Shark'},
                 {label: 'Dolphin', value: 'Dolphin'},
                 {label: 'Whale', value: 'Whale'},
@@ -119,7 +119,6 @@ function NewQuestion(){
             </Form>
             <NavFooter/>
         </div>
-
     )
 }
 export default NewQuestion

@@ -15,20 +15,6 @@ function AccordionAnswers(props){
         });
 
     }
-
-    function handleSeeAnswersClick(i){
-        if (user)
-            history.push({
-                pathname: '/see_answers',
-                state: {questionID : i}
-            });
-        else
-            history.push({
-                pathname: '/see_answers_not_user',
-                state: {questionID : i}
-            })
-
-    }
         return(
             <Accordion defaultActiveKey="0" style={{marginLeft : "10%", marginRight : "10%"}}>
                 {props.questions.map((item,i)=>

@@ -33,11 +33,11 @@ function MyAskMeAnything(){
         //value can be used to fetch the appropriate words
         if (value) {  //will fetch some keywords based on search
             console.log("user has typed something")
-            let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+            //let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
 
             //will change when backend created:
-            resp = resp.json()
-            resp = [
+            //resp = resp.json()
+            let resp = [
                 {label: 'Shark', value: 'Shark'},
                 {label: 'Dolphin', value: 'Dolphin'},
                 {label: 'Whale', value: 'Whale'},
@@ -51,16 +51,16 @@ function MyAskMeAnything(){
 
     const getDummyUser=async () => {
         //will change when backednd is created
-        let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+        //let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
         return dummy_user
     }
 
     const getQuestionsPerDay=async()=>{
-        let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+        //let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
         return contributions_questions_per_day
     }
     const getAnswersPerDay=async()=>{
-        let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+        //let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
         return contributions_answers_per_day
     }
 
@@ -87,8 +87,8 @@ function MyAskMeAnything(){
                     //only by keyword
                 }
                 //this will vary depending on case
-                let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
-                resp = resp.json()
+                //let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+                //resp = resp.json()
                 setQuestionsForShow(questions)
             }
             else if (dateTo!==undefined || dateFrom!==undefined){  //only by date
@@ -103,8 +103,8 @@ function MyAskMeAnything(){
                 }
 
                 //this will vary depending on case
-                let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
-                resp = resp.json()
+                //let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+                //resp = resp.json()
                 setQuestionsForShow(questions)
             }
             else {
@@ -223,7 +223,7 @@ function MyAskMeAnything(){
             <p>{' '}</p>
             <Form.Group as={Row} sm={1} md={1} lg={4} xs={1} className="justify-content-center">
                 <Col lg={1}></Col>
-                <Col lg={2}>
+                <Col lg={2} className="justify-content-left">
                     <Form>
                         <Form.Check
                             className="mb-3"

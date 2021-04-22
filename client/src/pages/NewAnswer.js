@@ -21,8 +21,8 @@ function NewAnswer(){
 
     const GetQuestionByID = async () =>{
         if (location.state!==undefined && location.state.questionID!==null) {
-            let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1') //will fetch question data
-            resp = resp.json()
+            //let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1') //will fetch question data
+            //resp = resp.json()
             questions.forEach( (currentValue) => {
                     if (location.state.questionID === currentValue.id){
                         setSpecificQuestion(currentValue)
@@ -35,8 +35,8 @@ function NewAnswer(){
 
     const GetQuestionByIDAnswer = async (QuestionID) =>{
         if (QuestionID !== null) {
-            let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1') //will fetch question data
-            resp = resp.json()
+            //let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1') //will fetch question data
+            //resp = resp.json()
             questions.forEach( (currentValue) => {
                     if (QuestionID.id === currentValue.id){
                         setSpecificQuestion(currentValue)
@@ -49,9 +49,9 @@ function NewAnswer(){
 
     const DatabaseQuestions = async () => {
         //value can be used to fetch the appropriate words
-         //will fetch all questions
-        let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
-        resp = resp.json()
+        //will fetch all questions
+        //let resp = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+        //resp = resp.json()
         setQuestionsForShow(questions)
     }
 
@@ -86,7 +86,6 @@ function NewAnswer(){
 
 
     /*const arrivalValidationMessage = 'Please insert a question title';
-
     const [isFormInvalid, setIsFormInvalid] = useState(false);
     const validate = values => {
         if (values.Qtitle !== "") {
@@ -174,13 +173,13 @@ function NewAnswer(){
                                 as="textarea"
                                 readOnly={true}
                                 value={"No answers for this question"}
-                                />
+                            />
                             :
-                                <Form.Control
+                            <Form.Control
                                 as="textarea"
                                 readOnly={true}
                                 value={specificQuestion.answers}
-                                />
+                            />
 
                         }
                     </Col>
@@ -195,7 +194,7 @@ function NewAnswer(){
                             name="myAnswer"
                             placeholder="Type your answer here"
                             rows={7}
-                            />
+                        />
                         <Form.Control.Feedback> </Form.Control.Feedback>
                         <Form.Control.Feedback type={"invalid"}>Keywords are required</Form.Control.Feedback>
                     </Col>
