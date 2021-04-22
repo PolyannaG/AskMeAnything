@@ -51,7 +51,7 @@ function AccordionQuestions(props){
                                                 :
                                                 <Accordion.Collapse id="Coll2" eventKey={i + 1} style={{marginTop : 10}}>
                                                     <div>
-                                                        <Carousel >
+                                                        <Carousel interval={null}>
                                                             {item.answers.map((ans, j) =>
                                                                 <Carousel.Item id={j + 1}>
                                                                     {ans.text}

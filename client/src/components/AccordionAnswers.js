@@ -34,7 +34,7 @@ function AccordionAnswers(props){
                                 <div>
                                     <Card.Body>
                                         <blockquote className="blockquote mb-0 text-left">
-                                            <Carousel>
+                                            <Carousel interval={null}>
                                                 {item.answers.map((ans, j) =>
                                                     <Carousel.Item id={j + 1}>
                                                         {ans.text}
