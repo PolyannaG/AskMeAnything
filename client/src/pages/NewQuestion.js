@@ -4,6 +4,7 @@ import React, {useState} from "react";
 import {Row, Col, Form, FormLabel, Button, FormGroup} from "react-bootstrap";
 import "../css/Margins.css"
 import {useHistory} from "react-router-dom";
+import MultipleValueTextInput from 'react-multivalue-text-input';
 import AsyncSelect from "react-select/async/dist/react-select.esm";
 
 function NewQuestion(){
@@ -51,7 +52,7 @@ function NewQuestion(){
         }
         else {
             //DOES NOT WORK
-            history.go(-2) //we need to go to the previous page
+            history.go(-1) //we need to go to the previous page
         }
         setValidated(true)
     };
@@ -105,22 +106,12 @@ function NewQuestion(){
                         </h5>
                     </Col>
                     <Col lg={9}>
-                        <AsyncSelect
-                            noOptionsMessage={() => 'No keywords found.'}
-                            loadingMessage={() => 'Looking for keywords'}
-                            placeholder={'Insert Keywords for your question'}
-                            isMulti
-                            cacheOptions
-                            defaultOptions
-                            getOptionLabel={e => e.value}
-                            getOptionValue={e => e.value}
-                            loadOptions={loadOptions}
-                            onChange={selectedKeywordChange}
-                            openMenuOnClick={false}
-                            components={{ DropdownIndicator:() => null, IndicatorSeparator:() => null }}
+                        <MultipleValueTextInput
+                            onItemAdded={(item, allItems) => console.log(`Item added: ${item}`)}
+                            onItemDeleted={(item, allItems) => console.log(`Item removed: ${item}`)}
+                            name="item-input"
+                            placeholder="Insert keywords separating them with comma or enter"
                         />
-                        <Form.Control.Feedback> </Form.Control.Feedback>
-                        <Form.Control.Feedback type={"invalid"}>Keywords are required</Form.Control.Feedback>
                     </Col>
                 </FormGroup>
                 <Button size={"lg"} variant="info" type="submit">Submit</Button>
