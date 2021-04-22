@@ -1,14 +1,13 @@
 import NavigationBar from "../components/NavigationBar";
 import {useHistory, useLocation} from "react-router-dom";
 import React, {useEffect, useState} from "react";
-import {Button, Col, Form, FormGroup, FormLabel, ListGroup, Row} from "react-bootstrap";
+import {Button, Carousel, Col, Form, FormGroup, FormLabel, ListGroup, Row} from "react-bootstrap";
 import AsyncSelect from "react-select/async/dist/react-select.esm";
 import NavFooter from "../components/NavFooter";
 import {questions} from "../sample_data/questions";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import  "../css/Margins.css"
-import {forEach} from "react-bootstrap/ElementChildren";
 
 function NewAnswer(){
 
@@ -160,35 +159,48 @@ function NewAnswer(){
                             name="Keywords"
                             id="Keywords"
                             readOnly={true}
+                            placeholder={"Keywords"}
                             value={specificQuestion.keywords}
                         />
                     </Col>
                 </FormGroup>
 
-                <FormGroup as={Row} className={"space-questions"} sm={1} md={1} lg={2} xs={1}>
+                <FormGroup as={Row} sm={1} md={1} lg={2} xs={1}>
                     <Col lg={1}></Col>
                     <Col lg={10}>
-                        {specificQuestion.answers === [] ?
+
+                        {specificQuestion.answers === undefined ?
                             <Form.Control
                                 as="textarea"
                                 readOnly={true}
-                                value={"No answers for this question"}
+                                placeholder={"Answers"}
                             />
                             :
-                            <Form.Control
-                                as="textarea"
-                                readOnly={true}
-                                value={specificQuestion.answers}
-                            />
-
+                            (
+                                specificQuestion.answers.length === 0 ?
+                                <Carousel interval={null} style={{marginTop : '10px', marginBottom: '10px'}}>
+                                        <Carousel.Item style={{marginTop:'10px' , marginBottom:'10px'}}>
+                                            No answers for this question
+                                        </Carousel.Item>
+                                </Carousel>
+                                :
+                                <Carousel interval={null} style={{marginTop : '10px', marginBottom: '10px'}}>
+                                    {specificQuestion.answers.map((item,i)=>
+                                        <Carousel.Item style={{marginTop:'10px' , marginBottom:'10px'}} id={i + 1}>
+                                            {item.text}
+                                        </Carousel.Item>
+                                    )}
+                                </Carousel>
+                            )
                         }
                     </Col>
                 </FormGroup>
 
-                <FormGroup as={Row} className={"space-questions"} sm={1} md={1} lg={2} xs={1}>
+                <FormGroup as={Row} sm={1} md={1} lg={2} xs={1}>
                     <Col lg={1}></Col>
                     <Col lg={10}>
                         <Form.Control
+                            required
                             as="textarea"
                             id="myAnswer"
                             name="myAnswer"
@@ -196,7 +208,7 @@ function NewAnswer(){
                             rows={7}
                         />
                         <Form.Control.Feedback> </Form.Control.Feedback>
-                        <Form.Control.Feedback type={"invalid"}>Keywords are required</Form.Control.Feedback>
+                        <Form.Control.Feedback type={"invalid"}>Answer is required to submit</Form.Control.Feedback>
                     </Col>
                 </FormGroup>
                 <Button size={"lg"} variant="info" type="submit" >Submit answer</Button>
