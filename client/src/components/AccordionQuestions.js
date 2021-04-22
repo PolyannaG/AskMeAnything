@@ -1,4 +1,4 @@
-import {Accordion, Card, Button} from "react-bootstrap";
+import {Accordion, Card, Button, Carousel} from "react-bootstrap";
 import {useHistory} from "react-router-dom";
 import {useContext} from "react";
 import {UserContext} from "../hooks/UserContext";
@@ -31,6 +31,7 @@ function AccordionQuestions(props){
 
     }
 
+
     if (user)
         return(
             <Accordion defaultActiveKey="0" style={{marginLeft : "10%", marginRight : "10%"}}>
@@ -39,7 +40,7 @@ function AccordionQuestions(props){
                         <Accordion.Toggle as={Card.Header} eventKey={i+1}>
                             {item.title}
                         </Accordion.Toggle>
-                        <Accordion.Collapse eventKey={i+1}>
+                        <Accordion.Collapse id="Coll1" eventKey={i+1}>
                             <div>
                                 <Card.Body>
                                     <blockquote className="blockquote mb-0 text-left">
@@ -47,17 +48,46 @@ function AccordionQuestions(props){
                                             {' '}
                                             {item.text}
                                             {' '}
+                                            <footer className="blockquote-footer" style={{Color : 'white'}}>
+                                                {item.keywords}
+                                            </footer>
                                         </p>
-                                        <footer className="blockquote-footer" style={{Color : 'white'}}>
-                                            {item.keywords}
-                                        </footer>
+
+                                        <Accordion defaultActiveKey="0" >
+                                            <div>
+                                                <Accordion.Toggle as={Button} eventKey={i+1}>
+                                                    Show Answers
+                                                </Accordion.Toggle>
+                                                {item.answers.length === 0
+                                                    ?
+                                                    <Accordion.Collapse id="Coll2" eventKey={i + 1}>
+                                                        <text>No answers for this question</text>
+                                                    </Accordion.Collapse>
+                                                    :
+                                                    <Accordion.Collapse id="Coll2" eventKey={i + 1}>
+                                                        <div>
+                                                            <Carousel >
+                                                                {item.answers.map((ans, j) =>
+                                                                    <Carousel.Item id={j + 1}>
+                                                                        {ans.text}
+                                                                        <footer className="blockquote-footer"
+                                                                                style={{Color: 'white'}}>
+                                                                            Answer {j + 1}/{item.answers.length}
+                                                                        </footer>
+                                                                    </Carousel.Item>
+                                                                )}
+                                                            </Carousel>
+                                                        </div>
+                                                    </Accordion.Collapse>
+                                                }
+                                            </div>
+
+                                        </Accordion>
+
                                     </blockquote>
-                                </Card.Body>
-                                <Button variant="info" onClick={()=>handleSeeAnswersClick(item.id)} className="float-left" style={{marginBottom : '10px', marginLeft : '20px'}}>See answers</Button>
+                                    </Card.Body>
                                 <Button variant="info" onClick={()=>handleAnswerQuestionsClick(item.id)} className="float-left" style={{marginBottom : '10px', marginLeft : '20px'}}>Answer question!</Button>
-
                             </div>
-
                         </Accordion.Collapse>
                     </Card>
                 )}

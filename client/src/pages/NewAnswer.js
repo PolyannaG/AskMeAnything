@@ -7,6 +7,7 @@ import NavFooter from "../components/NavFooter";
 import {questions} from "../sample_data/questions";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
+import  "../css/Margins.css"
 import {forEach} from "react-bootstrap/ElementChildren";
 
 function NewAnswer(){
