@@ -69,6 +69,7 @@ function MyAskMeAnything(){
         getQuestionsPerDay().then(resp => setQuestionContributionsPerDay( contributions_questions_per_day) )
         getAnswersPerDay().then((resp)=>setAnswerContributionsPerDay(contributions_answers_per_day))
         getDummyUser().then(resp=>setUser(dummy_user))
+        setRadio("RadioQuestions")
     },[])
 
     const fetchOptions=async ()=>{
@@ -226,19 +227,19 @@ function MyAskMeAnything(){
                 <Col lg={2} className="justify-content-left">
                     <Form>
                         <Form.Check
+                            defaultChecked
                             className="mb-3"
                             type="radio"
-                            label="Questions"
+                            label="My Questions"
                             name="RadioButtons"
-                            value="RadioButtons"
-                            defaultChecked
+                            value="RadioQuestions"
                             id="RadioQuestions"
                             onChange={handleOptionChange}
                         />
                         <Form.Check
                             className="mb-3"
                             type="radio"
-                            label="Answers"
+                            label="My Answers"
                             name="RadioButtons"
                             id="RadioAnswers"
                             value="RadioAnswers"
