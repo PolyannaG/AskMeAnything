@@ -27,16 +27,46 @@ function AccordionAnswers(props){
                                 ?
                                 <div>
                                     <Card.Body>
-                                        No Answers for this question
+                                        <blockquote className="blockquote mb-0 text-left">
+                                            <Accordion defaultActiveKey="0">
+                                                <Accordion.Toggle as={Button} variant="info" eventKey={i+1} style={{marginBottom : 5}}>
+                                                    Show Question Text
+                                                </Accordion.Toggle>
+                                                <Accordion.Collapse id="Coll2" eventKey={i + 1} style={{marginBottom : 10}}>
+                                                    <div>
+                                                        <text>{item.text}</text>
+                                                        <footer className="blockquote-footer"
+                                                                style={{Color: 'white'}}>
+                                                            {item.keywords}
+                                                        </footer>
+                                                    </div>
+                                                </Accordion.Collapse>
+                                            </Accordion>
+                                            <text style={{marginTop : 10}}>No answers for this question</text>
+                                        </blockquote>
                                     </Card.Body>
                                 </div>
                                 :
                                 <div>
                                     <Card.Body>
                                         <blockquote className="blockquote mb-0 text-left">
+                                            <Accordion defaultActiveKey="0">
+                                                <Accordion.Toggle as={Button} variant="info" eventKey={i+1} style={{marginBottom : 5}}>
+                                                    Show Question Text
+                                                </Accordion.Toggle>
+                                                <Accordion.Collapse id="Coll2" eventKey={i + 1} style={{marginBottom : 10}}>
+                                                    <div>
+                                                        <text>{item.text}</text>
+                                                        <footer className="blockquote-footer"
+                                                                style={{Color: 'white'}}>
+                                                            {item.keywords}
+                                                        </footer>
+                                                    </div>
+                                                </Accordion.Collapse>
+                                            </Accordion>
                                             <Carousel interval={null}>
                                                 {item.answers.map((ans, j) =>
-                                                    <Carousel.Item id={j + 1}>
+                                                    <Carousel.Item id={j + 1} style={{marginTop : 10}}>
                                                         {ans.text}
                                                         <footer className="blockquote-footer" style={{Color: 'white'}}>
                                                             Answer {j + 1}/{item.answers.length}
@@ -48,7 +78,6 @@ function AccordionAnswers(props){
                                     </Card.Body>
                                 </div>
                             }
-
                         </Accordion.Collapse>
                     </Card>
                 )}

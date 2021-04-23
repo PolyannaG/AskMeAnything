@@ -231,6 +231,7 @@ function MyAskMeAnything(){
                             label="Questions"
                             name="RadioButtons"
                             value="RadioButtons"
+                            defaultChecked
                             id="RadioQuestions"
                             onChange={handleOptionChange}
                         />
