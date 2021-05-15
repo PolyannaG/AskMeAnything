@@ -1,4 +1,4 @@
-import {IsArray, IsNotEmpty, IsOptional, IsString, MaxLength} from "class-validator";
+import {IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength} from "class-validator";
 
 export class CreateQuestionDto {
 
@@ -17,4 +17,8 @@ export class CreateQuestionDto {
     @IsString({each: true})
     @MaxLength(40, {each: true})
     readonly keywords : string[];
+
+    @IsNumber()
+    @IsNotEmpty()
+    readonly Userid: number;
 }

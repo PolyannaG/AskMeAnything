@@ -21,6 +21,9 @@ export class Question {
     @Column({default: () => 0})
     sum_answers: number;
 
+    @Column()
+    Userid: number;
+
     @ManyToMany(type => Keyword, keyword => keyword.keyword)
     keywords: Keyword[];
 }

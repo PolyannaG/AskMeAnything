@@ -19,6 +19,7 @@ export class QuestionService {
         title: createQuestionDto.title,
         text: createQuestionDto.text,
         // date_created: Date.now()
+        Userid: createQuestionDto.Userid
       }
       const question = await this.manager.create(Question, question_to_create);
       const question_created = await this.manager.save(question)
