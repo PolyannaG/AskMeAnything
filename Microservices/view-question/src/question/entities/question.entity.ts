@@ -12,8 +12,8 @@ export class Question {
     @Column({length : 10000})
     text: string;
 
-   // @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-   //date_created: Date;
+    // @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    //date_created: Date;
 
     @CreateDateColumn()
     date_created: Date;
