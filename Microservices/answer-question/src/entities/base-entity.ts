@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, CreateDateColumn, Column} from "typeorm";
 
 @Entity()
 export class BaseEntity {
@@ -8,7 +8,7 @@ export class BaseEntity {
     @Column({type: 'text', nullable: false})
     text: string;
 
-    @Column({type: 'timestamp', nullable: false})
+    @CreateDateColumn({nullable: false})
     date_created: Date;
 
     @Column({type: 'integer', nullable: false})

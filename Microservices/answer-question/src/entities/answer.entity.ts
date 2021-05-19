@@ -1,5 +1,4 @@
 import {Entity, Column} from "typeorm";
-import {question} from "./question.entity"
 import {BaseEntity} from "./base-entity";
 
 @Entity({ schema: "answer_question" })
