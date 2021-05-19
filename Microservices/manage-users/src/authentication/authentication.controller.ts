@@ -1,33 +1,38 @@
 import {
   BadRequestException,
   Body,
-  Controller,
+  Controller, Get,
   HttpCode,
   HttpException, HttpStatus,
   Post,
   Req,
-  Res,
+  Res, UnauthorizedException,
   UseGuards
 } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import {CreateUserDto} from "../user/dto/create-user.dto";
 import * as bcrypt from "bcrypt"
 import {UserService} from "../user/user.service";
-import {Response} from "express";
-import {constants} from "http2";
-import any = jasmine.any;
+import {Response, Request} from "express";
+import {JwtService} from "@nestjs/jwt";
+import {JwtAuthGuard} from "./jwt-auth.guard";
+
 
 
 @Controller('auth')
 export class AuthenticationController {
   constructor(
       private readonly authenticationService: AuthenticationService,
-    private readonly userService: UserService
+     private readonly userService: UserService,
+      private readonly jwtService: JwtService
+
   ) {}
 
   @Post('register')
   async register(@Body() registrationData: CreateUserDto) {
-    return this.authenticationService.register(registrationData);
+    const user=await this.authenticationService.register(registrationData);
+    const {password,...result}=user
+    return result
   }
 
 
@@ -54,4 +59,35 @@ export class AuthenticationController {
       }
     }
   }
+  @UseGuards(JwtAuthGuard)
+  @Get('user')
+   async user(@Req() request: Request){
+    try {
+
+      const cookie = request.cookies['token']
+
+      const data = await this.jwtService.verifyAsync(cookie)
+      //console.log(data)
+      if (!data)
+        throw new UnauthorizedException()
+
+      const user=await this.userService.findOne(data._id)
+      const {password, ...result}=user
+
+      return result
+
+    }catch (e){
+      throw new UnauthorizedException()
+    }
+  }
+
+  @Post('logout')
+  async logout(@Res({passthrough : true}) response: Response){
+    response.clearCookie('token')
+    return{
+      message : "successful logout"
+    }
+  }
+
+
 }

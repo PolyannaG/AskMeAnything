@@ -15,7 +15,8 @@ export class AuthenticationService {
     public async register(registrationData: CreateUserDto) : Promise<User>{
         const hashedPassword = await bcrypt.hash(registrationData.password, 10);
 
-            const user=this.userService.findByUsername(registrationData.username)
+            const user=await this.userService.findByUsername(registrationData.username)
+            console.log(user)
             if (user)
                 throw new HttpException(`User with username ${registrationData.username} already exists.`, HttpStatus.BAD_REQUEST)
             else
@@ -28,24 +29,6 @@ export class AuthenticationService {
                     return createdUser;
                 } catch (error) {
                     throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    public async getAuthenticatedUser(username: string, hashedPassword: string) {
-        try {
-            const user = await this.userService.findByUsername(username);
-            const isPasswordMatching = await bcrypt.compare(
-                hashedPassword,
-                user.password
-            );
-
-            if (!isPasswordMatching) {
-                throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
-            }
-            user.password = undefined;
-            return user;
-        } catch (error) {
-            throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
         }
     }
 

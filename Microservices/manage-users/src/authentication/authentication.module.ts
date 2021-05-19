@@ -7,6 +7,7 @@ import {JwtModule, JwtService} from '@nestjs/jwt';
 import {UserService} from "../user/user.service";
 
 
+
 @Module({
   imports : [UserModule, PassportModule,
     JwtModule.register({
