@@ -1,14 +1,18 @@
-import {Controller, Get, Param, UseGuards} from '@nestjs/common';
+import {Controller, Get, Param, Req, UseGuards} from '@nestjs/common';
 import { QuestionService } from './question.service';
-import {JwtAuthGuard} from "../jwt-auth.guard";
+import {JwtAuthGuard} from "./jwt-auth.guard";
+
+import {JwtService} from "@nestjs/jwt";
+import {Response, Request} from "express";
+
 
 @Controller('view_question')
 export class QuestionController {
-  constructor(private readonly questionService: QuestionService) {}
+  constructor(private readonly questionService: QuestionService, private readonly jwtService: JwtService) {}
 
-
+ // @UseGuards(JwtAuthGuard)
   @Get('all/:date_from')
-  findAll(@Param('date_from') date_from: Date) {
+  findAll(@Param('date_from',) date_from: Date,@Req() request: Request) {
     return this.questionService.findAll(date_from)
   }
 

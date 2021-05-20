@@ -8,7 +8,7 @@ import {JwtService} from "@nestjs/jwt";
 export class JwtAuthGuard implements CanActivate {
 
     constructor(
-        private readonly httpService : HttpService
+        private readonly jwtService : JwtService
 
     ) {}
 
@@ -19,10 +19,12 @@ export class JwtAuthGuard implements CanActivate {
         return this.validateRequest(request);
     }
 
-    async validateRequest(req: Request) {
+    async validateRequest(request: Request) {
         try {
-            const cookie = req.cookies['token']
-            const data = this.httpService.get('http://localhost:3001/auth/user')
+            const cookie = request.cookies['token']
+            console.log(cookie)
+            const data = this.jwtService.verify(cookie)
+            console.log(data)
             if (data)
                 return true
             else
