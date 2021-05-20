@@ -9,7 +9,7 @@ import {
     JoinColumn
 } from "typeorm";
 import {Keyword} from "./keyword.entity";
-import {User} from "./user.entity";
+
 
 
 @Entity()
@@ -33,10 +33,15 @@ export class Question {
     sum_answers: number;
 
 
+    @Column()
+    Userid : number;
+
     @ManyToMany(type => Keyword, keyword => keyword.questions)
     keywords: Keyword[];
 
-    @ManyToOne(()=>User, user=>user.questions, {nullable: false, onDelete: "CASCADE"})
-    @JoinColumn({name : 'Userid'})
-    user : User
+
+
+  //  @ManyToOne(()=>User, user=>user.questions, {nullable: false, onDelete: "CASCADE"})
+  //  @JoinColumn({name : 'Userid'})
+  //  user : User
 }

@@ -12,7 +12,7 @@ export class QuestionController {
 
  // @UseGuards(JwtAuthGuard)
   @Get('all/:date_from')
-  findAll(@Param('date_from',) date_from: Date,@Req() request: Request) {
+  findAll(@Param('date_from',) date_from: Date) {
     return this.questionService.findAll(date_from)
   }
 

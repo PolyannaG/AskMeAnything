@@ -5,7 +5,7 @@ import {InjectEntityManager} from "@nestjs/typeorm";
 import {EntityManager, getConnection} from "typeorm";
 import {Question} from "./entities/question.entity";
 import {Keyword} from "./entities/keyword.entity";
-import {User} from "./entities/user.entity";
+
 
 @Injectable()
 export class QuestionService {
@@ -22,14 +22,14 @@ export class QuestionService {
         // date_created: Date.now()
         Userid: createQuestionDto.Userid
       }
-      const Userid=createQuestionDto.Userid
-      if (!Userid)
-        throw new BadRequestException("User id is missing.")
-      const user=await this.manager.findOne(User, createQuestionDto.Userid)
-      if (!user)
-        throw new NotFoundException(`User with id ${createQuestionDto.Userid} not found.`)
+   //   const Userid=createQuestionDto.Userid
+   //   if (!Userid)
+     //   throw new BadRequestException("User id is missing.")
+   //   const user=await this.manager.findOne(User, createQuestionDto.Userid)
+   //   if (!user)
+   //     throw new NotFoundException(`User with id ${createQuestionDto.Userid} not found.`)
       const question = await this.manager.create(Question, question_to_create);
-      question.user=user;
+  //    question.user=user;
       const question_created = await this.manager.save(question)
 
       if ('keywords' in createQuestionDto) {
