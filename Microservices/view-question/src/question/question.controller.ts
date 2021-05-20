@@ -1,5 +1,6 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {Controller, Get, Param, UseGuards} from '@nestjs/common';
 import { QuestionService } from './question.service';
+import {JwtAuthGuard} from "../jwt-auth.guard";
 
 @Controller('view_question')
 export class QuestionController {
