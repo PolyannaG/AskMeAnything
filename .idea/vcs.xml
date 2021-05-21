@@ -3,6 +3,8 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Microservices/answer-question" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Microservices/statistics" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Microservices/view-answer" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/rest-api" vcs="Git" />
   </component>
 </project>
