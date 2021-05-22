@@ -71,8 +71,9 @@ for i in range(1, 101):
     p = passwordGenerator(random.choice(password_length))
     rowPass['password']=p
     password = bytes(p, encoding='utf-8')
-    hash = b'$2b$12$mzZXxm.lIzmqEMht8NVw1O'
-    hashed = bcrypt.hashpw(password, hash)
+    const_hash = b'$2b$12$mzZXxm.lIzmqEMht8NVw1O'
+    hash = bcrypt.hashpw(password, const_hash)
+    hashed = hash.decode("utf-8")
     row['password']=hashed
 
     email = emailGenerator(usernames[i])

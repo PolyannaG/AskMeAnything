@@ -2,7 +2,7 @@ import {Entity, PrimaryGeneratedColumn, CreateDateColumn, Column} from "typeorm"
 
 @Entity()
 export class BaseEntity {
-    @PrimaryGeneratedColumn({type: 'integer'})
+    @PrimaryGeneratedColumn("increment", {type: 'integer'})
     id: number;
 
     @Column({type: 'text', nullable: false})
