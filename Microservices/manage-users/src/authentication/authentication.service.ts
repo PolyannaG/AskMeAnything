@@ -13,7 +13,8 @@ export class AuthenticationService {
     }
 
     public async register(registrationData: CreateUserDto) : Promise<User>{
-        const hashedPassword = await bcrypt.hash(registrationData.password, 10);
+       // const hashedPassword = await bcrypt.hash(registrationData.password, 10);
+        const hashedPassword = await bcrypt.hash(registrationData.password, '$2b$12$mzZXxm.lIzmqEMht8NVw1O');
 
             const user=await this.userService.findByUsername(registrationData.username)
             console.log(user)
