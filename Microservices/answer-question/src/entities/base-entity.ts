@@ -12,5 +12,5 @@ export class BaseEntity {
     date_created: Date;
 
     @Column({type: 'integer', nullable: false})
-    userid: number;
+    Userid: number;
 };
