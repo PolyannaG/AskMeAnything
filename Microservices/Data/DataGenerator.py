@@ -71,7 +71,8 @@ for i in range(1, 101):
     p = passwordGenerator(random.choice(password_length))
     rowPass['password']=p
     password = bytes(p, encoding='utf-8')
-    hashed = bcrypt.hashpw(password, bcrypt.gensalt())
+    hash = b'$2b$12$mzZXxm.lIzmqEMht8NVw1O'
+    hashed = bcrypt.hashpw(password, hash)
     row['password']=hashed
 
     email = emailGenerator(usernames[i])
@@ -193,6 +194,7 @@ keywordList = ['health', 'sea', 'programming', 'bug', 'disease',
 for i in keywordList:
     row['keyword']=i
     keywords.append(row)
+    row = {}
 
 writerKeyword.writerows(keywords)
 
