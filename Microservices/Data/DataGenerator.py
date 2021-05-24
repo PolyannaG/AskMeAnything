@@ -116,7 +116,11 @@ for i in range(1, 301):
     rowQuestion['title'] = title
 
     txt = fake.paragraphs(random.randint(1,15))
-    rowQuestion['text'] = txt
+    paragraph_str = ''
+    for i in txt:
+        paragraph_str = paragraph_str + i + ' '
+    text = paragraph_str[:-1]
+    rowQuestion['text'] = text
 
     UserId = random.randint(1,98)
     rowQuestion['Userid']=UserId
@@ -138,7 +142,11 @@ for i in range(1, 301):
         rowAnswers['questionId']=i
 
         txt = fake.paragraphs(random.randint(1,15))
-        rowAnswers['text'] = txt
+        paragraph_str = ''
+        for i in txt:
+            paragraph_str = paragraph_str + i + ' '
+        text = paragraph_str[:-1]
+        rowAnswers['text'] = text
 
         userid = random.randint(1,95)
         rowAnswers['Userid']=userid
