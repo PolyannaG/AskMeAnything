@@ -9,5 +9,5 @@ export class BaseEntity {
     date_created: Date;
 
     @Column({type: 'integer', nullable: false})
-    userId: number;
+    Userid: number;
 };

@@ -55,21 +55,21 @@ export class StatisticsService {
     const d_to = new Date();
     const date = d_to.toISOString();
 
-    const quest = await createQueryBuilder().select(`EXTRACT(DAY FROM date_created),COUNT(*)` ).from('answer', 'Answer').andWhere(`date_created <= '${date}'`).andWhere(`date_created >= '${(addMonths(d_to, -1)).toISOString()}'`).groupBy(  `EXTRACT(DAY FROM date_created)`).orderBy('count', 'DESC').take(10).getRawMany()
+    const ans = await createQueryBuilder().select(`EXTRACT(DAY FROM date_created),COUNT(*)` ).from('answer', 'Answer').andWhere(`date_created <= '${date}'`).andWhere(`date_created >= '${(addMonths(d_to, -1)).toISOString()}'`).groupBy(  `EXTRACT(DAY FROM date_created)`).orderBy('count', 'DESC').take(10).getRawMany()
 
-    if (!quest || !quest.length)
+    if (!ans || !ans.length)
       throw new NotFoundException(`No answers found this last month.`)
-    return quest
+    return ans
   }
 
 
   async showAnswersPerDayUser(Userid:number) : Promise<Object[]>{
     const d_to = new Date();
     const date = d_to.toISOString();
-    const quest = await createQueryBuilder().select(`EXTRACT(DAY FROM date_created) AS day,COUNT(*)` ).from('answer', 'Answer').andWhere(`date_created <= '${date}'`).andWhere(`date_created >= '${(addMonths(d_to, -1)).toISOString()}'`).andWhere(`Question.Userid=${Userid}`).groupBy(  `EXTRACT(DAY FROM date_created)`).orderBy('count', 'DESC').take(10).getRawMany()
-    if (!quest || !quest.length)
+    const ans = await createQueryBuilder().select(`EXTRACT(DAY FROM date_created) AS day,COUNT(*)` ).from('answer', 'Answer').andWhere(`date_created <= '${date}'`).andWhere(`date_created >= '${(addMonths(d_to, -1)).toISOString()}'`).andWhere(`Answer.Userid=${Userid}`).groupBy(  `EXTRACT(DAY FROM date_created)`).orderBy('count', 'DESC').take(10).getRawMany()
+    if (!ans || !ans.length)
       throw new NotFoundException(`No answers found ths last month for user with id ${Userid}.`)
-    return quest
+    return ans
   }
 
 }

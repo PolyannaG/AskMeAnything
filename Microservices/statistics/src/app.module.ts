@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { StatisticsController } from './app.controller';
 import { StatisticsService } from './app.service';
-import {config} from "../../answer-question/src/orm.config";
+import {config} from "./orm.config";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {Answer} from "./entities/answer.entity";
 import {Question} from "./entities/question.entity";
