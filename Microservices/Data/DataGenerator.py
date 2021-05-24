@@ -122,7 +122,10 @@ for i in range(1, 301):
     text = paragraph_str[:-1]
     rowQuestion['text'] = text
 
-    UserId = random.randint(1,98)
+    if i % 5 == 0:
+        UserId = 8
+    else :
+        UserId = random.randint(1,98)
     rowQuestion['Userid']=UserId
     rowStatsQ['Userid']=UserId
 
@@ -154,7 +157,11 @@ for i in range(1, 301):
         text = paragraph_str[:-1]
         rowAnswers['text'] = text
 
-        userid = random.randint(1,95)
+        if count % 15 == 0:
+            userid = 8
+        else :
+            userid = random.randint(1,98)
+
         rowAnswers['Userid']=userid
         rowStatsA['Userid']=userid
         Ans_registered = dates_register[userid]
