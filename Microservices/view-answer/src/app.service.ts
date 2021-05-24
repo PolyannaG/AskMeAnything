@@ -9,10 +9,10 @@ import {paramIdDto} from "./dto/ParamId.dto";
 export class ViewAnswerService {
   constructor(@InjectEntityManager() private manager : EntityManager) {}
   
-  async findQuestionAnswers(QuestionID : paramIdDto): Promise<Object[]> {
+  async findQuestionAnswers(QuestionID : number): Promise<Object[]> {
 
-    const question_answers = await this.manager.find(Answer, {where: {questionId: QuestionID.id}});
-    if (!question_answers)
+    const question_answers = await this.manager.find(Answer, {where: {questionId: QuestionID}});
+    if (question_answers == [])
       return [
         {
           id: QuestionID,
@@ -21,13 +21,18 @@ export class ViewAnswerService {
       ];
 
     else
-      return question_answers;
+      return [
+        {
+          id: QuestionID,
+          answers: question_answers
+        }
+      ];
   }
 
 
-  async findAnswersForUser(UserID : paramIdDto): Promise<Object[]> {
-    const my_answers = await this.manager.find(Answer, {where: {userid: UserID.id}});
-    if (!my_answers)
+  async findAnswersForUser(UserID : number): Promise<Object[]> {
+    const my_answers = await this.manager.find(Answer, {where: {userid: UserID}});
+    if (my_answers == [])
       return [
         {
           userID: UserID,
@@ -36,6 +41,11 @@ export class ViewAnswerService {
       ];
 
     else
-      return my_answers;
+      return [
+        {
+          userID: UserID,
+          answers: my_answers
+        }
+      ];
   }
 }

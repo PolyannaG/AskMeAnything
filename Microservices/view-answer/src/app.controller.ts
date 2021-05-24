@@ -7,12 +7,12 @@ export class ViewAnswerController {
   constructor(private readonly viewAnswerService: ViewAnswerService) {}
 
   @Get('for_question/:id')
-  findQuestionAnswers(@Param('id') id: paramIdDto) {
+  findQuestionAnswers(@Param('id') id: number) {
     return this.viewAnswerService.findQuestionAnswers(id)
   }
 
   @Get('for_user/:id')
-  findAnswersForUser(@Param('id') id: paramIdDto) {
+  findAnswersForUser(@Param('id') id: number) {
     return this.viewAnswerService.findAnswersForUser(id)
   }
 }
