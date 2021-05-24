@@ -127,7 +127,13 @@ for i in range(1, 301):
     rowStatsQ['Userid']=UserId
 
     registered = dates_register[UserId]
-    question_date = ReturnCorrectDate(registered)
+    if i < 150 :
+        question_date = ReturnCorrectDate(registered)
+    else :
+        #Recent dates for the statistics : CHANGE BEFORE PRESENTATION
+        recent_day = random.randint(1, 24) #because current day is 24/05/2021
+        question_date = random_timestamp(year=2021, month=5, day=recent_day)
+
     rowQuestion['date_created']=question_date
     rowStatsQ['date_created']=question_date
 
@@ -154,7 +160,11 @@ for i in range(1, 301):
         Ans_registered = dates_register[userid]
 
         while True:
-            answer_date1 = ReturnCorrectDate(question_date)
+            if i < 150 :
+                answer_date1 = ReturnCorrectDate(question_date)
+            else :
+                #Recent dates for the statistics : CHANGE BEFORE PRESENTATION
+                answer_date1 = random_timestamp( year=2021, month=5, day=random.randint( (recent_day)+1, 30 ) )
             answer_date2 = ReturnCorrectDate(Ans_registered)
             answer_date = MoreRecentDate(answer_date1, answer_date2)
             if answer_date != 0:
