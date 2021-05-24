@@ -1,5 +1,4 @@
 import {Entity, Column, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import {BaseEntity} from "./base-entity";
 import {Answer} from "./answer.entity";
 
 @Entity({ schema: "answer_question" })

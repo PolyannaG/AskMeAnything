@@ -10,10 +10,10 @@ import {Question} from "./entities/question.entity";
 export class AnswerService {
   constructor(@InjectEntityManager() private manager : EntityManager) {}
 
-  async create (paramId: paramIdDto, createAnswerDto: CreateAnswerDto) : Promise<Answer> {
+  async create (paramId: number, createAnswerDto: CreateAnswerDto) : Promise<Answer> {
     return this.manager.transaction( async  manager => {
 
-      const myQuestion = await this.manager.findOne(Question, paramId.id);
+      const myQuestion = await this.manager.findOne(Question, paramId);
 
       if (!myQuestion)
         throw new NotFoundException(`Question with id ${paramId} not found, so it can't be answered`)
@@ -21,8 +21,8 @@ export class AnswerService {
       else {
         const answer_to_be_created = {
           text: createAnswerDto.text,
-          userid : createAnswerDto.userid,
-          questionId : paramId.id
+          question : {id: paramId},
+          Userid : createAnswerDto.Userid
         }
         const the_answer = await this.manager.create(Answer, answer_to_be_created)
         const answer_created = await this.manager.save(the_answer)

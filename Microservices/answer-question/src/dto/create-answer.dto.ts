@@ -8,5 +8,5 @@ export class CreateAnswerDto {
 
     @IsInt()
     @IsNotEmpty()
-    readonly userid: number;
+    readonly Userid: number;
 }

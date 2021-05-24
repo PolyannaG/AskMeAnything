@@ -7,8 +7,8 @@ import {paramIdDto} from "./dto/ParamId.dto";
 export class AnswerController {
   constructor(private readonly answerService: AnswerService) {}
 
-  @Post(':QuestionId')
-  createAnswer(@Param() params: paramIdDto, @Body() createAnswerDto: CreateAnswerDto) {
+  @Post('/:id')
+  createAnswer(@Param('id') params: number, @Body() createAnswerDto: CreateAnswerDto) {
     return this.answerService.create(params, createAnswerDto);
   }
 }
