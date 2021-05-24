@@ -117,8 +117,8 @@ for i in range(1, 301):
 
     txt = fake.paragraphs(random.randint(1,15))
     paragraph_str = ''
-    for i in txt:
-        paragraph_str = paragraph_str + i + ' '
+    for z in txt:
+        paragraph_str = paragraph_str + z + ' '
     text = paragraph_str[:-1]
     rowQuestion['text'] = text
 
@@ -143,8 +143,8 @@ for i in range(1, 301):
 
         txt = fake.paragraphs(random.randint(1,15))
         paragraph_str = ''
-        for i in txt:
-            paragraph_str = paragraph_str + i + ' '
+        for z in txt:
+            paragraph_str = paragraph_str + z + ' '
         text = paragraph_str[:-1]
         rowAnswers['text'] = text
 
@@ -195,7 +195,7 @@ keywordList = ['health', 'sea', 'programming', 'bug', 'disease',
                 'love', 'universe', 'movies', 'shows', 'pet',
                 'dog', 'cat', 'philosophy', 'weather', 'netflix',
                 'economy', 'Covid-19', 'sports', 'parenting', 'children',
-                'dog', 'cat', 'work', 'DIY', 'food',
+                'work', 'DIY', 'food', 'school', 'university', 'education',
                 'recipe', 'restaurant', 'vacation', 'trip', 'abroad',
                 'animal', 'wildlife', 'fire', 'transportation', 'instructions',
                 'house', 'garden', 'flowers', 'decoration', 'sale', 'nature']
@@ -212,9 +212,17 @@ rowQK = {}
 QuestionsKeywords = []
 for i in range(1, 301):
     num_keywords = random.randint(0,6)
-    for i in range(num_keywords):
+    already_keyword = []
+    for j in range(num_keywords):
+        key = random.choice(keywordList)
+        while True :
+            if key in already_keyword :
+                key = random.choice(keywordList)
+            else :
+                break
+        already_keyword.append(key)
+        rowQK['keywordKeyword'] = key
         rowQK['questionId'] = i
-        rowQK['keywordKeyword'] = random.choice(keywordList)
         QuestionsKeywords.append(rowQK)
         rowQK={}
 
