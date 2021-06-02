@@ -1,8 +1,9 @@
 # compiled output
 /dist
 /node_modules
-/src/orm.config.ts
+
 /ormconfig.json
+.env
 
 # Logs
 logs

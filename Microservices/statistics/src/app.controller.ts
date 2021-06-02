@@ -1,11 +1,12 @@
-import {Controller, Get, Param} from '@nestjs/common';
+import {Controller, Get, Param, UseGuards} from '@nestjs/common';
 import { StatisticsService } from './app.service';
-//import {JwtAuthGuard} from "../jwt-auth.guard";
+import {JwtAuthGuard} from "./jwt-auth.guard";
 
 @Controller('statistics')
 export class StatisticsController {
   constructor(private readonly questionService: StatisticsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get('keywords')
   findByKeywords() {
     return this.questionService.findByKeywords()
