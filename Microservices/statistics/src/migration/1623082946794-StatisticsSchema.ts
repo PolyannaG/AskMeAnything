@@ -1,11 +1,11 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class InitialStatisticsSchema1621859667413 implements MigrationInterface {
-    name = 'InitialStatisticsSchema1621859667413'
+export class StatisticsSchema1623082946794 implements MigrationInterface {
+    name = 'StatisticsSchema1623082946794'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`CREATE TABLE "statistics"."answer" ("id" SERIAL NOT NULL, "date_created" TIMESTAMP NOT NULL DEFAULT now(), "Userid" integer NOT NULL, CONSTRAINT "PK_2a4db13987af5e4145e596ccb16" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TABLE "statistics"."question" ("id" SERIAL NOT NULL, "date_created" TIMESTAMP NOT NULL DEFAULT now(), "Userid" integer NOT NULL, CONSTRAINT "PK_ddc9cf994686b187df154843b20" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "statistics"."answer" ("id" integer NOT NULL, "date_created" TIMESTAMP NOT NULL DEFAULT now(), "Userid" integer NOT NULL, CONSTRAINT "PK_2a4db13987af5e4145e596ccb16" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "statistics"."question" ("id" integer NOT NULL, "date_created" TIMESTAMP NOT NULL DEFAULT now(), "Userid" integer NOT NULL, CONSTRAINT "PK_ddc9cf994686b187df154843b20" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "statistics"."keyword" ("keyword" character varying(40) NOT NULL, CONSTRAINT "PK_7dfa1f3d6a79e25e74ed3baa99f" PRIMARY KEY ("keyword"))`);
         await queryRunner.query(`CREATE TABLE "statistics"."keyword_questions_question" ("keywordKeyword" character varying(40) NOT NULL, "questionId" integer NOT NULL, CONSTRAINT "PK_3dbe5eea6e13261cd7b3f236d59" PRIMARY KEY ("keywordKeyword", "questionId"))`);
         await queryRunner.query(`CREATE INDEX "IDX_7b4cced65857442a6b384475e3" ON "statistics"."keyword_questions_question" ("keywordKeyword") `);

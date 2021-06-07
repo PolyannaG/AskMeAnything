@@ -64,7 +64,7 @@ export class QuestionService {
       else {
         msg["Keywords"] = [];
       }
-      await this.httpService.post('http://localhost:4200/questions', msg);
+      await this.httpService.post('http://localhost:4200/questions', msg).toPromise();
 
       return question_created
     });

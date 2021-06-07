@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ChoreographerController } from './app.controller';
+import { ChoreographerService } from './app.service';
 
 /*
 describe('AppController', () => {

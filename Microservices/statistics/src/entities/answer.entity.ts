@@ -1,5 +1,5 @@
 import {Entity} from "typeorm";
 import {BaseEntity} from "./base-entity";
 
-@Entity({schema: 'statistics'})
+@Entity()
 export class Answer extends BaseEntity {}

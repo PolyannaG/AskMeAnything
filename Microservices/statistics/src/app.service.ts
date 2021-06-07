@@ -1,6 +1,6 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {InjectEntityManager, InjectRepository} from "@nestjs/typeorm";
-import {createQueryBuilder, EntityManager, getConnection, Repository} from "typeorm";
+import {createQueryBuilder, EntityManager, getConnection, InsertResult, Repository} from "typeorm";
 import {Keyword} from "./entities/keyword.entity";
 import {Question} from "./entities/question.entity";
 import {Answer} from "./entities/answer.entity";
@@ -143,6 +143,7 @@ export class StatisticsService {
         date_created: msgDto.date_created,
         Userid: msgDto.Userid
       }
+
       const the_answer = await this.manager.create(Answer, answer_to_be_created);
       const answer_created = await this.manager.save(the_answer);
 

@@ -36,7 +36,7 @@ export class AnswerService {
         const the_answer = await this.manager.create(Answer, answer_to_be_created);
         const answer_created = await this.manager.save(the_answer);
 
-        await this.httpService.post('http://localhost:4200/answers', answer_created);
+        await this.httpService.post('http://localhost:4200/answers', answer_created).toPromise();
 
         return answer_created;
       }

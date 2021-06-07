@@ -91,18 +91,18 @@ export class ChoreographerService {
         let sub = await this.client.hget('subscribers', 'answers');
         let subscribers = JSON.parse(sub);
         for (let i = 0; i<subscribers.length; i++){
-            this.httpService.post(subscribers[i], new_answer).pipe(
+            await this.httpService.post(subscribers[i], new_answer).pipe(
                 catchError(async e => {
                     if (subscribers[i] == "http://localhost:8003/statistics/answer_message") {
-                        //await this.saveAnswerMsg('answerMessages', 'statistics', sendAnswerDto);
+                        await this.saveAnswerMsg('answerMessages', 'statistics', sendAnswerDto);
                     }
                     else if (subscribers[i] == "http://localhost:8004/view_answer/message") {
-                        //await this.saveAnswerMsg('answerMessages', 'view_answer', sendAnswerDto);
+                        await this.saveAnswerMsg('answerMessages', 'view_answer', sendAnswerDto);
                     }
 
-                    throw new HttpException("Lost connection", HttpStatus.SERVICE_UNAVAILABLE);
+                    //throw new HttpException("Lost connection", HttpStatus.SERVICE_UNAVAILABLE);
                 }),
-            );
+            ).toPromise();
         }
         return HttpStatus.OK;
     }
@@ -139,21 +139,21 @@ export class ChoreographerService {
         let sub = await this.client.hget('subscribers', 'questions');
         let subscribers = JSON.parse(sub);
         for (let i = 0; i<subscribers.length; i++){
-            this.httpService.post(subscribers[i], new_question).pipe(
+            await this.httpService.post(subscribers[i], new_question).pipe(
                 catchError(async e => {
                     if (subscribers[i] == "http://localhost:8000/create_answer/message") {
-                        //await this.saveQuestionMsg('questionMessages', 'create_answer', sendQuestionDto);
+                        await this.saveQuestionMsg('questionMessages', 'create_answer', sendQuestionDto);
                     }
                     else if (subscribers[i] == "http://localhost:8003/statistics/question_message") {
-                        //await this.saveQuestionMsg('questionMessages', 'statistics', sendQuestionDto);
+                        await this.saveQuestionMsg('questionMessages', 'statistics', sendQuestionDto);
                     }
                     else if (subscribers[i] == "http://localhost:8005/view_question/message") {
                         await this.saveQuestionMsg('questionMessages', 'view_question', sendQuestionDto);
                     }
 
-                    throw new HttpException("Lost connection", HttpStatus.SERVICE_UNAVAILABLE);
+                    //throw new HttpException("Lost connection", HttpStatus.SERVICE_UNAVAILABLE);
                 }),
-            );
+            ).toPromise();
         }
         return HttpStatus.OK;
     }

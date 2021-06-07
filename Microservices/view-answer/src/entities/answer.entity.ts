@@ -1,8 +1,8 @@
-import {Entity, PrimaryGeneratedColumn, CreateDateColumn, Column} from "typeorm";
+import {Entity, CreateDateColumn, Column, PrimaryColumn} from "typeorm";
 
-@Entity({schema: "view_answer"})
+@Entity()
 export class Answer {
-    @PrimaryGeneratedColumn({type: 'integer'})
+    @PrimaryColumn({type: 'integer'})
     id: number;
 
     @Column({type: 'text', nullable: false})

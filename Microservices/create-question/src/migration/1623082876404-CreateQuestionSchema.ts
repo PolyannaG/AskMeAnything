@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class InitialSchema1621544454205 implements MigrationInterface {
-    name = 'InitialSchema1621544454205'
+export class CreateQuestionSchema1623082876404 implements MigrationInterface {
+    name = 'CreateQuestionSchema1623082876404'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "create_question"."question" ("id" SERIAL NOT NULL, "title" character varying NOT NULL, "text" character varying(10000) NOT NULL, "date_created" TIMESTAMP NOT NULL DEFAULT now(), "sum_answers" integer NOT NULL DEFAULT 0, "Userid" integer NOT NULL, CONSTRAINT "PK_60feba564d25f5581606258e1ef" PRIMARY KEY ("id"))`);

@@ -9,7 +9,9 @@ import {MessageDto} from "./dto/Message.dto";
 
 @Controller('view_question')
 export class QuestionController {
-  constructor(private readonly questionService: QuestionService, private readonly jwtService: JwtService) {}
+  constructor(private readonly questionService: QuestionService)
+              //, private readonly jwtService: JwtService)
+  {}
 
   async onModuleInit() {
     await this.questionService.subscribe()

@@ -1,7 +1,7 @@
 import {Entity, Column, ManyToOne, PrimaryGeneratedColumn, CreateDateColumn} from "typeorm";
 import {Question} from "./question.entity"
 
-@Entity({ schema: "answer_question" })
+@Entity()
 export class Answer{
     @PrimaryGeneratedColumn("increment", {type: 'integer'})
     id: number;

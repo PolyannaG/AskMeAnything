@@ -9,7 +9,7 @@ export class ChoreographerController {
 
   @Post('answers')
   sendAnswer(@Body() sendAnswerDto: SendAnswerDto) {
-    return this.choreographerService.sendAnswers(sendAnswerDto)
+    return this.choreographerService.sendAnswers(sendAnswerDto);
   }
 
   @Post('questions')
