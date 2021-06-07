@@ -1,16 +1,26 @@
-import {Controller, Get, Param, Req, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Req, UseGuards} from '@nestjs/common';
 import { QuestionService } from './question.service';
 import {JwtAuthGuard} from "./jwt-auth.guard";
 
 import {JwtService} from "@nestjs/jwt";
 import {Response, Request} from "express";
+import {MessageDto} from "./dto/Message.dto";
 
 
 @Controller('view_question')
 export class QuestionController {
   constructor(private readonly questionService: QuestionService, private readonly jwtService: JwtService) {}
 
- // @UseGuards(JwtAuthGuard)
+  async onModuleInit() {
+    return this.questionService.subscribe()
+  }
+
+  @Post('message')
+  updateDatabase(@Body() msgDto : MessageDto) {
+    return this.questionService.updateDatabases(msgDto)
+  }
+
+  // @UseGuards(JwtAuthGuard)
   @Get('all/:date_from')
   findAll(@Param('date_from',) date_from: Date) {
     return this.questionService.findAll(date_from)

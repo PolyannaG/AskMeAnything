@@ -8,7 +8,7 @@ import {JwtAuthGuard} from "./jwt-auth.guard";
 export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
 
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createQuestionDto: CreateQuestionDto) {
     return this.questionService.create(createQuestionDto);

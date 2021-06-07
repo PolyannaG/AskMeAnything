@@ -1,17 +1,26 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {InjectEntityManager, InjectRepository} from "@nestjs/typeorm";
-import {createQueryBuilder, EntityManager, LessThan,  Repository} from "typeorm";
+import {createQueryBuilder, EntityManager, getConnection, LessThan, Repository} from "typeorm";
 import {Question} from "./entities/question.entity";
 import {Keyword} from "./entities/keyword.entity";
 import {addMonths} from 'date-fns'
+import {RedisService} from "nestjs-redis";
+import {MessageDto} from "./dto/Message.dto";
 
 
 @Injectable()
 export class QuestionService {
 
+  private client: any;
   constructor(@InjectEntityManager() private manager : EntityManager,
               @InjectRepository(Keyword) private readonly keywordRepository : Repository<Keyword>,
-             ) {}
+              private redisService: RedisService) {
+    this.getClient();
+  }
+
+  private async getClient() {
+    this.client = await this.redisService.getClient();
+  }
 
   async findAll(date_from:Date) : Promise<Question[]>{
    const questions= await this.manager.find(Question,{where: {date_created : LessThan(date_from)}, take: 10, relations:["keywords"]});
@@ -80,4 +89,68 @@ export class QuestionService {
       throw new NotFoundException('No questions found')
     return questions
   }
+
+  async subscribe (): Promise<string> {
+    let sub = await this.client.hget('subscribers', 'questions');
+    let subscribers = JSON.parse(sub);
+    let myAddress = "http://localhost:8005/view_question/message";
+    let alreadySubscribed = false;
+
+    if (subscribers == null){
+      subscribers = []
+      subscribers[0] = myAddress
+      await this.client.hset('subscribers', 'questions', JSON.stringify(subscribers));
+      return "Subscribed";
+    }
+    else {
+      for (let i = 0; i < subscribers.length; i++) {
+        if (subscribers[i] == myAddress)
+          alreadySubscribed = true;
+      }
+      if (alreadySubscribed == false) {
+        subscribers.push(myAddress);
+        await this.client.hset('subscribers', 'questions', JSON.stringify(subscribers));
+        return "Subscribed";
+      }
+      else
+        return "Already subscribed";
+    }
+  }
+
+  async updateDatabases (msgDto : MessageDto) {
+    return this.manager.transaction( async manager=> {
+      const question_to_insert = {
+        id: msgDto.question_data.id,
+        title: msgDto.question_data.title,
+        text: msgDto.question_data.text,
+        date_created: msgDto.question_data.date_created,
+        sum_answers: msgDto.question_data.sum_answers,
+        Userid: msgDto.question_data.Userid
+      }
+
+      const question = await this.manager.create(Question, question_to_insert);
+      const question_created = await this.manager.save(question)
+
+      if (msgDto.Keywords != []) {
+        for (let i = 0; i < (msgDto.Keywords).length; i++) {
+          //check if keyword exists
+          let keyword_ret = await this.manager.findOne(Keyword, msgDto.Keywords[i])
+
+          if (keyword_ret) {  // keyword exists, add relation
+            await getConnection().createQueryBuilder().relation(Keyword, "questions").of(keyword_ret).add(question)
+
+          } else {   //keyword does not exist, we have to create it
+            let keyword_to_create = {
+              keyword: msgDto.Keywords[i],
+              questions: [question]
+            }
+            const keyword = await this.manager.create(Keyword, keyword_to_create)
+            await this.manager.save(keyword)
+          }
+        }
+      }
+      return question_created;
+    });
+  }
+
 }

@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, HttpService, Injectable, NotFoundException} from '@nestjs/common';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import {InjectEntityManager} from "@nestjs/typeorm";
@@ -10,7 +10,8 @@ import {Keyword} from "./entities/keyword.entity";
 @Injectable()
 export class QuestionService {
 
-  constructor(@InjectEntityManager() private manager : EntityManager) {}
+  constructor(@InjectEntityManager() private manager : EntityManager,
+              private httpService: HttpService) {}
 
   async create(createQuestionDto: CreateQuestionDto) : Promise<Question>{
     return this.manager.transaction( async manager=>
@@ -55,7 +56,17 @@ export class QuestionService {
 
         }
       }
-    return question_created
+
+      let msg = JSON.parse(JSON.stringify(question_created));
+      if ('keywords' in createQuestionDto) {
+        msg["Keywords"] = createQuestionDto.keywords;
+      }
+      else {
+        msg["Keywords"] = [];
+      }
+      await this.httpService.post('http://localhost:4200/questions', msg);
+
+      return question_created
     });
   }
 
