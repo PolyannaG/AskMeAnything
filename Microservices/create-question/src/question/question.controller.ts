@@ -20,7 +20,7 @@ export class QuestionController {
     return this.questionService.updateSumAnswers(msgDto)
   }
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createQuestionDto: CreateQuestionDto) {
     return this.questionService.create(createQuestionDto);

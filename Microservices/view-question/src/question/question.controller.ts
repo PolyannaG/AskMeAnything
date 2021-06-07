@@ -9,9 +9,8 @@ import {MessageAnswerDto} from "./dto/Message-answer.dto";
 
 @Controller('view_question')
 export class QuestionController {
-  constructor(private readonly questionService: QuestionService)
-              //, private readonly jwtService: JwtService)
-  {}
+  constructor(private readonly questionService: QuestionService,
+              private readonly jwtService: JwtService) {}
 
   async onModuleInit() {
     await this.questionService.subscribeAnswers();
@@ -31,7 +30,7 @@ export class QuestionController {
     return this.questionService.updateSumAnswers(msgDto)
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('all/:date_from')
   findAll(@Param('date_from',) date_from: Date) {
     return this.questionService.findAll(date_from)
