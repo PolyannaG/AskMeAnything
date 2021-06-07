@@ -1,4 +1,4 @@
-import {HttpService, Injectable, NotFoundException} from '@nestjs/common';
+import {HttpService, HttpStatus, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectEntityManager, InjectRepository} from "@nestjs/typeorm"
 import {createQueryBuilder, EntityManager, Repository} from "typeorm"
 import {CreateAnswerDto} from "./dto/create-answer.dto";
@@ -50,8 +50,8 @@ export class AnswerService {
     let alreadySubscribed = false;
 
     if (subscribers == null){
-      subscribers = []
-      subscribers[0] = myAddress
+      subscribers = [];
+      subscribers[0] = myAddress;
       await this.client.hset('subscribers', 'questions', JSON.stringify(subscribers));
       return "Subscribed";
     }
@@ -73,7 +73,7 @@ export class AnswerService {
   async updateQuestionDatabase (msgDto : MessageDto): Promise<Question> {
     return this.manager.transaction(async updateQuestionID => {
       const questionId_to_be_created = {
-        id : msgDto.question_data.id
+        id : msgDto.id
       }
       const the_questionId = await this.manager.create(Question, questionId_to_be_created);
       const questionId_created = await this.manager.save(the_questionId);
@@ -82,16 +82,25 @@ export class AnswerService {
     });
   }
 
-  /*async retrieveLostMessages() {
-    let msg = await this.client.hget('messages', 'answers');
+  async retrieveLostMessages() : Promise<string> {
+    let msg = await this.client.hget('questionMessages', 'create_answer');
     let messages = JSON.parse(msg);
 
-    let quest = await createQueryBuilder().select(`id` ).from('question', 'Question').orderBy(`id DESC`).limit(1);
-
-    for (let i = 0; i < messages.length; i++) {
-
+    if (messages == null || messages == []) {
+      await this.client.hset('questionMessages', 'create_answer', JSON.stringify(messages));
+      return "No lost messages"
     }
-
-  }*/
+    else {
+      for (let i = 0; i < messages.length; i++) {
+        let questionId_to_insert = {
+          id: messages[i].id
+        }
+        let the_questionId = await this.manager.create(Question, questionId_to_insert);
+        await this.manager.save(the_questionId);
+      }
+      await this.client.hset('questionMessages', 'create_answer', JSON.stringify([]));
+      return "Saved data successfully";
+    }
+  }
 
 }

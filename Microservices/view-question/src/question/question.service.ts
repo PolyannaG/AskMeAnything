@@ -120,12 +120,12 @@ export class QuestionService {
   async updateDatabases (msgDto : MessageDto) {
     return this.manager.transaction( async manager=> {
       const question_to_insert = {
-        id: msgDto.question_data.id,
-        title: msgDto.question_data.title,
-        text: msgDto.question_data.text,
-        date_created: msgDto.question_data.date_created,
-        sum_answers: msgDto.question_data.sum_answers,
-        Userid: msgDto.question_data.Userid
+        id: msgDto.id,
+        title: msgDto.title,
+        text: msgDto.text,
+        date_created: msgDto.date_created,
+        sum_answers: msgDto.sum_answers,
+        Userid: msgDto.Userid
       }
 
       const question = await this.manager.create(Question, question_to_insert);
@@ -151,6 +151,57 @@ export class QuestionService {
       }
       return question_created;
     });
+  }
+
+  async retrieveLostMessages() : Promise<string> {
+    let msg = await this.client.hget('questionMessages', 'view_question');
+    let messages = JSON.parse(msg);
+
+    if (messages == null || messages == []) {
+      await this.client.hset('questionMessages', 'view_question', JSON.stringify(messages));
+      return "No lost messages"
+    }
+    else {
+      for (let i = 0; i < messages.length; i++) {
+
+        await this.manager.transaction(async manager => {
+          let question_to_insert = {
+            id: messages[i].id,
+            title: messages[i].title,
+            text: messages[i].text,
+            date_created: messages[i].date_created,
+            sum_answers: messages[i].sum_answers,
+            Userid: messages[i].Userid
+          }
+
+          let question = await this.manager.create(Question, question_to_insert);
+          await this.manager.save(question)
+
+          if (messages[i].Keywords != []) {
+            for (let j = 0; j < (messages[i].Keywords).length; j++) {
+              //check if keyword exists
+              let keyword_ret = await this.manager.findOne(Keyword, messages[i].Keywords[j])
+
+              if (keyword_ret) {  // keyword exists, add relation
+                await getConnection().createQueryBuilder().relation(Keyword, "questions").of(keyword_ret).add(question)
+
+              } else {   //keyword does not exist, we have to create it
+                let keyword_to_create = {
+                  keyword: messages[i].Keywords[j],
+                  questions: [question]
+                }
+                let keyword = await this.manager.create(Keyword, keyword_to_create)
+                await this.manager.save(keyword)
+              }
+            }
+          }
+        });
+
+      }
+
+      await this.client.hset('questionMessages', 'view_question', JSON.stringify([]));
+      return "Saved data successfully";
+    }
   }
 
 }

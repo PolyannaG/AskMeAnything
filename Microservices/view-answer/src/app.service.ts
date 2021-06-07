@@ -88,11 +88,11 @@ export class ViewAnswerService {
   async updateAnswersDatabase (msgDto : MessageDto): Promise<Answer> {
     return this.manager.transaction( async updateAnswers => {
       const answer_to_be_created = {
-        id: msgDto.answer_data.id,
-        text: msgDto.answer_data.text,
-        date_created: msgDto.answer_data.date_created,
-        userid: msgDto.answer_data.Userid,
-        questionId: msgDto.answer_data.question["id"]
+        id: msgDto.id,
+        text: msgDto.text,
+        date_created: msgDto.date_created,
+        userid: msgDto.Userid,
+        questionId: msgDto.question["id"]
       }
       const the_answer = await this.manager.create(Answer, answer_to_be_created);
       const answer_created = await this.manager.save(the_answer);
@@ -101,5 +101,30 @@ export class ViewAnswerService {
     });
   }
 
+  async retrieveLostMessages() : Promise<string> {
+    let msg = await this.client.hget('answerMessages', 'view_answer');
+    let messages = JSON.parse(msg);
+
+    if (messages == null || messages == []) {
+      await this.client.hset('answerMessages', 'view_answer', JSON.stringify(messages));
+      return "No lost messages"
+    }
+    else {
+      for (let i = 0; i < messages.length; i++) {
+        let answer_to_insert = {
+          id: messages[i].id,
+          text: messages[i].text,
+          date_created: messages[i].date_created,
+          userid: messages[i].Userid,
+          questionId: messages[i].question["id"]
+        }
+        let the_answer = await this.manager.create(Answer, answer_to_insert);
+        await this.manager.save(the_answer);
+      }
+
+      await this.client.hset('answerMessages', 'view_answer', JSON.stringify([]));
+      return "Saved data successfully";
+    }
+  }
 
 }

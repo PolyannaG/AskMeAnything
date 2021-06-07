@@ -12,7 +12,9 @@ export class QuestionController {
   constructor(private readonly questionService: QuestionService, private readonly jwtService: JwtService) {}
 
   async onModuleInit() {
-    return this.questionService.subscribe()
+    await this.questionService.subscribe()
+    await this.questionService.retrieveLostMessages();
+    return "Subscribed and retrieved messages successfully";
   }
 
   @Post('message')

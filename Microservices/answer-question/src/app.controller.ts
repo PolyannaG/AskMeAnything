@@ -1,4 +1,4 @@
-import { Controller, Body, Post, Param } from '@nestjs/common';
+import {Controller, Body, Post, Param, HttpStatus} from '@nestjs/common';
 import { AnswerService } from './app.service';
 import {CreateAnswerDto} from "./dto/create-answer.dto";
 import {paramIdDto} from "./dto/ParamId.dto";
@@ -10,8 +10,8 @@ export class AnswerController {
 
   async onModuleInit() {
     await this.answerService.subscribe();
-    //await this.answerService.retrieveLostMessages();
-    return;
+    await this.answerService.retrieveLostMessages();
+    return "Subscribed and retrieved messages successfully";
   }
 
   @Post('/message')

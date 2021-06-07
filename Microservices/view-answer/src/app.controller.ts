@@ -8,7 +8,9 @@ export class ViewAnswerController {
   constructor(private readonly viewAnswerService: ViewAnswerService) {}
 
   async onModuleInit() {
-    return this.viewAnswerService.subscribe()
+    await this.viewAnswerService.subscribe()
+    await this.viewAnswerService.retrieveLostMessages();
+    return "Subscribed and retrieved messages successfully";
   }
 
   @Post('message')

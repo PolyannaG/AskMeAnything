@@ -1,6 +1,11 @@
 import {IsDateString, IsInt, IsNotEmpty, IsNumber, IsString, MaxLength} from "class-validator";
 
 export class QuestionDataDto {
+    @IsNotEmpty()
+    @IsInt()
+    @IsNumber()
+    readonly id: number;
+
     @IsString()
     @IsNotEmpty()
     @MaxLength(255)
@@ -11,15 +16,6 @@ export class QuestionDataDto {
     @MaxLength(10000)
     readonly text : string;
 
-    @IsNumber()
-    @IsNotEmpty()
-    readonly Userid: number;
-
-    @IsNotEmpty()
-    @IsInt()
-    @IsNumber()
-    readonly id: number;
-
     @IsDateString()
     @IsNotEmpty()
     readonly date_created: Date;
@@ -28,4 +24,8 @@ export class QuestionDataDto {
     @IsInt()
     @IsNumber()
     readonly sum_answers: number;
+
+    @IsNumber()
+    @IsNotEmpty()
+    readonly Userid: number;
 }

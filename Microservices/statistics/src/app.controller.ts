@@ -11,7 +11,9 @@ export class StatisticsController {
   async onModuleInit() {
     await this.statisticsService.subscribeAnswers();
     await this.statisticsService.subscribeQuestions();
-    return;
+    await this.statisticsService.retrieveLostAnswerMessages();
+    await this.statisticsService.retrieveLostQuestionMessages();
+    return "Subscribed and retrieved messages successfully";
   }
 
   @Post('answer_message')
