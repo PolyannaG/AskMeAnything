@@ -1,10 +1,10 @@
 import {Body, Controller, Get, Param, Post, Req, UseGuards} from '@nestjs/common';
 import { QuestionService } from './question.service';
 import {JwtAuthGuard} from "./jwt-auth.guard";
-
 import {JwtService} from "@nestjs/jwt";
 import {Response, Request} from "express";
-import {MessageDto} from "./dto/Message.dto";
+import {MessageQuestionDto} from "./dto/Message-question.dto";
+import {MessageAnswerDto} from "./dto/Message-answer.dto";
 
 
 @Controller('view_question')
@@ -14,14 +14,21 @@ export class QuestionController {
   {}
 
   async onModuleInit() {
-    await this.questionService.subscribe()
-    await this.questionService.retrieveLostMessages();
+    await this.questionService.subscribeAnswers();
+    await this.questionService.subscribeQuestions();
+    await this.questionService.retrieveLostAnswerMessages();
+    await this.questionService.retrieveLostQuestionMessages();
     return "Subscribed and retrieved messages successfully";
   }
 
-  @Post('message')
-  updateDatabase(@Body() msgDto : MessageDto) {
-    return this.questionService.updateDatabases(msgDto)
+  @Post('question_message')
+  updateDatabase(@Body() msgDto : MessageQuestionDto) {
+    return this.questionService.updateQuestionDatabases(msgDto)
+  }
+
+  @Post('answer_message')
+  updateSumAnswers(@Body() msgDto : MessageAnswerDto) {
+    return this.questionService.updateSumAnswers(msgDto)
   }
 
   // @UseGuards(JwtAuthGuard)

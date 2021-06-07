@@ -1,22 +1,6 @@
-import {IsArray, IsDateString, IsInt, IsNotEmpty, IsNumber, IsObject, IsString, MaxLength} from "class-validator";
-import {MessageQuestionDto} from "./message-question.dto";
+import {IsArray, IsDateString, IsInt, IsNotEmpty, IsNumber, IsString, MaxLength} from "class-validator";
 
-export class MessageDto {
-    /*
-    @IsNotEmpty()
-    @IsInt()
-    @IsNumber()
-    readonly msg_id: number;
-
-    @IsDateString()
-    @IsNotEmpty()
-    readonly msg_date: Date;
-
-    @IsNotEmpty()
-    @IsObject()
-    readonly question_data: MessageQuestionDto;
-     */
-
+export class MessageQuestionDto {
     @IsNotEmpty()
     @IsInt()
     @IsNumber()

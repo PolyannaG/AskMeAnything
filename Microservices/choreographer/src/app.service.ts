@@ -63,23 +63,6 @@ export class ChoreographerService {
 
 
     async sendAnswers(sendAnswerDto: SendAnswerDto): Promise<any> {
-        /*let m = await this.client.hget('messages', 'answers');
-        let messages = JSON.parse(m);
-        let new_answer = {
-            msg_id : messages.length+1,
-            msg_date : Date.now(),
-            answer_data : {
-                id : sendAnswerDto.id,
-                text : sendAnswerDto.text,
-                date_created : sendAnswerDto.date_created,
-                Userid : sendAnswerDto.Userid,
-                question: sendAnswerDto.question
-            }
-        }
-        messages.push(new_answer);
-        await this.client.hset('messages', 'answers', JSON.stringify(messages));
-        */
-
         let new_answer = {
             id : sendAnswerDto.id,
             text : sendAnswerDto.text,
@@ -99,6 +82,12 @@ export class ChoreographerService {
                     else if (subscribers[i] == "http://localhost:8004/view_answer/message") {
                         await this.saveAnswerMsg('answerMessages', 'view_answer', sendAnswerDto);
                     }
+                    else if (subscribers[i] == "http://localhost:8005/view_question/answer_message") {
+                        await this.saveAnswerMsg('answerMessages', 'view_question', sendAnswerDto);
+                    }
+                    else if (subscribers[i] == "http://localhost:8001/create_question/message") {
+                        await this.saveAnswerMsg('answerMessages', 'create_question', sendAnswerDto);
+                    }
 
                     //throw new HttpException("Lost connection", HttpStatus.SERVICE_UNAVAILABLE);
                 }),
@@ -108,24 +97,6 @@ export class ChoreographerService {
     }
 
     async sendQuestions(sendQuestionDto: SendQuestionDto): Promise<any> {
-        /*let m = await this.client.hget('messages', 'questions');
-        let messages = JSON.parse(m);
-        let new_question = {
-            msg_id : messages.length+1,
-            msg_date : Date.now(),
-            question_data : {
-                id : sendQuestionDto.id,
-                title : sendQuestionDto.title,
-                text : sendQuestionDto.text,
-                date_created: sendQuestionDto.date_created,
-                sum_answers: sendQuestionDto.sum_answers,
-                Userid : sendQuestionDto.Userid
-            },
-            Keywords : sendQuestionDto.Keywords
-        }
-        messages.push(new_question);
-        await this.client.hset('messages', 'questions', JSON.stringify(messages));
-        */
         let new_question = {
             id : sendQuestionDto.id,
             title : sendQuestionDto.title,
@@ -147,7 +118,7 @@ export class ChoreographerService {
                     else if (subscribers[i] == "http://localhost:8003/statistics/question_message") {
                         await this.saveQuestionMsg('questionMessages', 'statistics', sendQuestionDto);
                     }
-                    else if (subscribers[i] == "http://localhost:8005/view_question/message") {
+                    else if (subscribers[i] == "http://localhost:8005/view_question/question_message") {
                         await this.saveQuestionMsg('questionMessages', 'view_question', sendQuestionDto);
                     }
 

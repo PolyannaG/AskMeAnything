@@ -7,15 +7,8 @@ import {Keyword} from "./entities/keyword.entity";
 import {JwtModule} from "@nestjs/jwt";
 import {RedisModule} from "nestjs-redis";
 
-const options={
-    port: 6379,
-    host: "localhost",
-    password: '',
-    db: 0
-};
-
 @Module({
-  imports: [TypeOrmModule.forFeature([Question, Keyword]), RedisModule.register(options), HttpModule,
+  imports: [TypeOrmModule.forFeature([Question, Keyword]), HttpModule
       /*JwtModule.register({
             secret: `${process.env.TOKEN_SECRET}`,
             signOptions: {expiresIn : '1d'}

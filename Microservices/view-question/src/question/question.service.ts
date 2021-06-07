@@ -5,7 +5,8 @@ import {Question} from "./entities/question.entity";
 import {Keyword} from "./entities/keyword.entity";
 import {addMonths} from 'date-fns'
 import {RedisService} from "nestjs-redis";
-import {MessageDto} from "./dto/Message.dto";
+import {MessageQuestionDto} from "./dto/Message-question.dto";
+import {MessageAnswerDto} from "./dto/Message-answer.dto";
 
 
 @Injectable()
@@ -90,17 +91,17 @@ export class QuestionService {
     return questions
   }
 
-  async subscribe (): Promise<string> {
+  async subscribeQuestions (): Promise<string> {
     let sub = await this.client.hget('subscribers', 'questions');
     let subscribers = JSON.parse(sub);
-    let myAddress = "http://localhost:8005/view_question/message";
+    let myAddress = "http://localhost:8005/view_question/question_message";
     let alreadySubscribed = false;
 
     if (subscribers == null){
       subscribers = []
       subscribers[0] = myAddress
       await this.client.hset('subscribers', 'questions', JSON.stringify(subscribers));
-      return "Subscribed";
+      return "Subscribed to questions";
     }
     else {
       for (let i = 0; i < subscribers.length; i++) {
@@ -110,14 +111,41 @@ export class QuestionService {
       if (alreadySubscribed == false) {
         subscribers.push(myAddress);
         await this.client.hset('subscribers', 'questions', JSON.stringify(subscribers));
-        return "Subscribed";
+        return "Subscribed to questions";
       }
       else
-        return "Already subscribed";
+        return "Already subscribed to questions";
     }
   }
 
-  async updateDatabases (msgDto : MessageDto) {
+  async subscribeAnswers (): Promise<string> {
+    let sub = await this.client.hget('subscribers', 'answers');
+    let subscribers = JSON.parse(sub);
+    let myAddress = "http://localhost:8005/view_question/answer_message";
+    let alreadySubscribed = false;
+
+    if (subscribers == null){
+      subscribers = []
+      subscribers[0] = myAddress
+      await this.client.hset('subscribers', 'answers', JSON.stringify(subscribers));
+      return "Subscribed to answers";
+    }
+    else {
+      for (let i = 0; i < subscribers.length; i++) {
+        if (subscribers[i] == myAddress)
+          alreadySubscribed = true;
+      }
+      if (alreadySubscribed == false) {
+        subscribers.push(myAddress);
+        await this.client.hset('subscribers', 'answers', JSON.stringify(subscribers));
+        return "Subscribed to answers";
+      }
+      else
+        return "Already subscribed to answers";
+    }
+  }
+
+  async updateQuestionDatabases (msgDto : MessageQuestionDto) {
     return this.manager.transaction( async manager=> {
       const question_to_insert = {
         id: msgDto.id,
@@ -153,13 +181,23 @@ export class QuestionService {
     });
   }
 
-  async retrieveLostMessages() : Promise<string> {
+  async updateSumAnswers (msgDto : MessageAnswerDto): Promise<any> {
+    return this.manager.transaction( async updateAnswers => {
+      const questionID = msgDto.question["id"];
+
+      const the_update = await this.manager.increment(Question, {id : questionID}, "sum_answers", 1);
+
+      return the_update;
+    });
+  }
+
+  async retrieveLostQuestionMessages() : Promise<string> {
     let msg = await this.client.hget('questionMessages', 'view_question');
     let messages = JSON.parse(msg);
 
     if (messages == null || messages == []) {
       await this.client.hset('questionMessages', 'view_question', JSON.stringify(messages));
-      return "No lost messages"
+      return "No lost question messages"
     }
     else {
       for (let i = 0; i < messages.length; i++) {
@@ -200,6 +238,26 @@ export class QuestionService {
       }
 
       await this.client.hset('questionMessages', 'view_question', JSON.stringify([]));
+      return "Saved data successfully";
+    }
+  }
+
+  async retrieveLostAnswerMessages() : Promise<string> {
+    let msg = await this.client.hget('answerMessages', 'view_question');
+    let messages = JSON.parse(msg);
+
+    if (messages == null || messages == []) {
+      await this.client.hset('answerMessages', 'view_question', JSON.stringify(messages));
+      return "No lost answer messages"
+    }
+    else {
+      for (let i = 0; i < messages.length; i++) {
+        let questionID = messages[i].question["id"];
+
+        await this.manager.increment(Question, {id : questionID}, "sum_answers", 1);
+      }
+
+      await this.client.hset('answerMessages', 'view_question', JSON.stringify([]));
       return "Saved data successfully";
     }
   }
