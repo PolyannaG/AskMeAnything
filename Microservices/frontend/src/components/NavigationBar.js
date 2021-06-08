@@ -60,14 +60,7 @@ function NavigationBar(){
                 <Nav>
                     <Navbar.Text >Signed in as:</Navbar.Text>
                     <Nav.Link className="font-weight-bold text-info" href="/my_ask_me_anything">
-                        <Image
-                            alt=""
-                            src="../../favicon.ico"
-                            width="30"
-                            height="30"
-                            className="d-inline-block align-top"
-                            roundedCircle
-                        />{' '}
+                        {' '}
                         {username}
                     </Nav.Link>
                 </Nav>
