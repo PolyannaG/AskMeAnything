@@ -3,14 +3,21 @@ import { InjectEntityManager } from '@nestjs/typeorm';
 import {createQueryBuilder, EntityManager, LessThan} from "typeorm";
 import {Answer} from "./entities/answer.entity";
 import {paramIdDto} from "./dto/ParamId.dto";
+import {RedisService} from "nestjs-redis";
+import {MessageDto} from "./dto/Message.dto";
 import {addMonths} from 'date-fns'
-
-
 
 
 @Injectable()
 export class ViewAnswerService {
-  constructor(@InjectEntityManager() private manager : EntityManager) {}
+  private client: any;
+  constructor(@InjectEntityManager() private manager : EntityManager,
+              private redisService: RedisService) {
+    this.getClient();
+  }
+  private async getClient() {
+    this.client = await this.redisService.getClient();
+  }
   
   async findQuestionAnswers(QuestionID : number): Promise<Object[]> {
 
@@ -52,6 +59,76 @@ export class ViewAnswerService {
       ];
   }
 
+  async subscribe (): Promise<string> {
+    let sub = await this.client.hget('subscribers', 'answers');
+    let subscribers = JSON.parse(sub);
+    let myAddress = "http://localhost:8004/view_answer/message";
+    let alreadySubscribed = false;
+
+    if (subscribers == null){
+      subscribers = []
+      subscribers[0] = myAddress
+      await this.client.hset('subscribers', 'answers', JSON.stringify(subscribers));
+      return "Subscribed";
+    }
+    else {
+      for (let i = 0; i < subscribers.length; i++) {
+        if (subscribers[i] == myAddress)
+          alreadySubscribed = true;
+      }
+      if (alreadySubscribed == false) {
+        subscribers.push(myAddress);
+        await this.client.hset('subscribers', 'answers', JSON.stringify(subscribers));
+        return "Subscribed";
+      }
+      else
+        return "Already subscribed";
+    }
+  }
+
+  async updateAnswersDatabase (msgDto : MessageDto): Promise<Answer> {
+    return this.manager.transaction( async updateAnswers => {
+      const answer_to_be_created = {
+        id: msgDto.id,
+        text: msgDto.text,
+        date_created: msgDto.date_created,
+        userid: msgDto.Userid,
+        questionId: msgDto.question["id"]
+      }
+      const the_answer = await this.manager.create(Answer, answer_to_be_created);
+      const answer_created = await this.manager.save(the_answer);
+
+      return answer_created;
+    });
+  }
+
+  async retrieveLostMessages() : Promise<string> {
+    let msg = await this.client.hget('answerMessages', 'view_answer');
+    let messages = JSON.parse(msg);
+
+    if (messages == null || messages == []) {
+      await this.client.hset('answerMessages', 'view_answer', JSON.stringify(messages));
+      return "No lost messages"
+    }
+    else {
+      for (let i = 0; i < messages.length; i++) {
+        let answer_to_insert = {
+          id: messages[i].id,
+          text: messages[i].text,
+          date_created: messages[i].date_created,
+          userid: messages[i].Userid,
+          questionId: messages[i].question["id"]
+        }
+        let the_answer = await this.manager.create(Answer, answer_to_insert);
+        await this.manager.save(the_answer);
+      }
+
+      await this.client.hset('answerMessages', 'view_answer', JSON.stringify([]));
+      return "Saved data successfully";
+    }
+  }
+
+
   async findAllDate(date_from: Date, userid: Number): Promise<Answer[]> {
     const ans = await this.manager.find(Answer, {
       where: {date_created: LessThan(date_from), userid: userid},
@@ -65,24 +142,5 @@ export class ViewAnswerService {
       throw new NotFoundException(`No answers found earlier than date ${date_from} found.`)
     return ans
   }
-
-/*
-  async showAnswerPerDayUser(Userid: number): Promise<Object[]> {
-    const d_to = new Date();
-    const date = d_to.toISOString();
-    const quest = await createQueryBuilder().select(`SUBSTRING(cast(date_created as varchar),0,11)  as date_part,COUNT(*)`).from('Answer', 'Answer').andWhere(`date_created <= '${date}'`).andWhere(`date_created >= '${(addMonths(d_to, -1)).toISOString()}'`).andWhere(`"Answer"."userid"=${Userid}`).groupBy(`SUBSTRING(cast(date_created as varchar),0,11)`).orderBy('count', 'DESC').take(10).getRawMany()
-    if (!quest || !quest.length)
-      throw new NotFoundException(`No answers found ths last month for user with id ${Userid}.`)
-    return quest
-  }
-
-  async countAnswersUser(Userid: number): Promise<Object[]>{
-    const quest=await this.manager.query(`SELECT COUNT(*) FROM "view_answer"."answer" as A WHERE A."userid"=${Userid}`)
-    if (!quest || !quest.length)
-      throw new NotFoundException(`No answers found for user with id ${Userid}.`)
-    return quest
-  }
-
- */
 
 }

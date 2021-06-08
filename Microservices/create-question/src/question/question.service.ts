@@ -1,16 +1,25 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, HttpService, Injectable, NotFoundException} from '@nestjs/common';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import {InjectEntityManager} from "@nestjs/typeorm";
 import {EntityManager, getConnection} from "typeorm";
 import {Question} from "./entities/question.entity";
 import {Keyword} from "./entities/keyword.entity";
+import {RedisService} from "nestjs-redis";
+import {MessageAnswerDto} from "./dto/Message-answer.dto";
 
 
 @Injectable()
 export class QuestionService {
-
-  constructor(@InjectEntityManager() private manager : EntityManager) {}
+  private client: any;
+  constructor(@InjectEntityManager() private manager : EntityManager,
+              private httpService: HttpService,
+              private redisService: RedisService) {
+    this.getClient();
+  }
+  private async getClient() {
+    this.client = await this.redisService.getClient();
+  }
 
   async create(createQuestionDto: CreateQuestionDto) : Promise<Question>{
     return this.manager.transaction( async manager=>
@@ -55,9 +64,76 @@ export class QuestionService {
 
         }
       }
-    return question_created
+
+      let msg = JSON.parse(JSON.stringify(question_created));
+      if ('keywords' in createQuestionDto) {
+        msg["Keywords"] = createQuestionDto.keywords;
+      }
+      else {
+        msg["Keywords"] = [];
+      }
+      await this.httpService.post('http://localhost:4200/questions', msg).toPromise();
+
+      return question_created
     });
   }
 
+  async answerSubscribe(): Promise<string> {
+    let sub = await this.client.hget('subscribers', 'answers');
+    let subscribers = JSON.parse(sub);
+    let myAddress = "http://localhost:8001/create_question/message";
+    let alreadySubscribed = false;
+
+    if (subscribers == null){
+      subscribers = []
+      subscribers[0] = myAddress
+      await this.client.hset('subscribers', 'answers', JSON.stringify(subscribers));
+      return "Subscribed";
+    }
+    else {
+      for (let i = 0; i < subscribers.length; i++) {
+        if (subscribers[i] == myAddress) {
+          alreadySubscribed = true;
+        }
+      }
+      if (alreadySubscribed == false) {
+        subscribers.push(myAddress);
+        await this.client.hset('subscribers', 'answers', JSON.stringify(subscribers));
+        return "Subscribed";
+      }
+      else
+        return "Already subscribed";
+    }
+  }
+
+  async updateSumAnswers (msgDto : MessageAnswerDto): Promise<any> {
+    return this.manager.transaction( async updateAnswers => {
+      const questionID = msgDto.question["id"];
+
+      const the_update = await this.manager.increment(Question, {id : questionID}, "sum_answers", 1);
+
+      return the_update;
+    });
+  }
+
+  async retrieveLostMessages() : Promise<string> {
+    let msg = await this.client.hget('answerMessages', 'create_question');
+    let messages = JSON.parse(msg);
+
+    if (messages == null || messages == []) {
+      await this.client.hset('answerMessages', 'create_question', JSON.stringify(messages));
+      return "No lost messages"
+    }
+    else {
+      for (let i = 0; i < messages.length; i++) {
+        let questionID = messages[i].question["id"];
+
+        await this.manager.increment(Question, {id : questionID}, "sum_answers", 1);
+      }
+
+      await this.client.hset('answerMessages', 'create_question', JSON.stringify([]));
+      return "Saved data successfully";
+    }
+  }
 
 }

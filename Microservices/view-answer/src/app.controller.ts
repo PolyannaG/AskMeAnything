@@ -1,12 +1,24 @@
-import {Controller, Get, Param, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, UseGuards} from '@nestjs/common';
 import { ViewAnswerService } from './app.service';
 import {paramIdDto} from "./dto/ParamId.dto";
+import {MessageDto} from "./dto/Message.dto";
 import {JwtAuthGuard} from "./jwt-auth.guard";
+
 
 @Controller('view_answer')
 export class ViewAnswerController {
   constructor(private readonly viewAnswerService: ViewAnswerService) {}
 
+  async onModuleInit() {
+    await this.viewAnswerService.subscribe()
+    await this.viewAnswerService.retrieveLostMessages();
+    return "Subscribed and retrieved messages successfully";
+  }
+
+  @Post('message')
+  updateDatabase(@Body() msgDto : MessageDto) {
+    return this.viewAnswerService.updateAnswersDatabase(msgDto)
+  }
 
   @Get('for_question/:id')
   findQuestionAnswers(@Param('id') id: number) {
@@ -24,19 +36,5 @@ export class ViewAnswerController {
   findAllDate(@Param('date_from') date_from: Date, @Param('userid') userid : Number) {
     return this.viewAnswerService.findAllDate(date_from, userid)
   }
-/*
-  @UseGuards(JwtAuthGuard)
-  @Get('per_day_user/:Userid')
-  showAnswersPerDayUser(@Param('Userid') Userid : number){
-    return this.viewAnswerService.showAnswerPerDayUser(Userid)
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('count_answers_user/:Userid')
-  countAnswersUser(@Param('Userid') Userid : number){
-    return this.viewAnswerService.countAnswersUser(Userid)
-  }
-
- */
 
 }

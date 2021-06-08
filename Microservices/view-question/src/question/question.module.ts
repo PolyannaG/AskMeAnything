@@ -8,12 +8,13 @@ import {Keyword} from "./entities/keyword.entity";
 import {JwtModule} from "@nestjs/jwt";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Question, Keyword]),HttpModule,
-    JwtModule.register({
-      secret: `${process.env.TOKEN_SECRET}`,
-      signOptions: {expiresIn : '1d'}
-
-    })],
+  imports: [TypeOrmModule.forFeature([Question, Keyword]),
+            HttpModule,
+            JwtModule.register({
+              secret: `${process.env.TOKEN_SECRET}`,
+              signOptions: {expiresIn : '1d'}
+            })
+    ],
   controllers: [QuestionController],
   providers: [QuestionService]
 })

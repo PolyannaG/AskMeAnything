@@ -1,14 +1,34 @@
-import {Controller, Get, Param, Req, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Req, UseGuards} from '@nestjs/common';
 import { QuestionService } from './question.service';
 import {JwtAuthGuard} from "./jwt-auth.guard";
-
 import {JwtService} from "@nestjs/jwt";
 import {Response, Request} from "express";
+import {MessageQuestionDto} from "./dto/Message-question.dto";
+import {MessageAnswerDto} from "./dto/Message-answer.dto";
 
 
 @Controller('view_question')
 export class QuestionController {
-  constructor(private readonly questionService: QuestionService, private readonly jwtService: JwtService) {}
+  constructor(private readonly questionService: QuestionService,
+              private readonly jwtService: JwtService) {}
+
+  async onModuleInit() {
+    await this.questionService.subscribeAnswers();
+    await this.questionService.subscribeQuestions();
+    await this.questionService.retrieveLostAnswerMessages();
+    await this.questionService.retrieveLostQuestionMessages();
+    return "Subscribed and retrieved messages successfully";
+  }
+
+  @Post('question_message')
+  updateDatabase(@Body() msgDto : MessageQuestionDto) {
+    return this.questionService.updateQuestionDatabases(msgDto)
+  }
+
+  @Post('answer_message')
+  updateSumAnswers(@Body() msgDto : MessageAnswerDto) {
+    return this.questionService.updateSumAnswers(msgDto)
+  }
 
   @UseGuards(JwtAuthGuard)
   @Get('all/:date_from')

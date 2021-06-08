@@ -1,9 +1,9 @@
-import {Entity, Column, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Entity, OneToMany, PrimaryColumn} from "typeorm";
 import {Answer} from "./answer.entity";
 
-@Entity({ schema: "answer_question" })
+@Entity()
 export class Question{
-    @PrimaryGeneratedColumn({type: "integer"})
+    @PrimaryColumn({type: "integer"})
     id: number;
 
     @OneToMany(() => Answer, answer => answer.question)
