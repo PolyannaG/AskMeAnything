@@ -1,27 +1,21 @@
-import {HttpModule, Module} from '@nestjs/common';
-import { ViewAnswerController } from './app.controller';
-import { ViewAnswerService } from './app.service';
-import {Answer} from "./entities/answer.entity";
+import { Module } from '@nestjs/common';
+import { AppService } from './app.service';
+import {AnswerModule} from './answer/answer.module';
 import {TypeOrmModule} from "@nestjs/typeorm";
-import { ConfigModule} from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import {RedisModule} from "nestjs-redis";
-import {JwtModule} from "@nestjs/jwt";
+import {AppController} from "./app.controller";
 
 const options={
-  port: 6379,
-  host: "localhost",
-  password: '',
-  db: 0
+    port: 6379,
+    host: "localhost",
+    password: '',
+    db: 0
 };
 
 @Module({
-  imports: [TypeOrmModule.forRoot(), ConfigModule.forRoot(), TypeOrmModule.forFeature([Answer]), RedisModule.register(options), HttpModule,
-             JwtModule.register({
-                        secret: `${process.env.TOKEN_SECRET}`,
-                        signOptions: {expiresIn : '1d'}
-                        })
-           ],
-  controllers: [ViewAnswerController],
-  providers: [ViewAnswerService],
+    imports: [AnswerModule, TypeOrmModule.forRoot(), ConfigModule.forRoot(),  RedisModule.register(options)],
+    controllers: [AppController],
+    providers: [AppService],
 })
 export class AppModule {}

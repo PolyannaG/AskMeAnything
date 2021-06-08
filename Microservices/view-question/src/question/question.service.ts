@@ -242,7 +242,7 @@ export class QuestionService {
     }
   }
 
-}
+
 
   async filterByStartAndEndDate(date_from: Date, date_to: Date): Promise<Question[]> {
     const questions = await createQueryBuilder().select(`*`).from('question', 'Question').andWhere(`date_created < '${date_from}'`).andWhere(`date_created >= '${date_to}'`).orderBy('date_created', 'DESC').take(10).getRawMany()
