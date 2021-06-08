@@ -1,10 +1,11 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import {EntityManager} from "typeorm";
+import {createQueryBuilder, EntityManager, LessThan} from "typeorm";
 import {Answer} from "./entities/answer.entity";
 import {paramIdDto} from "./dto/ParamId.dto";
 import {RedisService} from "nestjs-redis";
 import {MessageDto} from "./dto/Message.dto";
+import {addMonths} from 'date-fns'
 
 
 @Injectable()
@@ -125,6 +126,21 @@ export class ViewAnswerService {
       await this.client.hset('answerMessages', 'view_answer', JSON.stringify([]));
       return "Saved data successfully";
     }
+  }
+
+
+  async findAllDate(date_from: Date, userid: Number): Promise<Answer[]> {
+    const ans = await this.manager.find(Answer, {
+      where: {date_created: LessThan(date_from), userid: userid},
+      order: {
+        date_created: "DESC",
+      },
+      take: 10,
+
+    });
+    if (!ans || ans.length == 0)
+      throw new NotFoundException(`No answers found earlier than date ${date_from} found.`)
+    return ans
   }
 
 }

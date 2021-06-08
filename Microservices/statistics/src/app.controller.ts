@@ -1,8 +1,8 @@
-import {Body, Controller, Get, Param, Post} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, UseGuards} from '@nestjs/common';
 import { StatisticsService } from './app.service';
 import {MessageAnswerDto} from "./dto/Message-answer.dto";
 import {MessageQuestionDto} from "./dto/Message-question.dto";
-//import {JwtAuthGuard} from "../jwt-auth.guard";
+import {JwtAuthGuard} from "./jwt-auth.guard";
 
 @Controller('statistics')
 export class StatisticsController {
@@ -26,12 +26,13 @@ export class StatisticsController {
     return this.statisticsService.updateQuestionDatabase(msgQuestionDto)
   }
 
+
   @Get('keywords')
   findByKeywords() {
     return this.statisticsService.findByKeywords()
   }
 
-
+  @UseGuards(JwtAuthGuard)
   @Get('keywords_user/:Userid')
   findByKeywordsUser(@Param('Userid') Userid : number)  {
     return this.statisticsService.findByKeywordsUser(Userid)
@@ -42,19 +43,34 @@ export class StatisticsController {
     return this.statisticsService.showQuestionsPerDay()
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('per_day_user/questions/:Userid')
   showQuestionsPerDayUser(@Param('Userid') Userid : number){
     return this.statisticsService.showQuestionsPerDayUser(Userid)
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('per_day/answers')
   showAnswersPerDay(){
     return this.statisticsService.showAnswersPerDay()
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('per_day_user/answers/:Userid')
   showAnswersPerDayUser(@Param('Userid') Userid : number){
     return this.statisticsService.showAnswersPerDayUser(Userid)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('count_answers_user/:Userid')
+  countAnswersUser(@Param('Userid') Userid : number){
+    return this.questionService.countAnswersUser(Userid)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('count_questions_user/:Userid')
+  countQuestionsUser(@Param('Userid') Userid : number){
+    return this.questionService.countQuestionsUser(Userid)
   }
 
 }

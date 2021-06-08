@@ -81,6 +81,7 @@ export class AuthenticationController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('logout')
   async logout(@Res({passthrough : true}) response: Response){
     response.clearCookie('token')

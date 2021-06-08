@@ -1,7 +1,9 @@
-import {Body, Controller, Get, Param, Post} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, UseGuards} from '@nestjs/common';
 import { ViewAnswerService } from './app.service';
 import {paramIdDto} from "./dto/ParamId.dto";
 import {MessageDto} from "./dto/Message.dto";
+import {JwtAuthGuard} from "./jwt-auth.guard";
+
 
 @Controller('view_answer')
 export class ViewAnswerController {
@@ -23,8 +25,16 @@ export class ViewAnswerController {
     return this.viewAnswerService.findQuestionAnswers(id)
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('for_user/:id')
   findAnswersForUser(@Param('id') id: number) {
     return this.viewAnswerService.findAnswersForUser(id)
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('all_user/:userid/:date_from')
+  findAllDate(@Param('date_from') date_from: Date, @Param('userid') userid : Number) {
+    return this.viewAnswerService.findAllDate(date_from, userid)
+  }
+
 }
