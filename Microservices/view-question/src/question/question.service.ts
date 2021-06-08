@@ -64,7 +64,7 @@ export class QuestionService {
   }
 
   async getMostPopular(): Promise<Question[]> {
-    const questions = this.manager.find(Question, {order: {date_created: "DESC"}, take: 10, relations: ["keywords"]})
+    const questions = this.manager.find(Question, {order: {sum_answers: "DESC"}, take: 10, relations: ["keywords"]})
     if (!questions)
       throw new NotFoundException('No questions found')
     return questions

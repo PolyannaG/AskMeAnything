@@ -49,7 +49,7 @@ function MyAskMeAnything(){
                 return {y : Number(item.questionCount), label: item.keyword}
             })
 
-            console.log(mydata)
+            console.log(mydata,"hi")
             return mydata
         }
         else return []
@@ -183,7 +183,10 @@ function MyAskMeAnything(){
             console.log('questions')  //questions of user
             let date = 0
             if (lastDate.length == 0 || goback) {
-                date = new Date(Date.now()).toISOString()
+                //date = new Date(Date.now()).toISOString()
+                const d_to = new Date();
+                d_to.setTime(d_to.getTime() - (d_to.getTimezoneOffset() * 60000));
+                date = d_to.toISOString();
             } else {
                 date = lastDate
             }
@@ -247,7 +250,10 @@ function MyAskMeAnything(){
             console.log('answers')
             let date = 0
             if (lastDate.length === 0 || goback) {
-                date = new Date(Date.now()).toISOString()
+               // date = new Date(Date.now()).toISOString()
+                const d_to = new Date();
+                d_to.setTime(d_to.getTime() - (d_to.getTimezoneOffset() * 60000));
+                date = d_to.toISOString();
             } else {
                 date = lastDate
 
