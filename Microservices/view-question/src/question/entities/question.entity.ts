@@ -1,7 +1,7 @@
 import {Entity, Column, PrimaryColumn, PrimaryGeneratedColumn, ManyToMany, CreateDateColumn} from "typeorm";
 import {Keyword} from "./keyword.entity";
 
-@Entity()
+@Entity({schema: "view_question"})
 export class Question {
     @PrimaryGeneratedColumn()
     id: number;

@@ -1,7 +1,7 @@
 import {Entity, Column, PrimaryColumn, PrimaryGeneratedColumn, ManyToMany, JoinTable} from "typeorm";
 import {Question} from "./question.entity";
 
-@Entity()
+@Entity({schema: "view_question"})
 export class Keyword {
     @PrimaryColumn({length : 40})
     keyword: string;
