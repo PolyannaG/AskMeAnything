@@ -41,7 +41,6 @@ export class ViewAnswerService {
       ];
   }
 
-
   async findAnswersForUser(UserID : number): Promise<Object[]> {
     const my_answers = await this.manager.find(Answer, {where: {userid: UserID}});
     if (my_answers == [])
@@ -61,76 +60,6 @@ export class ViewAnswerService {
       ];
   }
 
-  async subscribe (): Promise<string> {
-    let sub = await this.client.hget('subscribers', 'answers');
-    let subscribers = JSON.parse(sub);
-    let myAddress = "http://localhost:8004/view_answer/message";
-    let alreadySubscribed = false;
-
-    if (subscribers == null){
-      subscribers = []
-      subscribers[0] = myAddress
-      await this.client.hset('subscribers', 'answers', JSON.stringify(subscribers));
-      return "Subscribed";
-    }
-    else {
-      for (let i = 0; i < subscribers.length; i++) {
-        if (subscribers[i] == myAddress)
-          alreadySubscribed = true;
-      }
-      if (alreadySubscribed == false) {
-        subscribers.push(myAddress);
-        await this.client.hset('subscribers', 'answers', JSON.stringify(subscribers));
-        return "Subscribed";
-      }
-      else
-        return "Already subscribed";
-    }
-  }
-
-  async updateAnswersDatabase (msgDto : MessageDto): Promise<Answer> {
-    return this.manager.transaction( async updateAnswers => {
-      const answer_to_be_created = {
-        id: msgDto.id,
-        text: msgDto.text,
-        date_created: msgDto.date_created,
-        userid: msgDto.Userid,
-        questionId: msgDto.question["id"]
-      }
-      const the_answer = await this.manager.create(Answer, answer_to_be_created);
-      const answer_created = await this.manager.save(the_answer);
-
-      return answer_created;
-    });
-  }
-
-  async retrieveLostMessages() : Promise<string> {
-    let msg = await this.client.hget('answerMessages', 'view_answer');
-    let messages = JSON.parse(msg);
-
-    if (messages == null || messages == []) {
-      await this.client.hset('answerMessages', 'view_answer', JSON.stringify(messages));
-      return "No lost messages"
-    }
-    else {
-      for (let i = 0; i < messages.length; i++) {
-        let answer_to_insert = {
-          id: messages[i].id,
-          text: messages[i].text,
-          date_created: messages[i].date_created,
-          userid: messages[i].Userid,
-          questionId: messages[i].question["id"]
-        }
-        let the_answer = await this.manager.create(Answer, answer_to_insert);
-        await this.manager.save(the_answer);
-      }
-
-      await this.client.hset('answerMessages', 'view_answer', JSON.stringify([]));
-      return "Saved data successfully";
-    }
-  }
-
-
   async findAllDate(date_from: Date, userid: Number): Promise<Answer[]> {
     const ans = await this.manager.find(Answer, {
       where: {date_created: LessThan(date_from), userid: userid},
@@ -143,6 +72,100 @@ export class ViewAnswerService {
     if (!ans || ans.length == 0)
       throw new NotFoundException(`No answers found earlier than date ${date_from} found.`)
     return ans
+  }
+
+
+  async subscribe (): Promise<string> {
+    let sub = await this.client.hget('subscribers', 'answers');
+    let subscribers = JSON.parse(sub);
+    let myAddress = "http://localhost:8004/view_answer/message";
+    let alreadySubscribed = false;
+
+    if (subscribers == null){
+      subscribers = []
+      subscribers[0] = myAddress
+      await this.client.hset('subscribers', 'answers', JSON.stringify(subscribers));
+      await this.getGeneralHash();
+      return "Subscribed";
+    }
+    else {
+      for (let i = 0; i < subscribers.length; i++) {
+        if (subscribers[i] == myAddress)
+          alreadySubscribed = true;
+      }
+      if (alreadySubscribed == false) {
+        subscribers.push(myAddress);
+        await this.client.hset('subscribers', 'answers', JSON.stringify(subscribers));
+        await this.getGeneralHash();
+        return "Subscribed";
+      }
+      else
+        return "Already subscribed";
+    }
+  }
+
+  async getGeneralHash() {
+    let a = await this.client.hget('general', 'answers');
+    let allMsg = JSON.parse(a);
+
+    if (allMsg == null || allMsg == [])
+      return "No messages";
+
+    await this.manager.transaction(async h =>{
+      let databaseAnswers = await this.manager.query(`SELECT a.id as id FROM view_answer.answer AS a`);
+      let databaseAnswerIDs = [];
+
+      for (let i=0; i<databaseAnswers.length; i++){
+        databaseAnswerIDs[i] = databaseAnswers[i].id;
+      }
+
+      for (let i = 0; i < allMsg.length; i++) {
+        if ( !databaseAnswerIDs.includes(allMsg[i].id) ) {
+          await this.updateAnswersDatabase(allMsg[i]);
+        }
+      }
+    });
+    return "Retrieved all messages";
+  }
+
+  async updateAnswersDatabase (msgDto : MessageDto): Promise<Answer> {
+    return this.manager.transaction( async updateAnswers => {
+      const answer_to_be_created = {
+        id: msgDto.id,
+        text: msgDto.text,
+        date_created: msgDto.date_created,
+        userid: msgDto.Userid,
+        questionId: msgDto.question["id"]
+      }
+
+      try {
+        const the_answer = await this.manager.create(Answer, answer_to_be_created);
+        const answer_created = await this.manager.save(the_answer);
+        return answer_created;
+      }
+      catch (e) {
+          return null
+      }
+
+    });
+  }
+
+  async retrieveLostMessages() : Promise<string> {
+    let msg = await this.client.hget('answerMessages', "http://localhost:8004/view_answer/message");
+    let messages = JSON.parse(msg);
+
+    if (messages == null || messages == []) {
+      //await this.client.hset('answerMessages', "http://localhost:8004/view_answer/message", JSON.stringify(messages));
+      return "No lost messages"
+    }
+    else {
+      for (let i = 0; i < messages.length; i++) {
+        await this.updateAnswersDatabase(messages[i])
+      }
+
+      await this.client.hset('answerMessages', "http://localhost:8004/view_answer/message", JSON.stringify([]));
+      return "Saved data successfully";
+    }
   }
 
 }

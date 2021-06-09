@@ -7,6 +7,7 @@ import {Question} from "./entities/question.entity";
 import {Keyword} from "./entities/keyword.entity";
 import {RedisService} from "nestjs-redis";
 import {MessageAnswerDto} from "./dto/Message-answer.dto";
+import {catchError} from "rxjs/operators";
 
 
 @Injectable()
@@ -68,16 +69,35 @@ export class QuestionService {
       let msg = JSON.parse(JSON.stringify(question_created));
       if ('keywords' in createQuestionDto) {
         msg["Keywords"] = createQuestionDto.keywords;
+        msg["sum_answers"] = 0;
       }
       else {
         msg["Keywords"] = [];
+        msg["sum_answers"] = 0;
       }
-      await this.httpService.post('http://localhost:4200/questions', msg).toPromise();
+
+      await this.httpService.post('http://localhost:4200/questions', msg).pipe(
+          catchError(async e => {
+            let m = await this.client.hget('choreographer', 'questions');
+            let lost_questions = JSON.parse(m);
+
+            if (lost_questions == null) {
+              lost_questions = [];
+              lost_questions[0] = msg;
+            }
+            else {
+              lost_questions.push(msg);
+            }
+
+            await this.client.hset('choreographer', 'questions', JSON.stringify(lost_questions));
+          })
+      ).toPromise();
 
       return question_created
     });
   }
 
+  /*
   async answerSubscribe(): Promise<string> {
     let sub = await this.client.hget('subscribers', 'answers');
     let subscribers = JSON.parse(sub);
@@ -99,11 +119,25 @@ export class QuestionService {
       if (alreadySubscribed == false) {
         subscribers.push(myAddress);
         await this.client.hset('subscribers', 'answers', JSON.stringify(subscribers));
+        await this.getGeneralHash();
         return "Subscribed";
       }
       else
         return "Already subscribed";
     }
+  }
+
+  async getGeneralHash(): Promise<any> {
+    let q = await this.client.hget('general', 'answers');
+    let allMsg = JSON.parse(q);
+
+    if (allMsg == null || allMsg == [])
+      return "No messages";
+
+    await this.manager.transaction(async h =>{
+
+    });
+    return "Retrieved all messages";
   }
 
   async updateSumAnswers (msgDto : MessageAnswerDto): Promise<any> {
@@ -117,11 +151,11 @@ export class QuestionService {
   }
 
   async retrieveLostMessages() : Promise<string> {
-    let msg = await this.client.hget('answerMessages', 'create_question');
+    let msg = await this.client.hget('answerMessages', "http://localhost:8001/create_question/message");
     let messages = JSON.parse(msg);
 
     if (messages == null || messages == []) {
-      await this.client.hset('answerMessages', 'create_question', JSON.stringify(messages));
+      //await this.client.hset('answerMessages', "http://localhost:8001/create_question/message", JSON.stringify(messages));
       return "No lost messages"
     }
     else {
@@ -131,9 +165,10 @@ export class QuestionService {
         await this.manager.increment(Question, {id : questionID}, "sum_answers", 1);
       }
 
-      await this.client.hset('answerMessages', 'create_question', JSON.stringify([]));
+      await this.client.hset('answerMessages', "http://localhost:8001/create_question/message", JSON.stringify([]));
       return "Saved data successfully";
     }
   }
+   */
 
 }

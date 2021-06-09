@@ -9,7 +9,7 @@ import {MessageAnswerDto} from "./dto/Message-answer.dto";
 export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
 
-  async onModuleInit() {
+  /*async onModuleInit() {
     await this.questionService.answerSubscribe();
     await this.questionService.retrieveLostMessages();
     return "Subscribed and retrieved messages successfully";
@@ -18,7 +18,7 @@ export class QuestionController {
   @Post('message')
   updateDatabase(@Body() msgDto : MessageAnswerDto) {
     return this.questionService.updateSumAnswers(msgDto)
-  }
+  }*/
 
   @UseGuards(JwtAuthGuard)
   @Post()

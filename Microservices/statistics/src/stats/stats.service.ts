@@ -57,7 +57,6 @@ export class StatisticsService {
     return quest
   }
 
-
   async showQuestionsPerDayUser(Userid:number) : Promise<Object[]>{
     const d_to = new Date();
     d_to.setTime(d_to.getTime() - (d_to.getTimezoneOffset() * 60000));
@@ -80,7 +79,6 @@ export class StatisticsService {
       throw new NotFoundException(`No answers found this last month.`)
     return ans
   }
-
 
   async showAnswersPerDayUser(Userid: number): Promise<Object[]> {
     const d_to = new Date();
@@ -107,6 +105,7 @@ export class StatisticsService {
     return quest
   }
 
+
   async subscribeAnswers (): Promise<string> {
     let sub = await this.client.hget('subscribers', 'answers');
     let subscribers = JSON.parse(sub);
@@ -117,6 +116,7 @@ export class StatisticsService {
       subscribers = []
       subscribers[0] = myAddress
       await this.client.hset('subscribers', 'answers', JSON.stringify(subscribers));
+      await this.getGeneralAnswersHash();
       return "Subscribed to answers";
     }
     else {
@@ -127,11 +127,36 @@ export class StatisticsService {
       if (alreadySubscribed == false) {
         subscribers.push(myAddress);
         await this.client.hset('subscribers', 'answers', JSON.stringify(subscribers));
+        await this.getGeneralAnswersHash();
         return "Subscribed to answers";
       }
       else
         return "Already subscribed to answers";
     }
+  }
+
+  async getGeneralAnswersHash() {
+    let a = await this.client.hget('general', 'answers');
+    let allMsg = JSON.parse(a);
+
+    if (allMsg == null || allMsg == [])
+      return "No messages";
+
+    await this.manager.transaction(async h =>{
+      let databaseAnswers = await this.manager.query(`SELECT a.id as id FROM statistics.answer AS a`);
+      let databaseAnswerIDs = [];
+
+      for (let i=0; i<databaseAnswers.length; i++){
+        databaseAnswerIDs[i] = databaseAnswers[i].id;
+      }
+
+      for (let i = 0; i < allMsg.length; i++) {
+        if ( !databaseAnswerIDs.includes(allMsg[i].id) ) {
+          await this.updateAnswersDatabase(allMsg[i]);
+        }
+      }
+    });
+    return "Retrieved all messages";
   }
 
   async subscribeQuestions (): Promise<string> {
@@ -144,6 +169,7 @@ export class StatisticsService {
       subscribers = []
       subscribers[0] = myAddress
       await this.client.hset('subscribers', 'questions', JSON.stringify(subscribers));
+      await this.getGeneralQuestionsHash();
       return "Subscribed to questions";
     }
     else {
@@ -154,11 +180,36 @@ export class StatisticsService {
       if (alreadySubscribed == false) {
         subscribers.push(myAddress);
         await this.client.hset('subscribers', 'questions', JSON.stringify(subscribers));
+        await this.getGeneralQuestionsHash();
         return "Subscribed to questions";
       }
       else
         return "Already subscribed to questions";
     }
+  }
+
+  async getGeneralQuestionsHash() {
+    let q = await this.client.hget('general', 'questions');
+    let allMsg = JSON.parse(q);
+
+    if (allMsg == null || allMsg == [])
+      return "No messages";
+
+    await this.manager.transaction(async h =>{
+      let databaseQuestions = await this.manager.query(`SELECT q.id as id FROM statistics.question AS q`);
+      let databaseQuestionIDs = [];
+
+      for (let i=0; i<databaseQuestions.length; i++){
+        databaseQuestionIDs[i] = databaseQuestions[i].id;
+      }
+
+      for (let i = 0; i < allMsg.length; i++) {
+        if ( !databaseQuestionIDs.includes(allMsg[i].id) ) {
+          await this.updateQuestionDatabase(allMsg[i]);
+        }
+      }
+    });
+    return "Retrieved all messages";
   }
 
   async updateAnswersDatabase (msgDto : MessageAnswerDto): Promise<Answer> {
@@ -169,10 +220,15 @@ export class StatisticsService {
         Userid: msgDto.Userid
       }
 
-      const the_answer = await this.manager.create(Answer, answer_to_be_created);
-      const answer_created = await this.manager.save(the_answer);
+      try {
+        const the_answer = await this.manager.create(Answer, answer_to_be_created);
+        const answer_created = await this.manager.save(the_answer);
 
-      return answer_created;
+        return answer_created;
+      }
+      catch (e) {
+        return null
+      }
     });
   }
 
@@ -184,99 +240,68 @@ export class StatisticsService {
         Userid: msgDto.Userid
       }
 
-      const question = await this.manager.create(Question, question_to_insert);
-      const question_created = await this.manager.save(question)
+      try {
+        const question = await this.manager.create(Question, question_to_insert);
+        const question_created = await this.manager.save(question)
 
-      if (msgDto.Keywords != []) {
-        for (let i = 0; i < (msgDto.Keywords).length; i++) {
-          //check if keyword exists
-          let keyword_ret = await this.manager.findOne(Keyword, msgDto.Keywords[i])
+        if (msgDto.Keywords != []) {
+          for (let i = 0; i < (msgDto.Keywords).length; i++) {
+            //check if keyword exists
+            let keyword_ret = await this.manager.findOne(Keyword, msgDto.Keywords[i])
 
-          if (keyword_ret) {  // keyword exists, add relation
-            await getConnection().createQueryBuilder().relation(Keyword, "questions").of(keyword_ret).add(question)
+            if (keyword_ret) {  // keyword exists, add relation
+              await getConnection().createQueryBuilder().relation(Keyword, "questions").of(keyword_ret).add(question)
 
-          } else {   //keyword does not exist, we have to create it
-            let keyword_to_create = {
-              keyword: msgDto.Keywords[i],
-              questions: [question]
+            } else {   //keyword does not exist, we have to create it
+              let keyword_to_create = {
+                keyword: msgDto.Keywords[i],
+                questions: [question]
+              }
+              const keyword = await this.manager.create(Keyword, keyword_to_create)
+              await this.manager.save(keyword)
             }
-            const keyword = await this.manager.create(Keyword, keyword_to_create)
-            await this.manager.save(keyword)
           }
         }
+        return question_created;
       }
-      return question_created;
+      catch (e) {
+        return null
+      }
     });
   }
 
   async retrieveLostAnswerMessages() : Promise<string> {
-    let msg = await this.client.hget('answerMessages', 'statistics');
+    let msg = await this.client.hget('answerMessages', "http://localhost:8003/statistics/answer_message");
     let messages = JSON.parse(msg);
 
     if (messages == null || messages == []) {
-      await this.client.hset('answerMessages', 'statistics', JSON.stringify(messages));
+      //await this.client.hset('answerMessages', "http://localhost:8003/statistics/answer_message", JSON.stringify(messages));
       return "No lost messages"
     }
     else {
       for (let i = 0; i < messages.length; i++) {
-        let answer_to_insert = {
-          id: messages[i].id,
-          date_created: messages[i].date_created,
-          Userid: messages[i].Userid
-        }
-        let the_answer = await this.manager.create(Answer, answer_to_insert);
-        await this.manager.save(the_answer);
+        await this.updateAnswersDatabase(messages[i]);
       }
 
-      await this.client.hset('answerMessages', 'statistics', JSON.stringify([]));
+      await this.client.hset('answerMessages', "http://localhost:8003/statistics/answer_message", JSON.stringify([]));
       return "Saved data successfully";
     }
   }
 
   async retrieveLostQuestionMessages() : Promise<string> {
-    let msg = await this.client.hget('questionMessages', 'statistics');
+    let msg = await this.client.hget('questionMessages', "http://localhost:8003/statistics/question_message");
     let messages = JSON.parse(msg);
 
     if (messages == null || messages == []) {
-      await this.client.hset('questionMessages', 'statistics', JSON.stringify(messages));
+      //await this.client.hset('questionMessages', "http://localhost:8003/statistics/question_message", JSON.stringify(messages));
       return "No lost messages"
     }
     else {
       for (let i = 0; i < messages.length; i++) {
-
-        await this.manager.transaction(async manager => {
-          let question_to_insert = {
-            id: messages[i].id,
-            date_created: messages[i].date_created,
-            Userid: messages[i].Userid
-          }
-
-          let question = await this.manager.create(Question, question_to_insert);
-          await this.manager.save(question)
-
-          if (messages[i].Keywords != []) {
-            for (let j = 0; j < (messages[i].Keywords).length; j++) {
-              //check if keyword exists
-              let keyword_ret = await this.manager.findOne(Keyword, messages[i].Keywords[j])
-
-              if (keyword_ret) {  // keyword exists, add relation
-                await getConnection().createQueryBuilder().relation(Keyword, "questions").of(keyword_ret).add(question)
-
-              } else {   //keyword does not exist, we have to create it
-                let keyword_to_create = {
-                  keyword: messages[i].Keywords[j],
-                  questions: [question]
-                }
-                let keyword = await this.manager.create(Keyword, keyword_to_create)
-                await this.manager.save(keyword)
-              }
-            }
-          }
-        });
-
+        await this.updateQuestionDatabase(messages[i]);
       }
 
-      await this.client.hset('questionMessages', 'statistics', JSON.stringify([]));
+      await this.client.hset('questionMessages', "http://localhost:8003/statistics/question_message", JSON.stringify([]));
       return "Saved data successfully";
     }
   }
