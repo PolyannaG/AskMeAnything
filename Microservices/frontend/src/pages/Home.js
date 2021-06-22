@@ -315,7 +315,8 @@ function Home(){
                         // date = new Date(Date.now()).toISOString()
                         const d_to = new Date();
                         d_to.setTime(d_to.getTime() - (d_to.getTimezoneOffset() * 60000));
-                        const date = d_to.toISOString();
+                        date = d_to.toISOString();
+                        console.log(date);
                     }
                     else
                         date=lastDate

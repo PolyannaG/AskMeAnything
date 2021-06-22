@@ -7,6 +7,13 @@ export class StatsController {
     constructor(private readonly statsService: StatsService) {}
 
     /*
+    async onApplicationShutdown() {
+        console.log("SHUT DOWN"); // e.g. "SIGINT"
+    }
+
+     */
+
+    /*
     async onModuleInit() {
         await this.statsService.subscribeAnswers();
         await this.statsService.subscribeQuestions();

@@ -2,7 +2,7 @@ import {Body, Controller, Get, Param, Post, UseGuards} from '@nestjs/common';
 import {QuestionService} from "./question.service";
 import {JwtAuthGuard} from "./jwt-auth.guard";
 
-@Controller('question')
+@Controller('user_interaction/question')
 export class QuestionController {
     constructor(private readonly questionService: QuestionService,
                 //private readonly jwtService:
