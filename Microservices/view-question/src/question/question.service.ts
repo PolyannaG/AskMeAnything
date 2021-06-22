@@ -64,185 +64,13 @@ export class QuestionService {
   }
 
   async getMostPopular(): Promise<Question[]> {
-    const questions = this.manager.find(Question, {order: {sum_answers: "DESC"}, take: 10, relations: ["keywords"]})
+    //const questions = this.manager.find(Question, {order: {date_created: "DESC"}, take: 10, relations: ["keywords"]})
+    const questions = this.manager.find(Question, {order: {popularity: "DESC"}, take: 10, relations: ["keywords"]})
+
     if (!questions)
       throw new NotFoundException('No questions found')
     return questions
   }
-
-
-  async subscribeQuestions (): Promise<string> {
-    let sub = await this.client.hget('subscribers', 'questions');
-    let subscribers = JSON.parse(sub);
-    let myAddress = "http://localhost:8005/view_question/question_message";
-    let alreadySubscribed = false;
-
-    if (subscribers == null){
-      subscribers = []
-      subscribers[0] = myAddress
-      await this.client.hset('subscribers', 'questions', JSON.stringify(subscribers));
-      return "Subscribed to questions";
-    }
-    else {
-      for (let i = 0; i < subscribers.length; i++) {
-        if (subscribers[i] == myAddress)
-          alreadySubscribed = true;
-      }
-      if (alreadySubscribed == false) {
-        subscribers.push(myAddress);
-        await this.client.hset('subscribers', 'questions', JSON.stringify(subscribers));
-        return "Subscribed to questions";
-      }
-      else
-        return "Already subscribed to questions";
-    }
-  }
-
-  async subscribeAnswers (): Promise<string> {
-    let sub = await this.client.hget('subscribers', 'answers');
-    let subscribers = JSON.parse(sub);
-    let myAddress = "http://localhost:8005/view_question/answer_message";
-    let alreadySubscribed = false;
-
-    if (subscribers == null){
-      subscribers = []
-      subscribers[0] = myAddress
-      await this.client.hset('subscribers', 'answers', JSON.stringify(subscribers));
-      return "Subscribed to answers";
-    }
-    else {
-      for (let i = 0; i < subscribers.length; i++) {
-        if (subscribers[i] == myAddress)
-          alreadySubscribed = true;
-      }
-      if (alreadySubscribed == false) {
-        subscribers.push(myAddress);
-        await this.client.hset('subscribers', 'answers', JSON.stringify(subscribers));
-        return "Subscribed to answers";
-      }
-      else
-        return "Already subscribed to answers";
-    }
-  }
-
-  async updateQuestionDatabases (msgDto : MessageQuestionDto) {
-    return this.manager.transaction( async manager=> {
-      const question_to_insert = {
-        id: msgDto.id,
-        title: msgDto.title,
-        text: msgDto.text,
-        date_created: msgDto.date_created,
-        sum_answers: msgDto.sum_answers,
-        Userid: msgDto.Userid
-      }
-
-      const question = await this.manager.create(Question, question_to_insert);
-      const question_created = await this.manager.save(question)
-
-      if (msgDto.Keywords != []) {
-        for (let i = 0; i < (msgDto.Keywords).length; i++) {
-          //check if keyword exists
-          let keyword_ret = await this.manager.findOne(Keyword, msgDto.Keywords[i])
-
-          if (keyword_ret) {  // keyword exists, add relation
-            await getConnection().createQueryBuilder().relation(Keyword, "questions").of(keyword_ret).add(question)
-
-          } else {   //keyword does not exist, we have to create it
-            let keyword_to_create = {
-              keyword: msgDto.Keywords[i],
-              questions: [question]
-            }
-            const keyword = await this.manager.create(Keyword, keyword_to_create)
-            await this.manager.save(keyword)
-          }
-        }
-      }
-      return question_created;
-    });
-  }
-
-  async updateSumAnswers (msgDto : MessageAnswerDto): Promise<any> {
-    return this.manager.transaction( async updateAnswers => {
-      const questionID = msgDto.question["id"];
-
-      const the_update = await this.manager.increment(Question, {id : questionID}, "sum_answers", 1);
-
-      return the_update;
-    });
-  }
-
-  async retrieveLostQuestionMessages() : Promise<string> {
-    let msg = await this.client.hget('questionMessages', 'view_question');
-    let messages = JSON.parse(msg);
-
-    if (messages == null || messages == []) {
-      await this.client.hset('questionMessages', 'view_question', JSON.stringify(messages));
-      return "No lost question messages"
-    }
-    else {
-      for (let i = 0; i < messages.length; i++) {
-
-        await this.manager.transaction(async manager => {
-          let question_to_insert = {
-            id: messages[i].id,
-            title: messages[i].title,
-            text: messages[i].text,
-            date_created: messages[i].date_created,
-            sum_answers: messages[i].sum_answers,
-            Userid: messages[i].Userid
-          }
-
-          let question = await this.manager.create(Question, question_to_insert);
-          await this.manager.save(question)
-
-          if (messages[i].Keywords != []) {
-            for (let j = 0; j < (messages[i].Keywords).length; j++) {
-              //check if keyword exists
-              let keyword_ret = await this.manager.findOne(Keyword, messages[i].Keywords[j])
-
-              if (keyword_ret) {  // keyword exists, add relation
-                await getConnection().createQueryBuilder().relation(Keyword, "questions").of(keyword_ret).add(question)
-
-              } else {   //keyword does not exist, we have to create it
-                let keyword_to_create = {
-                  keyword: messages[i].Keywords[j],
-                  questions: [question]
-                }
-                let keyword = await this.manager.create(Keyword, keyword_to_create)
-                await this.manager.save(keyword)
-              }
-            }
-          }
-        });
-
-      }
-
-      await this.client.hset('questionMessages', 'view_question', JSON.stringify([]));
-      return "Saved data successfully";
-    }
-  }
-
-  async retrieveLostAnswerMessages() : Promise<string> {
-    let msg = await this.client.hget('answerMessages', 'view_question');
-    let messages = JSON.parse(msg);
-
-    if (messages == null || messages == []) {
-      await this.client.hset('answerMessages', 'view_question', JSON.stringify(messages));
-      return "No lost answer messages"
-    }
-    else {
-      for (let i = 0; i < messages.length; i++) {
-        let questionID = messages[i].question["id"];
-
-        await this.manager.increment(Question, {id : questionID}, "sum_answers", 1);
-      }
-
-      await this.client.hset('answerMessages', 'view_question', JSON.stringify([]));
-      return "Saved data successfully";
-    }
-  }
-
-
 
   async filterByStartAndEndDate(date_from: Date, date_to: Date): Promise<Question[]> {
     const questions = await createQueryBuilder().select(`*`).from('question', 'Question').andWhere(`date_created < '${date_from}'`).andWhere(`date_created >= '${date_to}'`).orderBy('date_created', 'DESC').take(10).getRawMany()
@@ -267,7 +95,6 @@ export class QuestionService {
     }
     return questions
   }
-
 
   async filterByKeywordDateFrom(keyword: String, date_from: Date): Promise<Object[]> {
 
@@ -352,6 +179,193 @@ export class QuestionService {
     return keyw
 
   }
+
+
+
+  async subscribeQuestions (): Promise<string> {
+    let sub = await this.client.hget('subscribers', 'questions');
+    let subscribers = JSON.parse(sub);
+    let myAddress = "http://localhost:8005/view_question/question_message";
+    let alreadySubscribed = false;
+
+    if (subscribers == null){
+      subscribers = []
+      subscribers[0] = myAddress
+      await this.client.hset('subscribers', 'questions', JSON.stringify(subscribers));
+      await this.getGeneralQuestionsHash();
+      return "Subscribed to questions";
+    }
+    else {
+      for (let i = 0; i < subscribers.length; i++) {
+        if (subscribers[i] == myAddress)
+          alreadySubscribed = true;
+      }
+      if (alreadySubscribed == false) {
+        subscribers.push(myAddress);
+        await this.client.hset('subscribers', 'questions', JSON.stringify(subscribers));
+        await this.getGeneralQuestionsHash();
+        return "Subscribed to questions";
+      }
+      else
+        return "Already subscribed to questions";
+    }
+  }
+
+  async getGeneralQuestionsHash() {
+    let q = await this.client.hget('general', 'questions');
+    let allMsg = JSON.parse(q);
+
+    if (allMsg == null || allMsg == [])
+      return "No messages";
+
+    await this.manager.transaction(async h =>{
+      let databaseQuestions = await this.manager.query(`SELECT q.id as id FROM view_question.question AS q`);
+      let databaseQuestionIDs = [];
+
+      for (let i=0; i<databaseQuestions.length; i++){
+        databaseQuestionIDs[i] = databaseQuestions[i].id;
+      }
+
+      for (let i = 0; i < allMsg.length; i++) {
+        if ( !databaseQuestionIDs.includes(allMsg[i].id) ) {
+          await this.updateQuestionDatabases(allMsg[i]);
+        }
+      }
+    });
+    return "Retrieved all messages";
+  }
+
+  async subscribeAnswers (): Promise<string> {
+    let sub = await this.client.hget('subscribers', 'answers');
+    let subscribers = JSON.parse(sub);
+    let myAddress = "http://localhost:8005/view_question/answer_message";
+    let alreadySubscribed = false;
+
+    if (subscribers == null){
+      subscribers = []
+      subscribers[0] = myAddress
+      await this.client.hset('subscribers', 'answers', JSON.stringify(subscribers));
+      await this.getGeneralAnswersHash();
+      return "Subscribed to answers";
+    }
+    else {
+      for (let i = 0; i < subscribers.length; i++) {
+        if (subscribers[i] == myAddress)
+          alreadySubscribed = true;
+      }
+      if (alreadySubscribed == false) {
+        subscribers.push(myAddress);
+        await this.client.hset('subscribers', 'answers', JSON.stringify(subscribers));
+        await this.getGeneralAnswersHash();
+        return "Subscribed to answers";
+      }
+      else
+        return "Already subscribed to answers";
+    }
+  }
+
+  async getGeneralAnswersHash() {
+    let a = await this.client.hget('general', 'answers');
+    let allMsg = JSON.parse(a);
+
+    if (allMsg == null || allMsg == [])
+      return "No messages";
+
+    for (let i = 0; i < allMsg.length; i++) {
+      await this.updateSumAnswers(allMsg[i]);
+    }
+
+    return "Retrieved all messages";
+  }
+
+  async updateQuestionDatabases (msgDto : MessageQuestionDto) {
+    return this.manager.transaction( async manager=> {
+      const question_to_insert = {
+        id: msgDto.id,
+        title: msgDto.title,
+        text: msgDto.text,
+        date_created: msgDto.date_created,
+        popularity: msgDto.sum_answers,
+        Userid: msgDto.Userid
+      }
+
+      try {
+        const question = await this.manager.create(Question, question_to_insert);
+        const question_created = await this.manager.save(question)
+
+        if (msgDto.Keywords != []) {
+          for (let i = 0; i < (msgDto.Keywords).length; i++) {
+            //check if keyword exists
+            let keyword_ret = await this.manager.findOne(Keyword, msgDto.Keywords[i])
+
+            if (keyword_ret) {  // keyword exists, add relation
+              await getConnection().createQueryBuilder().relation(Keyword, "questions").of(keyword_ret).add(question)
+
+            } else {   //keyword does not exist, we have to create it
+              let keyword_to_create = {
+                keyword: msgDto.Keywords[i],
+                questions: [question]
+              }
+              const keyword = await this.manager.create(Keyword, keyword_to_create)
+              await this.manager.save(keyword)
+            }
+          }
+        }
+        return question_created;
+      }
+      catch (e) {
+        return null
+      }
+
+    });
+  }
+
+  async updateSumAnswers (msgDto : MessageAnswerDto): Promise<any> {
+    return this.manager.transaction( async updateAnswers => {
+      const questionID = msgDto.question["id"];
+
+      const the_update = await this.manager.increment(Question, {id : questionID}, "popularity", 1);
+
+      return the_update;
+    });
+  }
+
+  async retrieveLostQuestionMessages() : Promise<string> {
+    let msg = await this.client.hget('questionMessages', "http://localhost:8005/view_question/question_message");
+    let messages = JSON.parse(msg);
+
+    if (messages == null || messages == []) {
+      //await this.client.hset('questionMessages', "http://localhost:8005/view_question/question_message", JSON.stringify(messages));
+      return "No lost question messages"
+    }
+    else {
+      for (let i = 0; i < messages.length; i++) {
+        await this.updateQuestionDatabases(messages[i])
+      }
+
+      await this.client.hset('questionMessages', "http://localhost:8005/view_question/question_message", JSON.stringify([]));
+      return "Saved data successfully";
+    }
+  }
+
+  async retrieveLostAnswerMessages() : Promise<string> {
+    let msg = await this.client.hget('answerMessages', "http://localhost:8005/view_question/answer_message");
+    let messages = JSON.parse(msg);
+
+    if (messages == null || messages == []) {
+      //await this.client.hset('answerMessages', "http://localhost:8005/view_question/answer_message", JSON.stringify(messages));
+      return "No lost answer messages"
+    }
+    else {
+      for (let i = 0; i < messages.length; i++) {
+        await this.updateSumAnswers(messages[i]);
+      }
+
+      await this.client.hset('answerMessages', "http://localhost:8005/view_question/answer_message", JSON.stringify([]));
+      return "Saved data successfully";
+    }
+  }
+
 
 }
 

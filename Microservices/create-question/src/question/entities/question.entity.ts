@@ -29,8 +29,8 @@ export class Question {
     @CreateDateColumn()
     date_created: Date;
 
-    @Column({default: () => 0})
-    sum_answers: number;
+    //@Column({default: () => 0})
+    //sum_answers: number;
 
 
     @Column()

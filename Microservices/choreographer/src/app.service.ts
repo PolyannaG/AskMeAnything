@@ -15,6 +15,42 @@ export class ChoreographerService {
         this.client = await this.redisService.getClient();
     }
 
+    async checkForLostAnswers () : Promise<string> {
+        let msgs = await this.client.hget('choreographer', 'answers');
+        let messages = JSON.parse(msgs);
+
+        if (messages == null || messages == []) {
+            //await this.client.hset('choreographer', 'answers', JSON.stringify(messages));
+            return "No lost answers"
+        }
+        else {
+            for (let i = 0; i<messages.length; i++) {
+                await this.sendAnswers(messages[i]);
+            }
+            await this.client.hset('choreographer', 'answers', JSON.stringify([]));
+            return "Answers retrieved and sent successfully"
+        }
+    }
+
+    async checkForLostQuestions () : Promise<any> {
+        let msg = await this.client.hget('choreographer', 'questions');
+        let messages = JSON.parse(msg);
+
+        if (messages == null || messages == []) {
+            //await this.client.hset('choreographer', 'questions', JSON.stringify(messages));
+            return "No lost questions"
+        }
+        else {
+            for (let i = 0; i<messages.length; i++) {
+                await this.sendQuestions(messages[i]);
+            }
+            await this.client.hset('choreographer', 'questions', JSON.stringify([]));
+            return "Questions retrieved and sent successfully"
+        }
+    }
+
+
+    /*
     async saveAnswerMsg (hash: string, channel : string, sendAnswerDto: SendAnswerDto) : Promise<any> {
         let m = await this.client.hget(hash, channel);
         let messages = JSON.parse(m);
@@ -60,7 +96,38 @@ export class ChoreographerService {
 
         return await this.client.hset(hash, channel, JSON.stringify(messages));
     }
+    */
 
+
+    async addToGeneralAnswerHash(answer : object)  {
+        let a = await this.client.hget('general', 'answers');
+        let currAnswers = JSON.parse(a);
+
+        if (currAnswers == null || currAnswers == []) {
+            currAnswers = [];
+            currAnswers[0] = answer;
+        }
+        else {
+            currAnswers.push(answer)
+        }
+
+        return await this.client.hset('general', 'answers', JSON.stringify(currAnswers));
+    }
+
+    async addToGeneralQuestionHash(question : object) {
+        let q = await this.client.hget('general', 'questions');
+        let currQuestions = JSON.parse(q);
+
+        if (currQuestions == null || currQuestions == []) {
+            currQuestions = [];
+            currQuestions[0] = question;
+        }
+        else {
+            currQuestions.push(question)
+        }
+
+        return await this.client.hset('general', 'questions', JSON.stringify(currQuestions));
+    }
 
     async sendAnswers(sendAnswerDto: SendAnswerDto): Promise<any> {
         let new_answer = {
@@ -71,26 +138,32 @@ export class ChoreographerService {
             question: sendAnswerDto.question
         }
 
+        await this.addToGeneralAnswerHash(new_answer);
+
         let sub = await this.client.hget('subscribers', 'answers');
         let subscribers = JSON.parse(sub);
+        if (subscribers == null) {
+            return "No subscribers yet";
+        }
         for (let i = 0; i<subscribers.length; i++){
             await this.httpService.post(subscribers[i], new_answer).pipe(
                 catchError(async e => {
-                    if (subscribers[i] == "http://localhost:8003/statistics/answer_message") {
-                        await this.saveAnswerMsg('answerMessages', 'statistics', sendAnswerDto);
+                    let m = await this.client.hget('answerMessages', subscribers[i]);
+                    let messages = JSON.parse(m);
+
+                    if (messages == null) {
+                        messages = [];
+                        messages[0] = new_answer;
                     }
-                    else if (subscribers[i] == "http://localhost:8004/view_answer/message") {
-                        await this.saveAnswerMsg('answerMessages', 'view_answer', sendAnswerDto);
-                    }
-                    else if (subscribers[i] == "http://localhost:8005/view_question/answer_message") {
-                        await this.saveAnswerMsg('answerMessages', 'view_question', sendAnswerDto);
-                    }
-                    else if (subscribers[i] == "http://localhost:8001/create_question/message") {
-                        await this.saveAnswerMsg('answerMessages', 'create_question', sendAnswerDto);
+                    else {
+                        messages.push(new_answer);
                     }
 
+                    await this.client.hset('answerMessages', subscribers[i], JSON.stringify(messages));
+
+                    //await this.saveAnswerMsg('answerMessages', subscribers[i], sendAnswerDto);
                     //throw new HttpException("Lost connection", HttpStatus.SERVICE_UNAVAILABLE);
-                }),
+                })
             ).toPromise();
         }
         return HttpStatus.OK;
@@ -107,21 +180,30 @@ export class ChoreographerService {
             Keywords : sendQuestionDto.Keywords
         }
 
+        await this.addToGeneralQuestionHash(new_question);
+
         let sub = await this.client.hget('subscribers', 'questions');
         let subscribers = JSON.parse(sub);
+        if (subscribers == null) {
+            return "No subscribers yet";
+        }
         for (let i = 0; i<subscribers.length; i++){
             await this.httpService.post(subscribers[i], new_question).pipe(
                 catchError(async e => {
-                    if (subscribers[i] == "http://localhost:8000/create_answer/message") {
-                        await this.saveQuestionMsg('questionMessages', 'create_answer', sendQuestionDto);
+                    let m = await this.client.hget('questionMessages', subscribers[i]);
+                    let messages = JSON.parse(m);
+
+                    if (messages == null) {
+                        messages = [];
+                        messages[0] = new_question;
                     }
-                    else if (subscribers[i] == "http://localhost:8003/statistics/question_message") {
-                        await this.saveQuestionMsg('questionMessages', 'statistics', sendQuestionDto);
-                    }
-                    else if (subscribers[i] == "http://localhost:8005/view_question/question_message") {
-                        await this.saveQuestionMsg('questionMessages', 'view_question', sendQuestionDto);
+                    else {
+                        messages.push(new_question);
                     }
 
+                    await this.client.hset('questionMessages', subscribers[i], JSON.stringify(messages));
+
+                    //await this.saveQuestionMsg('questionMessages', subscribers[i], sendQuestionDto);
                     //throw new HttpException("Lost connection", HttpStatus.SERVICE_UNAVAILABLE);
                 }),
             ).toPromise();

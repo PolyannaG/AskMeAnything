@@ -9,17 +9,22 @@ from faker import Faker
 fake = Faker()
 
 #csv file headers
-headerQuestions = ['id', 'title', 'text', 'date_created', 'num_answers', 'Userid']
+headerQuestions = ['id', 'title', 'text', 'date_created', 'Userid']
+headerQuestionsPopularity = ['id', 'title', 'text', 'date_created', 'popularity', 'Userid']
 headerAnswers = ['id', 'text', 'date_created', 'Userid', 'questionId']
 headerUsers = ['id', 'username', 'password', 'email', 'user_since']
 headerKeywords = ['keyword']
-headerQuestion_Keyword = ['questionId', 'keywordKeyword']
+headerQuestion_Keyword = ['keywordKeyword', 'questionId']
 headerStatistics = ['id', 'date_created', 'Userid']
 
 #open-create all csv files and write the headers
 questionsCSV = open('./questions.csv', 'w', encoding='UTF8', newline='')
 writerQuestions = csv.DictWriter(questionsCSV, fieldnames = headerQuestions)
 writerQuestions.writeheader()
+
+questionsViewQuestionCSV = open('./questionsViewQuestion.csv', 'w', encoding='UTF8', newline='')
+writerPopularity = csv.DictWriter(questionsViewQuestionCSV, fieldnames = headerQuestionsPopularity)
+writerPopularity.writeheader()
 
 answersCSV = open('./answers.csv', 'w', encoding='UTF8', newline='')
 writerAnswers =  csv.DictWriter(answersCSV, fieldnames=headerAnswers)
@@ -33,7 +38,7 @@ usersCSV = open('./users.csv', 'w', encoding='UTF8', newline='')
 writerUsers = csv.DictWriter(usersCSV, fieldnames=headerUsers)
 writerUsers.writeheader()
 
-quest_Key_CSV = open('./Question_Keyword.csv', 'w', encoding='UTF8', newline='')
+quest_Key_CSV = open('./Question_Keyword_Relationship.csv', 'w', encoding='UTF8', newline='')
 writerQuest_Key =  csv.DictWriter(quest_Key_CSV, fieldnames=headerQuestion_Keyword)
 writerQuest_Key.writeheader()
 
@@ -99,21 +104,25 @@ writerPassw.writerows(passw)
 
 #Questions - Answers - their Statistics
 rowQuestion = {}
+rowPopularity = {}
 rowAnswers = {}
 rowStatsQ = {}
 rowStatsA = {}
 questions = []
 answers = []
+popularityQuestions = []
 questionStats = []
 answerStats = []
 count = 1
 for i in range(1, 301):
     rowQuestion['id']=i
+    rowPopularity['id']=i
     rowStatsQ['id']=i
 
     t = fake.sentence(40)
     title = t[:-1]+'?'
     rowQuestion['title'] = title
+    rowPopularity['title'] = title
 
     txt = fake.paragraphs(random.randint(1,15))
     paragraph_str = ''
@@ -121,12 +130,14 @@ for i in range(1, 301):
         paragraph_str = paragraph_str + z + ' '
     text = paragraph_str[:-1]
     rowQuestion['text'] = text
+    rowPopularity['text'] = text
 
     if i % 5 == 0:
         UserId = 8
     else :
         UserId = random.randint(1,98)
     rowQuestion['Userid']=UserId
+    rowPopularity['Userid']=UserId
     rowStatsQ['Userid']=UserId
 
     registered = dates_register[UserId]
@@ -138,10 +149,11 @@ for i in range(1, 301):
         question_date = random_timestamp(year=2021, month=5, day=recent_day)
 
     rowQuestion['date_created']=question_date
+    rowPopularity['date_created']=question_date
     rowStatsQ['date_created']=question_date
 
-    number_answers = random.randint(0,8)
-    rowQuestion['num_answers']=number_answers
+    number_answers = random.randint(0,10)
+    rowPopularity['popularity']=number_answers
 
     for j in range(number_answers):
         rowAnswers['id']=count
@@ -186,11 +198,14 @@ for i in range(1, 301):
         rowStatsA={}
 
     questions.append(rowQuestion)
+    popularityQuestions.append(rowPopularity)
     questionStats.append(rowStatsQ)
     rowQuestion={}
+    rowPopularity = {}
     rowStatsQ={}
 
 writerQuestions.writerows(questions)
+writerPopularity.writerows(popularityQuestions)
 writerAnswers.writerows(answers)
 writerQuestionsStats.writerows(questionStats)
 writerAnswersStats.writerows(answerStats)

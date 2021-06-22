@@ -7,9 +7,15 @@ import {SendQuestionDto} from "./dto/send-question.dto";
 export class ChoreographerController {
   constructor(private readonly choreographerService: ChoreographerService) {}
 
+  async onModuleInit() {
+    await this.choreographerService.checkForLostAnswers();
+    await this.choreographerService.checkForLostQuestions();
+    return "Retrieved lost messages successfully";
+  }
+
   @Post('answers')
   sendAnswer(@Body() sendAnswerDto: SendAnswerDto) {
-    return this.choreographerService.sendAnswers(sendAnswerDto);
+    return this.choreographerService.sendAnswers(sendAnswerDto)
   }
 
   @Post('questions')

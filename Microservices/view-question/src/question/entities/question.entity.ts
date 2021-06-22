@@ -19,7 +19,7 @@ export class Question {
     date_created: Date;
 
     @Column({default: () => 0})
-    sum_answers: number;
+    popularity: number;
 
     @Column()
     Userid: number;
