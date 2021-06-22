@@ -25,6 +25,7 @@ function NewQuestion(){
         if (form.checkValidity() === false) {
             event.preventDefault()
             event.stopPropagation()
+            setValidated(true)
         } else {
             try {
 

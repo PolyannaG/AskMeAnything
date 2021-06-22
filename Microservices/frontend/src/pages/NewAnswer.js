@@ -108,6 +108,7 @@ function NewAnswer(){
         if (form.checkValidity() === false) {
             event.preventDefault()
             event.stopPropagation()
+            setValidated(true)
             if (!specificQuestion.id && answerText.length!==0){
                 console.log('hi')
                 alert('Please select a question to answer!')

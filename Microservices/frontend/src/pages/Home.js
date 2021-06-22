@@ -238,8 +238,12 @@ function Home(){
                 console.log(selectedKeywords)
                 try {
                     var date=0
-                    if (lastDate.length===0)
-                        date = new Date(Date.now()).toISOString()
+                    if (lastDate.length===0) {
+                       // date = new Date(Date.now()).toISOString()
+                        const d_to = new Date();
+                        d_to.setTime(d_to.getTime() - (d_to.getTimezoneOffset() * 60000));
+                        date = d_to.toISOString();
+                    }
                     else
                         date=lastDate
                     console.log(date)
@@ -307,8 +311,12 @@ function Home(){
                 console.log(selectedKeywords)
                 try {
                     var date=0
-                    if (lastDate.length===0)
-                        date = new Date(Date.now()).toISOString()
+                    if (lastDate.length===0) {
+                        // date = new Date(Date.now()).toISOString()
+                        const d_to = new Date();
+                        d_to.setTime(d_to.getTime() - (d_to.getTimezoneOffset() * 60000));
+                        const date = d_to.toISOString();
+                    }
                     else
                         date=lastDate
                     console.log(date)
@@ -517,8 +525,13 @@ function Home(){
 
                 try {
                     var date=0
-                    if (lastDate.length===0)
-                        date = new Date(Date.now()).toISOString()
+                    if (lastDate.length===0) {
+                        //date = new Date(Date.now()).toISOString()
+                        const d_to = new Date();
+                        d_to.setTime(d_to.getTime() - (d_to.getTimezoneOffset() * 60000));
+                        date = d_to.toISOString();
+                        console.log(date)
+                    }
                     else
                         date=lastDate
                     console.log(dateTo)
@@ -594,7 +607,10 @@ function Home(){
 
             let date = 0
             if (lastDate.length == 0) {
-                date = new Date(Date.now()).toISOString()
+               // date = new Date(Date.now()).toISOString()
+                const d_to = new Date();
+                d_to.setTime(d_to.getTime() - (d_to.getTimezoneOffset() * 60000));
+                date = d_to.toISOString();
             } else {
                 date = lastDate
             }
