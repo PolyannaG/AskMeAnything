@@ -6,27 +6,27 @@ import {CreateAnswerDto} from "./dto/create-answer.dto";
 export class AnswerController {
     constructor(private readonly answerService: AnswerService) {}
 
-    @Post('createAnswer')
+    @Post('createAnswer/:id')
     createAnswer(@Param('id') params: number, @Body() createAnswerDto: CreateAnswerDto) {
         return this.answerService.insertAnswer(params, createAnswerDto);
     }
 
-    @Get('checkForQuestion')
+    @Get('checkForQuestion/:id')
     checkQuestion(@Param('id') params: number) {
         return this.answerService.checkForQuestion(params)
     }
 
-    @Get('findQuestionAnswers')
+    @Get('findQuestionAnswers/:id')
     findQuestionAnswers(@Param('id') id: number) {
         return this.answerService.findQuestionAnswersQuery(id)
     }
 
-    @Get('findAnswersForUser')
+    @Get('findAnswersForUser/:id')
     findAnswersForUser(@Param('id') id: number) {
         return this.answerService.findAnswersForUserQuery(id)
     }
 
-    @Get('findAllDate')
+    @Get('findAllDate/:date_from/:userid')
     findAllDate(@Param('date_from') date_from: Date, @Param('userid') userid : number) {
         return this.answerService.findAllDateQuery(date_from, userid)
     }

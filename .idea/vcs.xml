@@ -8,6 +8,7 @@
     <mapping directory="$PROJECT_DIR$/Microservices/statistics" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Microservices/view-answer" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/SOA/data-layer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/SOA/enterprise-service-bus" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/SOA/manage-users" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/SOA/statistics" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/SOA/user-interaction" vcs="Git" />

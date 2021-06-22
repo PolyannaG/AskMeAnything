@@ -11,12 +11,12 @@ export class UsersController {
         return this.usersService.insertUser(registrationData)
     }
 
-    @Get('findOneUser')
+    @Get('findOneUser/:id')
     findUser(@Param('id') id:number){
         return this.usersService.findOneUserQuery(id)
     }
 
-    @Get('findByUsername')
+    @Get('findByUsername/:username')
     findByUsername(@Param ('username') username :string) {
         return this.usersService.findByUsernameQuery(username)
     }

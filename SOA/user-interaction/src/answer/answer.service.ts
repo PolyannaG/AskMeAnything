@@ -5,24 +5,15 @@ import {map} from "rxjs/operators";
 export class AnswerService {
     constructor(private httpService: HttpService) {}
 
-    async create (paramId: number, createAnswerDto: object) : Promise<Object[]> {
-        const myQuestion = await this.httpService.get("http://localhost:8006/answer/checkForQuestion",
-            {params: {
-                        "id": paramId
-                    }
-            })
+    async create (paramId: number, createAnswerDto: object) : Promise<Object> {
+        const myQuestion = await this.httpService.get("http://localhost:8006/answer/checkForQuestion/"+paramId)
             .pipe(map(response => response.data))
             .toPromise();
 
         if (!myQuestion)
             throw new NotFoundException(`Question with id ${paramId} not found, so it can't be answered`);
         else {
-            const created_answer = await this.httpService.post("http://localhost:8006/answer/createAnswer",
-                {params: {
-                            "id": paramId
-                        },
-                    body: createAnswerDto
-                })
+            const created_answer = await this.httpService.post("http://localhost:8006/answer/createAnswer/"+paramId, createAnswerDto)
                 .pipe(map(response => response.data))
                 .toPromise();
 
@@ -33,11 +24,7 @@ export class AnswerService {
 
     async findQuestionAnswers(QuestionID : number): Promise<Object[]> {
 
-        const question_answers = await this.httpService.get("http://localhost:8006/answer/findQuestionAnswers",
-            {params: {
-                    "id": QuestionID
-                }
-            })
+        const question_answers = await this.httpService.get("http://localhost:8006/answer/findQuestionAnswers"+QuestionID)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -59,11 +46,7 @@ export class AnswerService {
     }
 
     async findAnswersForUser(UserID : number): Promise<Object[]> {
-        const my_answers = await this.httpService.get("http://localhost:8006/answer/findAnswersForUser",
-            {params: {
-                    "UserID": UserID
-                }
-            })
+        const my_answers = await this.httpService.get("http://localhost:8006/answer/findAnswersForUser/"+UserID)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -85,12 +68,7 @@ export class AnswerService {
     }
 
     async findAllDate(date_from: Date, userid: number): Promise<Object[]> {
-        const ans = await this.httpService.get("http://localhost:8006/answer/findAllDate",
-            {params: {
-                    "date_from": date_from,
-                    "userid": userid
-                }
-            })
+        const ans = await this.httpService.get("http://localhost:8006/answer/findAllDate/"+date_from+"/"+userid)
             .pipe(map(response => response.data))
             .toPromise();
 

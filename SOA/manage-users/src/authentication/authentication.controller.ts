@@ -60,7 +60,7 @@ export class AuthenticationController {
         }
     }
 
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Get('user')
     async user(@Req() request: Request){
         try {
@@ -82,7 +82,7 @@ export class AuthenticationController {
         }
     }
 
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Post('logout')
     async logout(@Res({passthrough : true}) response: Response){
         response.clearCookie('token')

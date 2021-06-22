@@ -6,6 +6,13 @@ import {JwtAuthGuard} from "./jwt-auth.guard";
 export class StatsController {
     constructor(private readonly statsService: StatsService) {}
 
+
+    async onApplicationShutdown() {
+        console.log("SHUT DOWN"); // e.g. "SIGINT"
+    }
+
+
+
     /*
     async onModuleInit() {
         await this.statsService.subscribeAnswers();
@@ -35,7 +42,7 @@ export class StatsController {
         return this.statsService.findByKeywords()
     }
 
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Get('keywords_user/:Userid')
     findByKeywordsUser(@Param('Userid') Userid : number)  {
         return this.statsService.findByKeywordsUser(Userid)
@@ -46,31 +53,31 @@ export class StatsController {
         return this.statsService.showQuestionsPerDay()
     }
 
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Get('per_day_user/questions/:Userid')
     showQuestionsPerDayUser(@Param('Userid') Userid : number){
         return this.statsService.showQuestionsPerDayUser(Userid)
     }
 
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Get('per_day/answers')
     showAnswersPerDay(){
         return this.statsService.showAnswersPerDay()
     }
 
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Get('per_day_user/answers/:Userid')
     showAnswersPerDayUser(@Param('Userid') Userid : number){
         return this.statsService.showAnswersPerDayUser(Userid)
     }
 
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Get('count_answers_user/:Userid')
     countAnswersUser(@Param('Userid') Userid : number){
         return this.statsService.countAnswersUser(Userid)
     }
 
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Get('count_questions_user/:Userid')
     countQuestionsUser(@Param('Userid') Userid : number){
         return this.statsService.countQuestionsUser(Userid)

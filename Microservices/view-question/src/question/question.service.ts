@@ -99,9 +99,10 @@ export class QuestionService {
   async filterByKeywordDateFrom(keyword: String, date_from: Date): Promise<Object[]> {
 
     //let quest = await createQueryBuilder("Question").leftJoin("Question.keywords", "questions",'"questionID"="id"').where(`date_created <= '${date_from}'`).getMany()
-
+    console.log(date_from);
     const quest= await this.manager.query(`SELECT * FROM (SELECT * from  "view_question"."keyword_questions_question" as "A"  INNER JOIN "view_question"."question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"<'${date_from}' AND "A"."keywordKeyword"='${keyword}') as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
 
+    console.log(quest);
     if (!quest || !quest.length)
       throw new NotFoundException(`No questions found for keyword ${keyword} and before ${date_from}.`)
 

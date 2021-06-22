@@ -12,6 +12,7 @@ async function bootstrap() {
     credentials : true,
     maxAge : 600
   })
+  app.enableShutdownHooks();
   await app.listen(8008);
 }
 bootstrap();
