@@ -54,35 +54,6 @@ export class QuestionController {
     return this.questionService.findOne(+id)
   }
 
-/*
-  @Get('keywords')
-  findByKeywords() {
-    return this.questionService.findByKeywords()
-  }
-
-
-
-  @UseGuards(JwtAuthGuard)
-  @Get('keywords_user/:Userid')
-  findByKeywordsUser(@Param('Userid') Userid : number)  {
-    return this.questionService.findByKeywordsUser(Userid)
-  }
-
-
-  @Get('per_day')
-    showPerDay(){
-      return this.questionService.showPerDay()
-  }
-
-
-
-  @UseGuards(JwtAuthGuard)
-  @Get('per_day_user/:Userid')
-  showPerDayUser(@Param('Userid') Userid : number){
-      return this.questionService.showPerDayUser(Userid)
-  }
-*/
-
   @Get('most_popular')
   getMostPopular(){
       return this.questionService.getMostPopular()
