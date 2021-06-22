@@ -19,11 +19,7 @@ export class StatsService {
 
     async findByKeywordsUser(Userid: number): Promise<Object[]> {
 
-        const quest= await this.httpService.get("http://localhost:8006/statistics/findByKeywordsUser",
-                                                {params: {
-                                                            "Userid" : Userid
-                                                        }
-                                                })
+        const quest= await this.httpService.get("http://localhost:8006/statistics/findByKeywordsUser/"+Userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -45,11 +41,7 @@ export class StatsService {
     }
 
     async showQuestionsPerDayUser(Userid:number) : Promise<Object[]>{
-        const quest = await this.httpService.get("http://localhost:8006/statistics/showQuestionsPerDayUser",
-                                                {params: {
-                                                        "Userid" : Userid
-                                                    }
-                                                })
+        const quest = await this.httpService.get("http://localhost:8006/statistics/showQuestionsPerDayUser/"+Userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -70,11 +62,7 @@ export class StatsService {
     }
 
     async showAnswersPerDayUser(Userid: number): Promise<Object[]> {
-        const quest = await this.httpService.get("http://localhost:8006/statistics/showAnswersPerDayUser",
-                                                {params: {
-                                                        "Userid" : Userid
-                                                    }
-                                                })
+        const quest = await this.httpService.get("http://localhost:8006/statistics/showAnswersPerDayUser/"+Userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -84,11 +72,7 @@ export class StatsService {
     }
 
     async countAnswersUser(Userid: number): Promise<Object[]>{
-        const quest = await this.httpService.get("http://localhost:8006/statistics/countAnswersUser",
-                                                {params: {
-                                                        "Userid" : Userid
-                                                    }
-                                                })
+        const quest = await this.httpService.get("http://localhost:8006/statistics/countAnswersUser/"+Userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -98,11 +82,7 @@ export class StatsService {
     }
 
     async countQuestionsUser(Userid: number): Promise<Object[]>{
-        const quest = await this.httpService.get("http://localhost:8006/statistics/countQuestionsUser",
-                                                {params: {
-                                                        "Userid" : Userid
-                                                    }
-                                                })
+        const quest = await this.httpService.get("http://localhost:8006/statistics/countQuestionsUser/"+Userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -110,8 +90,5 @@ export class StatsService {
             throw new NotFoundException(`No questions found for user with id ${Userid}.`)
         return quest
     }
-
-
-
 
 }

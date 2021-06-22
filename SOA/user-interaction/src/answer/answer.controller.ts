@@ -6,7 +6,7 @@ import {JwtAuthGuard} from "./jwt-auth.guard";
 export class AnswerController {
     constructor(private readonly answerService: AnswerService) {}
 
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Post('/:id')
     createAnswer(@Param('id') params: number, @Body() createAnswerDto: object) {
         return this.answerService.create(params, createAnswerDto);
@@ -17,13 +17,13 @@ export class AnswerController {
         return this.answerService.findQuestionAnswers(id)
     }
 
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Get('for_user/:id')
     findAnswersForUser(@Param('id') id: number) {
         return this.answerService.findAnswersForUser(id)
     }
 
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Get('all_user/:userid/:date_from')
     findAllDate(@Param('date_from') date_from: Date, @Param('userid') userid : number) {
         return this.answerService.findAllDate(date_from, userid)

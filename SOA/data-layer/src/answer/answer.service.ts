@@ -35,7 +35,7 @@ export class AnswerService {
         return await this.manager.find(Answer, {where: {userId: UserID}});
     }
 
-    async findAllDateQuery(date_from: Date, userid: number): Promise<Object[]> {
+    async findAllDateQuery(date_from: Date, userid: number): Promise<Answer[]> {
         return await this.manager.find(Answer, {
             where: {date_created: LessThan(date_from), userId: userid},
             order: {

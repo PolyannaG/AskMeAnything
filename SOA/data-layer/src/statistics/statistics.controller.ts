@@ -10,8 +10,10 @@ export class StatisticsController {
         return this.statisticsService.findByKeywordsQuery()
     }
 
-    @Get('findByKeywordsUser')
+    @Get('findByKeywordsUser/:Userid')
     findByKeywordsUser(@Param('Userid') Userid : number) {
+        console.log("statistics controller");
+        console.log(Userid);
         return this.statisticsService.findByKeywordsUserQuery(Userid)
     }
 
@@ -20,7 +22,7 @@ export class StatisticsController {
         return this.statisticsService.showQuestionsPerDayQuery()
     }
 
-    @Get('showQuestionsPerDayUser')
+    @Get('showQuestionsPerDayUser/:Userid')
     showQuestionsPerDayUser(@Param('Userid') Userid : number) {
         return this.statisticsService.showQuestionsPerDayUserQuery(Userid)
     }
@@ -30,17 +32,17 @@ export class StatisticsController {
         return this.statisticsService.showAnswersPerDayQuery()
     }
 
-    @Get('showAnswersPerDayUser')
+    @Get('showAnswersPerDayUser/:Userid')
     showAnswersPerDayUser(@Param('Userid') Userid : number) {
         return this.statisticsService.showAnswersPerDayUserQuery(Userid)
     }
 
-    @Get('countAnswersUser')
+    @Get('countAnswersUser/:Userid')
     countAnswersUser(@Param('Userid') Userid : number) {
         return this.statisticsService.countAnswersUserQuery(Userid)
     }
 
-    @Get('countQuestionsUser')
+    @Get('countQuestionsUser/:Userid')
     countQuestionsUser(@Param('Userid') Userid : number) {
         return this.statisticsService.countQuestionsUserQuery(Userid)
     }

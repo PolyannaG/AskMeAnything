@@ -4,6 +4,7 @@ import {createQueryBuilder, EntityManager, getConnection, LessThan, Repository} 
 import {Keyword} from "../entities/keyword.entity";
 import {Question} from "../entities/question.entity";
 import {CreateQuestionDto} from "./dto/create-question.dto";
+import {Request} from "express";
 
 @Injectable()
 export class QuestionService {
@@ -11,7 +12,7 @@ export class QuestionService {
                 @InjectRepository(Keyword) private readonly keywordRepository : Repository<Keyword>,
                 @InjectRepository(Keyword) private readonly que: Repository<Keyword>) {}
 
-    async insertQuery(createQuestionDto: CreateQuestionDto): Promise<any> {
+    async insertQuery(createQuestionDto: CreateQuestionDto): Promise<Question> {
     return this.manager.transaction( async manager=>
     {
         //create question
@@ -51,7 +52,7 @@ export class QuestionService {
     });
 }
 
-    async findAllQuery(date_from: Date): Promise<any> {
+    async findAllQuery(date_from: Date): Promise<Question[]> {
         return await this.manager.find(Question, {
             where: {date_created: LessThan(date_from)},
             order: {
@@ -62,12 +63,12 @@ export class QuestionService {
         });
     }
 
-    async findAllTitlesQuery(): Promise<any> {
+    async findAllTitlesQuery(): Promise<Question[]> {
         return await this.manager.query(`SELECT title , id FROM database.question`)
 
     }
 
-    async findAllUserQuery(date_from: Date, Userid: number): Promise<any> {
+    async findAllUserQuery(date_from: Date, Userid: number): Promise<Question[]> {
         return await this.manager.find(Question, {
             where: {date_created: LessThan(date_from), userId: Userid},
             take: 10,
@@ -75,48 +76,46 @@ export class QuestionService {
         });
     }
 
-    async findOneQuery(id : number): Promise<any> {
+    async findOneQuery(id : number): Promise<Question> {
         return await this.manager.findOne(Question, id, {relations: ["keywords"]})
     }
 
-    async getMostPopularQuery(): Promise<any> {
+    async getMostPopularQuery(): Promise<Question[]> {
         return this.manager.find(Question, {order: {popularity: "DESC"}, take: 10, relations: ["keywords"]})
 
     }
 
-    async filterByStartAndEndDateQuery(date_from: Date, date_to: Date): Promise<any> {
+    async filterByStartAndEndDateQuery(date_from: Date, date_to: Date): Promise<Question[]> {
         return await createQueryBuilder().select(`*`).from('question', 'Question').andWhere(`date_created < '${date_from}'`).andWhere(`date_created >= '${date_to}'`).orderBy('date_created', 'DESC').take(10).getRawMany()
     }
 
-    async filterByStartAndEndDateUserQuery(date_from: Date, date_to: Date, Userid : number): Promise<any> {
+    async filterByStartAndEndDateUserQuery(date_from: Date, date_to: Date, Userid : number): Promise<Question[]> {
         return await createQueryBuilder().select(`*`).from('question', 'Question').andWhere(`date_created < '${date_from}'`).andWhere(`date_created >= '${date_to}'`).andWhere(`"userId" = ${Userid}`).orderBy('date_created', 'DESC').take(10).getRawMany()
     }
 
-    async filterByKeywordDateFromQuery(keyword: String, date_from: Date): Promise<any> {
+    async filterByKeywordDateFromQuery(keyword: String, date_from: Date): Promise<Object[]> {
         return await this.manager.query(`SELECT * FROM (SELECT * from  "database"."keyword_questions_question" as "A"  INNER JOIN "database"."question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"<'${date_from}' AND "A"."keywordKeyword"='${keyword}') as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
     }
 
-    async filterByKeywordDateFromUserQuery(keyword: String, date_from: Date, Userid : number): Promise<any> {
+    async filterByKeywordDateFromUserQuery(keyword: String, date_from: Date, Userid : number): Promise<Object[]> {
         return await this.manager.query(`SELECT * FROM (SELECT * from  "database"."keyword_questions_question" as "A"  INNER JOIN "database"."question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"<'${date_from}' AND "A"."keywordKeyword"='${keyword}' AND "B"."userId"=${Userid}) as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
     }
 
-    async filterByKeywordDateFromToQuery(keyword: String, date_from: Date, date_to : Date): Promise<any> {
+    async filterByKeywordDateFromToQuery(keyword: String, date_from: Date, date_to : Date): Promise<Object[]> {
         return await this.manager.query(`SELECT * FROM (SELECT * from  "database"."keyword_questions_question" as "A"  INNER JOIN "database"."question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"<'${date_from}' AND "B"."date_created">='${date_to}' AND "A"."keywordKeyword"='${keyword}') as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
     }
 
-    async filterByKeywordDateFromToUserQuery(keyword: String, date_from: Date,  date_to : Date, Userid : number): Promise<any> {
-        await this.manager.query(`SELECT * FROM (SELECT * from  "database"."keyword_questions_question" as "A"  INNER JOIN "database"."question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"< '${date_from}' AND "B"."date_created">='${date_to}' AND "A"."keywordKeyword"='${keyword}' AND "B"."userId"=${Userid}) as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
+    async filterByKeywordDateFromToUserQuery(keyword: String, date_from: Date,  date_to : Date, Userid : number): Promise<Object[]> {
+        return await this.manager.query(`SELECT * FROM (SELECT * from  "database"."keyword_questions_question" as "A"  INNER JOIN "database"."question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"< '${date_from}' AND "B"."date_created">='${date_to}' AND "A"."keywordKeyword"='${keyword}' AND "B"."userId"=${Userid}) as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
     }
 
-    async findAllKeywordsQuery(): Promise<any> {
-        return  await this.manager.query('SELECT * FROM database.keyword ORDER BY keyword')
+    async findAllKeywordsQuery(): Promise<Keyword[]> {
+        return await this.manager.query('SELECT * FROM database.keyword ORDER BY keyword')
     }
 
-    async findSpecificKeywordsQuery(keyword: String): Promise<any> {
+    async findSpecificKeywordsQuery(keyword: String): Promise<Keyword[]> {
         return await this.manager.query(`SELECT * FROM database.keyword AS A WHERE A.keyword LIKE '%${keyword}%' ORDER BY keyword`)
 
     }
-
-    async
 
 }

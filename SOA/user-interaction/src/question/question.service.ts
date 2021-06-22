@@ -9,20 +9,15 @@ export class QuestionService {
                 //private redisService: RedisService
     ) {}
 
-    async create(createQuestionDto: object) : Promise<Object[]>{
-        let created_question = await this.httpService.post("http://localhost:8006/question/create", {body: createQuestionDto})
+    async create(createQuestionDto: object) : Promise<Object>{
+        let created_question = await this.httpService.post("http://localhost:8006/question/create", createQuestionDto)
             .pipe(map(response => response.data))
             .toPromise();
         return created_question
     }
 
     async findAll(date_from: Date): Promise<Object[]> {
-        const questions = await this.httpService.get("http://localhost:8006/question/findAll",
-                                                    {params:
-                                                            {
-                                                                "date_from": date_from
-                                                            }
-                                                    })
+        const questions = await this.httpService.get("http://localhost:8006/question/findAll/"+date_from)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -42,13 +37,7 @@ export class QuestionService {
     }
 
     async findAllUser(date_from: Date, Userid: number): Promise<Object[]> {
-        const questions = await this.httpService.get("http://localhost:8006/question/findAllUser",
-                                                    {params:
-                                                            {
-                                                                "date_from": date_from,
-                                                                "Userid": Userid
-                                                            }
-                                                    })
+        const questions = await this.httpService.get("http://localhost:8006/question/findAllUser/"+date_from+"/"+Userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -58,12 +47,7 @@ export class QuestionService {
     }
 
     async findOne(id: number): Promise<Object[]> {
-        const question = await this.httpService.get("http://localhost:8006/question/findOne",
-            {params:
-                    {
-                        "id": id
-                    }
-            })
+        const question = await this.httpService.get("http://localhost:8006/question/findOne/"+id)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -83,13 +67,7 @@ export class QuestionService {
     }
 
     async filterByStartAndEndDate(date_from: Date, date_to: Date): Promise<Object[]> {
-        const questions = await this.httpService.get("http://localhost:8006/question/filterByStartAndEndDate",
-                                                    {params:
-                                                            {
-                                                                "date_from": date_from,
-                                                                "date_to": date_to
-                                                            }
-                                                    })
+        const questions = await this.httpService.get("http://localhost:8006/question/filterByStartAndEndDate/"+date_from+"/"+date_to)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -97,12 +75,7 @@ export class QuestionService {
             throw new NotFoundException(`No questions earlier than date ${date_from} and later than date ${date_to} found.`)
 
         for (let i = 0; i < questions.length; i++) {
-            let keyw = await this.httpService.get("http://localhost:8006/question/findOne",
-                                                {params:
-                                                        {
-                                                            "id": questions[i].id
-                                                        }
-                                                })
+            let keyw = await this.httpService.get("http://localhost:8006/question/findOne/"+questions[i].id)
                 .pipe(map(response => response.data))
                 .toPromise();
 
@@ -113,14 +86,7 @@ export class QuestionService {
     }
 
     async filterByStartAndEndDateUser(date_from: Date, date_to: Date, Userid : number): Promise<Object[]> {
-        const questions = await this.httpService.get("http://localhost:8006/question/filterByStartAndEndDateUser",
-                                                    {params:
-                                                            {
-                                                                "date_from": date_from,
-                                                                "date_to": date_to,
-                                                                "Userid": Userid
-                                                            }
-                                                    })
+        const questions = await this.httpService.get("http://localhost:8006/question/filterByStartAndEndDateUser/"+date_from+"/"+date_to+"/"+Userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -128,12 +94,7 @@ export class QuestionService {
             throw new NotFoundException(`No questions earlier than date ${date_from} and later than date ${date_to} and user id ${Userid} found .`)
 
         for (let i = 0; i < questions.length; i++) {
-            let keyw = await this.httpService.get("http://localhost:8006/question/findOne",
-                {params:
-                        {
-                            "id": questions[i].id
-                        }
-                })
+            let keyw = await this.httpService.get("http://localhost:8006/question/findOne/"+questions[i].id)
                 .pipe(map(response => response.data))
                 .toPromise();
 
@@ -144,13 +105,7 @@ export class QuestionService {
     }
 
     async filterByKeywordDateFrom(keyword: String, date_from: Date): Promise<Object[]> {
-        const quest= await this.httpService.get("http://localhost:8006/question/filterByKeywordDateFrom",
-                                                {params:
-                                                        {
-                                                            "date_from": date_from,
-                                                            "keyword": keyword
-                                                        }
-                                                })
+        const quest= await this.httpService.get("http://localhost:8006/question/filterByKeywordDateFrom/"+keyword+"/"+date_from)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -158,12 +113,7 @@ export class QuestionService {
             throw new NotFoundException(`No questions found for keyword ${keyword} and before ${date_from}.`)
 
         for (let i = 0; i < quest.length; i++) {
-            let keyw = await this.httpService.get("http://localhost:8006/question/findOne",
-                {params:
-                        {
-                            "id": quest[i].id
-                        }
-                })
+            let keyw = await this.httpService.get("http://localhost:8006/question/findOne/"+quest[i].id)
                 .pipe(map(response => response.data))
                 .toPromise();
 
@@ -175,14 +125,7 @@ export class QuestionService {
     }
 
     async filterByKeywordDateFromUser(keyword: String, date_from: Date, Userid : number): Promise<Object[]> {
-        const quest= await this.httpService.get("http://localhost:8006/question/filterByKeywordDateFromUser",
-                                                {params:
-                                                        {
-                                                            "date_from": date_from,
-                                                            "keyword": keyword,
-                                                            "Userid": Userid
-                                                        }
-                                                })
+        const quest= await this.httpService.get("http://localhost:8006/question/filterByKeywordDateFromUser/"+keyword+"/"+date_from+"/"+Userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -190,12 +133,7 @@ export class QuestionService {
             throw new NotFoundException(`No questions found for keyword ${keyword} and before ${date_from} and user id ${Userid}.`)
 
         for (let i = 0; i < quest.length; i++) {
-            let keyw = await this.httpService.get("http://localhost:8006/question/findOne",
-                {params:
-                        {
-                            "id": quest[i].id
-                        }
-                })
+            let keyw = await this.httpService.get("http://localhost:8006/question/findOne/"+quest[i].id)
                 .pipe(map(response => response.data))
                 .toPromise();
 
@@ -207,14 +145,7 @@ export class QuestionService {
     }
 
     async filterByKeywordDateFromTo(keyword: String, date_from: Date, date_to : Date): Promise<Object[]> {
-        const quest= await this.httpService.get("http://localhost:8006/question/filterByKeywordDateFromTo",
-                                                {params:
-                                                        {
-                                                            "date_from": date_from,
-                                                            "keyword": keyword,
-                                                            "date_to": date_to
-                                                        }
-                                                })
+        const quest= await this.httpService.get("http://localhost:8006/question/filterByKeywordDateFromTo/"+keyword+"/"+date_from+"/"+date_to)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -222,12 +153,7 @@ export class QuestionService {
             throw new NotFoundException(`No questions found for keyword ${keyword} and before ${date_from} and after ${date_to}.`)
 
         for (let i = 0; i < quest.length; i++) {
-            let keyw = await this.httpService.get("http://localhost:8006/question/findOne",
-                {params:
-                        {
-                            "id": quest[i].id
-                        }
-                })
+            let keyw = await this.httpService.get("http://localhost:8006/question/findOne/"+quest[i].id)
                 .pipe(map(response => response.data))
                 .toPromise();
 
@@ -239,15 +165,7 @@ export class QuestionService {
     }
 
     async filterByKeywordDateFromToUser(keyword: String, date_from: Date,  date_to : Date, Userid : number): Promise<Object[]> {
-        const quest= await this.httpService.get("http://localhost:8006/question/filterByKeywordDateFromToUser",
-                                                {params:
-                                                        {
-                                                            "date_from": date_from,
-                                                            "keyword": keyword,
-                                                            "date_to": date_to,
-                                                            "Userid": Userid
-                                                        }
-                                                })
+        const quest= await this.httpService.get("http://localhost:8006/question/filterByKeywordDateFromToUser/"+keyword+"/"+date_from+"/"+date_to+"/"+Userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -255,12 +173,7 @@ export class QuestionService {
             throw new NotFoundException(`No questions found for keyword ${keyword} and before ${date_from} and after ${date_to} and user id ${Userid}.`)
 
         for (let i = 0; i < quest.length; i++) {
-            let keyw = await this.httpService.get("http://localhost:8006/question/findOne",
-                {params:
-                        {
-                            "id": quest[i].id
-                        }
-                })
+            let keyw = await this.httpService.get("http://localhost:8006/question/findOne/"+quest[i].id)
                 .pipe(map(response => response.data))
                 .toPromise();
 
@@ -283,12 +196,7 @@ export class QuestionService {
     }
 
     async findSpecificKeywords(keyword: String): Promise<Object[]>{
-        const keyw = await this.httpService.get("http://localhost:8006/question/findSpecificKeywords",
-                                                {params:
-                                                        {
-                                                            "keyword": keyword,
-                                                        }
-                                                })
+        const keyw = await this.httpService.get("http://localhost:8006/question/findSpecificKeywords/"+keyword)
             .pipe(map(response => response.data))
             .toPromise();
 
