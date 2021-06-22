@@ -3,7 +3,7 @@ import {
     Controller,
     Get,
     HttpException,
-    HttpStatus,
+    HttpStatus, Param,
     Post,
     Req,
     Res,
@@ -17,6 +17,7 @@ import * as bcrypt from "bcrypt"
 import {Response, Request} from "express";
 import {JwtAuthGuard} from "./jwt-auth.guard";
 import {CreateUserDto} from "./dto/create-user.dto";
+import {TokenDto} from "./dto/token.dto";
 
 
 @Controller('authentication')
@@ -27,6 +28,27 @@ export class AuthenticationController {
         private readonly jwtService: JwtService
 
     ) {}
+
+    async onModuleInit() {
+        let subscribed = await this.authenticationService.Subscribe();
+        if (subscribed)
+            return "Subscribed successfully";
+        else
+            return "Something went wrong, cannot subscribe for now";
+    }
+
+    async onApplicationShutdown() {
+        let unsubscribed = this.authenticationService.unSubscribe();
+        if (unsubscribed)
+            return "Unsubscribed successfully";
+        else
+            return "Something went wrong, cannot unsubscribe for now";
+    }
+
+    @Get('authorization')
+    async Auth(@Body() token : TokenDto) {
+        return this.authenticationService.validateRequest(token)
+    }
 
     @Post('register')
     async register(@Body() registrationData: CreateUserDto) {
@@ -46,12 +68,14 @@ export class AuthenticationController {
             response.clearCookie('token')
             return new HttpException('invalid username', HttpStatus.BAD_REQUEST)
         }
+        // @ts-ignore
         else if (!await bcrypt.compare(password, user.password)){
             response.status(400)
             response.clearCookie('token')
             return new HttpException('invalid password', HttpStatus.BAD_REQUEST)
         }
         else {
+            // @ts-ignore
             const token = await this.authenticationService.getCookieWithJwtToken(user.id, user.username);
             response.cookie('token', token, {httpOnly: true})
             return {
@@ -73,6 +97,7 @@ export class AuthenticationController {
                 throw new UnauthorizedException()
 
             const user=await this.userService.findOne(data._id)
+            // @ts-ignore
             const {password, ...result}=user
 
             return result

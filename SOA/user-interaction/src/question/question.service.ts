@@ -1,13 +1,101 @@
 import {HttpService, Injectable, NotFoundException} from '@nestjs/common';
-import {map} from "rxjs/operators";
+import {catchError, map} from "rxjs/operators";
+import {RedisService} from "nestjs-redis";
 
 
 @Injectable()
 export class QuestionService {
 
+    private client: any;
     constructor(private httpService: HttpService,
-                //private redisService: RedisService
-    ) {}
+                private redisService: RedisService) {
+        this.getClient();
+    }
+    private async getClient() {
+        this.client = await this.redisService.getClient();
+    }
+
+    async Subscribe(): Promise<boolean> {
+        let body = {
+            name : "Questions",
+            address : "http://localhost:8009/user_interaction/question",
+            description : "Creates questions and fetches answers with various filter combinations (dates, keywords)",
+            services : []
+        };
+
+        let req =this.httpService.post("http://localhost:8010/management/subscribe", body);
+
+        req.pipe(catchError(async e => {
+            let unsub = await this.client.hget('lost', 'unregistrations');
+            let sub = await this.client.hget('lost', 'registrations');
+            let lost_registrations = JSON.parse(sub);
+            let lost_unregistrations = JSON.parse(unsub);
+            let newUnsub = [];
+
+            if (lost_unregistrations != null) {
+                for (let j = 0; j < lost_unregistrations.length; j++) {
+                    if (lost_unregistrations[j]["address"] != body["address"])
+                        newUnsub.push(lost_unregistrations[j]);
+                }
+
+                await this.client.hset('lost', 'unregistrations', JSON.stringify(newUnsub));
+            }
+
+            if (lost_registrations == null) {
+                lost_registrations = [];
+                lost_registrations[0] = body;
+            }
+            else {
+                lost_registrations.push(body);
+            }
+
+            await this.client.hset('lost', 'registrations', JSON.stringify(lost_registrations));
+            return false;
+        }));
+
+        return req.pipe(map(response => response.data)).toPromise();
+    }
+
+    async unSubscribe(): Promise<any> {
+        let body = {
+            name : "Questions",
+            address : "http://localhost:8009/user_interaction/question",
+            description : "Creates questions and fetches answers with various filter combinations (dates, keywords)",
+            services : []
+        };
+
+        let req = this.httpService.post("http://localhost:8010/management/unsubscribe", body);
+
+        req.pipe(catchError(async e => {
+            let unsub = await this.client.hget('lost', 'unregistrations');
+            let sub = await this.client.hget('lost', 'registrations');
+            let lost_registrations = JSON.parse(sub);
+            let lost_unregistrations = JSON.parse(unsub);
+            let newSub = [];
+
+            if (lost_registrations != null) {
+                for (let j = 0; j < lost_registrations.length; j++) {
+                    if (lost_registrations[j]["address"] != body["address"])
+                        newSub.push(lost_registrations[j]);
+                }
+
+                await this.client.hset('lost', 'registrations', JSON.stringify(newSub));
+            }
+
+            if (lost_unregistrations == null) {
+                lost_unregistrations = [];
+                lost_unregistrations[0] = body;
+            }
+            else {
+                lost_unregistrations.push(body);
+            }
+
+            await this.client.hset('lost', 'unregistrations', JSON.stringify(lost_unregistrations));
+            return false;
+        }));
+
+        return req.pipe(map(response => response.data)).toPromise();
+    }
 
     async create(createQuestionDto: object) : Promise<Object>{
         let created_question = await this.httpService.post("http://localhost:8006/question/create", createQuestionDto)

@@ -9,14 +9,23 @@ export class QuestionController {
                 //private readonly jwtService:
                 ) {}
 
-    /*
     async onModuleInit() {
-        await this.questionService.subscribeAnswers();
-        await this.questionService.subscribeQuestions();
-        await this.questionService.retrieveLostAnswerMessages();
-        await this.questionService.retrieveLostQuestionMessages();
-        return "Subscribed and retrieved messages successfully";
+        let subscribed = await this.questionService.Subscribe();
+        if (subscribed)
+            return "Subscribed successfully";
+        else
+            return "Something went wrong, cannot subscribe for now";
     }
+
+    async onApplicationShutdown() {
+        let unsubscribed = this.questionService.unSubscribe();
+        if (unsubscribed)
+            return "Unsubscribed successfully";
+        else
+            return "Something went wrong, cannot unsubscribe for now";
+    }
+
+    /*
 
     @Post('question_message')
     updateDatabase(@Body() msgDto : MessageQuestionDto) {

@@ -6,6 +6,22 @@ import {JwtAuthGuard} from "./jwt-auth.guard";
 export class AnswerController {
     constructor(private readonly answerService: AnswerService) {}
 
+    async onModuleInit() {
+        let subscribed = await this.answerService.Subscribe();
+        if (subscribed)
+            return "Subscribed successfully";
+        else
+            return "Something went wrong, cannot subscribe for now";
+    }
+
+    async onApplicationShutdown() {
+        let unsubscribed = this.answerService.unSubscribe();
+        if (unsubscribed)
+            return "Unsubscribed successfully";
+        else
+            return "Something went wrong, cannot unsubscribe for now";
+    }
+
     //@UseGuards(JwtAuthGuard)
     @Post('/:id')
     createAnswer(@Param('id') params: number, @Body() createAnswerDto: object) {

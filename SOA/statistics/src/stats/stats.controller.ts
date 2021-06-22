@@ -1,41 +1,27 @@
-import {Controller, Get, Param, Post, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Req, UnauthorizedException, UseGuards} from '@nestjs/common';
 import {StatsService} from "./stats.service";
+import {Request} from "express";
 import {JwtAuthGuard} from "./jwt-auth.guard";
 
 @Controller('stats')
 export class StatsController {
     constructor(private readonly statsService: StatsService) {}
 
+    async onModuleInit() {
+        let subscribed = await this.statsService.Subscribe();
+        if (subscribed)
+            return "Subscribed successfully";
+        else
+            return "Something went wrong, cannot subscribe for now";
+    }
 
     async onApplicationShutdown() {
-        console.log("SHUT DOWN"); // e.g. "SIGINT"
+        let unsubscribed = this.statsService.unSubscribe();
+        if (unsubscribed)
+            return "Unsubscribed successfully";
+        else
+            return "Something went wrong, cannot unsubscribe for now";
     }
-
-
-
-    /*
-    async onModuleInit() {
-        await this.statsService.subscribeAnswers();
-        await this.statsService.subscribeQuestions();
-        await this.statsService.retrieveLostAnswerMessages();
-        await this.statsService.retrieveLostQuestionMessages();
-        return "Subscribed and retrieved messages successfully";
-    }
-
-
-
-    @Post('answer_message')
-    updateAnswers(@Body() msgAnswerDto : MessageAnswerDto) {
-        return this.statsService.updateAnswersDatabase(msgAnswerDto)
-    }
-
-    @Post('question_message')
-    updateQuestions(@Body() msgQuestionDto : MessageQuestionDto) {
-        return this.statsService.updateQuestionDatabase(msgQuestionDto)
-    }
-
-     */
-
 
     @Get('keywords')
     findByKeywords() {
@@ -44,8 +30,12 @@ export class StatsController {
 
     //@UseGuards(JwtAuthGuard)
     @Get('keywords_user/:Userid')
-    findByKeywordsUser(@Param('Userid') Userid : number)  {
-        return this.statsService.findByKeywordsUser(Userid)
+    async findByKeywordsUser(@Param('Userid') Userid : number, @Req() request: Request)  {
+        let auth = await this.statsService.auth(request);
+        if (auth)
+            return this.statsService.findByKeywordsUser(Userid)
+        else
+            throw new UnauthorizedException()
     }
 
     @Get('per_day/questions')
