@@ -23,6 +23,8 @@ export class AnswerService {
             const the_answer = await this.manager.create(Answer, answer_to_be_created);
             const answer_created = await this.manager.save(the_answer);
 
+            await this.manager.increment(Question, {id : paramId}, "popularity", 1);
+
             return answer_created;
         });
     }

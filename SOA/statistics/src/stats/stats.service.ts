@@ -1,10 +1,20 @@
-import {HttpService, Injectable, NotFoundException} from '@nestjs/common';
-import {map} from "rxjs/operators";
+import {HttpService, Injectable, NotFoundException, ServiceUnavailableException} from '@nestjs/common';
+import {catchError, map} from "rxjs/operators";
+import {RedisService} from "nestjs-redis";
+import {Request} from "express";
 
 
 @Injectable()
 export class StatsService {
-    constructor(private httpService: HttpService) {}
+    private client: any;
+    constructor(private httpService: HttpService,
+                private redisService: RedisService) {
+        this.getClient();
+    }
+    private async getClient() {
+        this.client = await this.redisService.getClient();
+    }
+
 
     async findByKeywords(): Promise<Object[]> {
       const quest = await this.httpService.get("http://localhost:8006/statistics/findByKeywords")
@@ -89,6 +99,120 @@ export class StatsService {
         if (!quest || !quest.length)
             throw new NotFoundException(`No questions found for user with id ${Userid}.`)
         return quest
+    }
+
+
+    async Subscribe(): Promise<any> {
+        let body = {
+            name : "Statistics",
+            address : "http://localhost:8008/stats",
+            description : "Returns data about Questions or/and Answers or/and Keywords or/and Users for statistic analysis",
+            services : []
+        };
+
+        return await this.httpService.post("http://localhost:8010/management/subscribe", body)
+            .pipe(catchError(async e => {
+                let unsub = await this.client.hget('lost', 'unregisters');
+                let sub = await this.client.hget('lost', 'registers');
+                let lost_registrations = JSON.parse(sub);
+                let lost_unregistrations = JSON.parse(unsub);
+                let newUnsub = [];
+
+                if (lost_unregistrations != null) {
+                    for (let j = 0; j < lost_unregistrations.length; j++) {
+                        if (lost_unregistrations[j]["address"] != body["address"])
+                            newUnsub.push(lost_unregistrations[j]);
+                    }
+
+                    await this.client.hset('lost', 'unregisters', JSON.stringify(newUnsub));
+                }
+
+                if (lost_registrations == null) {
+                    lost_registrations = [];
+                    lost_registrations[0] = body;
+                }
+                else {
+                    lost_registrations.push(body);
+                }
+
+                await this.client.hset('lost', 'registers', JSON.stringify(lost_registrations));
+                return false;
+            })).toPromise();
+
+    }
+
+    async unSubscribe(): Promise<any> {
+        let body = {
+            name : "Statistics",
+            address : "http://localhost:8008/stats",
+            description : "Returns data about Questions or/and Answers or/and Keywords or/and Users for statistic analysis",
+            services : []
+        };
+
+        return await this.httpService.post("http://localhost:8010/management/unsubscribe", body)
+            .pipe(catchError(async e => {
+                console.log("in error");
+                let unsub = await this.client.hget('lost', 'unregisters');
+                let sub = await this.client.hget('lost', 'registers');
+                let lost_registrations = JSON.parse(sub);
+                let lost_unregistrations = JSON.parse(unsub);
+                let newSub = [];
+
+                if (lost_registrations != null) {
+                    for (let j = 0; j < lost_registrations.length; j++) {
+                        if (lost_registrations[j]["address"] != body["address"]) {
+                            newSub.push(lost_registrations[j]);
+                        }
+                    }
+
+                    await this.client.hset('lost', 'registers', JSON.stringify(newSub));
+                }
+
+                if (lost_unregistrations == null) {
+                    lost_unregistrations = [];
+                    lost_unregistrations[0] = body;
+                }
+                else {
+                    lost_unregistrations.push(body);
+                }
+
+                await this.client.hset('lost', 'unregisters', JSON.stringify(lost_unregistrations));
+                return false;
+            })).toPromise();
+
+    }
+
+    async auth(req : Request): Promise<boolean> {
+        let services = await this.httpService.get("http://localhost:8010/discovery/services").pipe(map(response =>response.data)).toPromise();
+
+        if (services == null) {
+            return null
+            //return false
+        }
+
+        let authorization = [];
+        for (let i = 0; i < services.length; i++) {
+            if (services[i]["name"] == "Authorization") {
+                authorization.push(services[i])
+            }
+        }
+
+        if (!authorization.length) {
+            return null
+            //return false
+        }
+
+        const cookie = req.cookies['token'];
+
+        let body = {
+            name: authorization[0]["name"],
+            url: authorization[0]["url"],
+            requestMethod: authorization[0]["requestMethod"],
+            params: {token: cookie}
+        };
+
+        return await this.httpService.post("http://localhost:8010/execution", body).pipe(map(response => response.data)).toPromise();
+
     }
 
 }

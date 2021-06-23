@@ -5,10 +5,11 @@ import {JwtModule} from "@nestjs/jwt";
 
 @Module({
     imports: [HttpModule,
-        JwtModule.register({
+        /*JwtModule.register({
         secret: `${process.env.TOKEN_SECRET}`,
         signOptions: {expiresIn : '1d'}
     })
+         */
     ],
     controllers: [QuestionController],
     providers: [QuestionService]

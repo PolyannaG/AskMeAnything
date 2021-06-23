@@ -1,4 +1,4 @@
-import {HttpModule, Module} from '@nestjs/common';
+import {HttpModule, HttpService, Module} from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { AuthenticationController } from './authentication.controller';
 import {UserService} from "../user/user.service";
@@ -13,7 +13,7 @@ import {JwtModule} from '@nestjs/jwt';
       signOptions: {expiresIn : '1d'}
 
     })],
-  providers: [AuthenticationService, UserService],
+  providers: [AuthenticationService, UserService, HttpModule],
   controllers: [AuthenticationController]
 })
 export class AuthenticationModule {}

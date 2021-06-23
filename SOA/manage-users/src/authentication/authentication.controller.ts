@@ -3,19 +3,17 @@ import {
     Controller,
     Get,
     HttpException,
-    HttpStatus,
+    HttpStatus, Param,
     Post,
     Req,
     Res,
-    UnauthorizedException,
-    UseGuards
+    UnauthorizedException
 } from '@nestjs/common';
 import {AuthenticationService} from "./authentication.service";
 import {UserService} from "../user/user.service";
 import {JwtService} from "@nestjs/jwt";
 import * as bcrypt from "bcrypt"
 import {Response, Request} from "express";
-import {JwtAuthGuard} from "./jwt-auth.guard";
 import {CreateUserDto} from "./dto/create-user.dto";
 
 
@@ -27,6 +25,27 @@ export class AuthenticationController {
         private readonly jwtService: JwtService
 
     ) {}
+
+    async onModuleInit(): Promise<string> {
+        let subscribed = await this.authenticationService.Subscribe();
+        if (subscribed)
+            return "Subscribed successfully";
+        else
+            return "Something went wrong, cannot subscribe for now";
+    }
+
+    async onModuleDestroy(): Promise<string> {
+        let unsubscribed = await this.authenticationService.unSubscribe();
+        if (unsubscribed)
+            return "Unsubscribed successfully";
+        else
+            return "Something went wrong, cannot unsubscribe for now";
+    }
+
+    @Post('authorization')
+    async Auth(@Body() token : object) {
+        return await this.authenticationService.validateRequest(token)
+    }
 
     @Post('register')
     async register(@Body() registrationData: CreateUserDto) {
@@ -46,12 +65,14 @@ export class AuthenticationController {
             response.clearCookie('token')
             return new HttpException('invalid username', HttpStatus.BAD_REQUEST)
         }
+        // @ts-ignore
         else if (!await bcrypt.compare(password, user.password)){
             response.status(400)
             response.clearCookie('token')
             return new HttpException('invalid password', HttpStatus.BAD_REQUEST)
         }
         else {
+            // @ts-ignore
             const token = await this.authenticationService.getCookieWithJwtToken(user.id, user.username);
             response.cookie('token', token, {httpOnly: true})
             return {
@@ -73,6 +94,7 @@ export class AuthenticationController {
                 throw new UnauthorizedException()
 
             const user=await this.userService.findOne(data._id)
+            // @ts-ignore
             const {password, ...result}=user
 
             return result
@@ -84,11 +106,25 @@ export class AuthenticationController {
 
     //@UseGuards(JwtAuthGuard)
     @Post('logout')
-    async logout(@Res({passthrough : true}) response: Response){
-        response.clearCookie('token')
-        return{
-            message : "successful logout"
+    async logout(@Req() request: Request ,@Res({passthrough : true}) response: Response){
+        try {
+
+            const cookie = request.cookies['token']
+
+            const data = await this.jwtService.verifyAsync(cookie)
+
+            if (!data)
+                throw new UnauthorizedException()
+
+            response.clearCookie('token')
+            return{
+                message : "successful logout"
+            }
+
+        }catch (e){
+            throw new UnauthorizedException()
         }
+
     }
 
 }
