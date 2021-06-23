@@ -12,9 +12,15 @@ export class ExecutionService {
         let reqBody = body.params;
         
         //in our app we use only post and get requests
-        if (reqMethod == "get")
-            return await this.httpService.get(url, reqBody).pipe(map(response=>response.data)).toPromise();
-        else if (reqMethod == "post")
-            return await this.httpService.post(url, reqBody).pipe(map(response=>response.data)).toPromise();
+        if (reqMethod == "post") {
+            return await this.httpService.post(url, reqBody).pipe(map(response => response.data)).toPromise();
+        }
+        else if (reqMethod == "get") {
+            let GetUrl = url;
+            for (let key in reqBody) {
+                GetUrl = GetUrl + "/" + reqBody[key];
+            }
+            return await this.httpService.get(GetUrl).pipe(map(response => response.data)).toPromise();
+        }
     }
 }

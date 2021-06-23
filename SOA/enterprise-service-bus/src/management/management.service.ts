@@ -14,7 +14,7 @@ export class ManagementService {
     }
 
     async activateSubscription(subscriberInfo : ManagementBodyDto): Promise<boolean> {
-        let sub = await this.client.hget('registered');
+        let sub = await this.client.hget('registered', 'all');
         let subscribers = JSON.parse(sub);
         let myAddress = subscriberInfo.address;
         let alreadySubscribed = false;
@@ -22,7 +22,7 @@ export class ManagementService {
         if (subscribers == null){
             subscribers = [];
             subscribers[0] = subscriberInfo;
-            await this.client.hset('registered' , JSON.stringify(subscribers));
+            await this.client.hset('registered', 'all', JSON.stringify(subscribers));
             return true
         }
         else {
@@ -32,7 +32,7 @@ export class ManagementService {
             }
             if (alreadySubscribed == false) {
                 subscribers.push(subscriberInfo);
-                await this.client.hset('registered', JSON.stringify(subscribers));
+                await this.client.hset('registered', 'all', JSON.stringify(subscribers));
                 return true
             }
             else
@@ -41,7 +41,7 @@ export class ManagementService {
     }
 
     async stopSubscription(subscriberAddress : ManagementBodyDto): Promise<boolean> {
-        let sub = await this.client.hget('registered');
+        let sub = await this.client.hget('registered', 'all');
         let subscribers = JSON.parse(sub);
         let myAddress = subscriberAddress.address;
         let newSubscribers = [];
@@ -49,11 +49,12 @@ export class ManagementService {
         if (subscribers != null)
         {
             for (let i = 0; i < subscribers.length; i++) {
-                if (subscribers[i].address != myAddress)
+                if (subscribers[i].address != myAddress) {
                     newSubscribers.push(subscribers[i]);
+                }
             }
 
-            await this.client.hset('registered', JSON.stringify(newSubscribers));
+            await this.client.hset('registered', 'all', JSON.stringify(newSubscribers));
             return true
 
         }
@@ -62,8 +63,8 @@ export class ManagementService {
     }
 
     async updateSubscribers(): Promise<any> {
-        let unsub = await this.client.hget('lost', 'unregistrations');
-        let sub = await this.client.hget('lost', 'registrations');
+        let unsub = await this.client.hget('lost', 'unregisters');
+        let sub = await this.client.hget('lost', 'registers');
         let subscribe = JSON.parse(sub);
         let unsubscribe = JSON.parse(unsub);
 
@@ -71,21 +72,21 @@ export class ManagementService {
             for (let i = 0; i < unsubscribe.length; i++) {
                 await this.stopSubscription(unsubscribe[i]);
             }
-            await this.client.hset('lost', 'unregistrations', JSON.stringify([]));
+            await this.client.hset('lost', 'unregisters', JSON.stringify([]));
         }
 
         if (subscribe != null) {
             for (let i = 0; i < subscribe.length; i++) {
                 await this.activateSubscription(subscribe[i]);
             }
-            await this.client.hset('lost', 'registrations', JSON.stringify([]));
+            await this.client.hset('lost', 'registers', JSON.stringify([]));
         }
 
         return "Registers Updated";
     }
 
     async getAllSubscribers(): Promise<Object>{
-        let sub = await this.client.hget('registered');
+        let sub = await this.client.hget('registered', 'all');
         let resp = JSON.parse(sub);
         return resp
     }

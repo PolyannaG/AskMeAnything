@@ -21,13 +21,13 @@ export class DiscoveryService {
         if (registered != null ) {
             for (let i = 0; i < registered.length; i++) {
                 if (registered[i]["services"] != []) {
-                    for (let j = 0; j < registered.length; j++) {
+                    for (let j = 0; j < registered[i]["services"].length; j++) {
                         services.push(registered[i]["services"][j]);
                     }
                 }
             }
         }
-        
+        console.log(services);
         return services;
     }
 }

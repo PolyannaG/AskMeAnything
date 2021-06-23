@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import {HttpModule, Module} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import {RedisModule} from "nestjs-redis";
@@ -17,7 +17,7 @@ const options = {
 };
 
 @Module({
-  imports: [RedisModule.register(options)],
+  imports: [RedisModule.register(options), HttpModule],
   controllers: [AppController, ManagementController, DiscoveryController, ExecutionController],
   providers: [AppService, ExecutionService, DiscoveryService, ManagementService],
 })

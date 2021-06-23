@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Param} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post} from '@nestjs/common';
 import {ExecutionService} from "./execution.service";
 import {ServiceDto} from "./dto/service.dto";
 
@@ -6,7 +6,7 @@ import {ServiceDto} from "./dto/service.dto";
 export class ExecutionController {
     constructor(private readonly executionService : ExecutionService) {}
     
-    @Get()
+    @Post()
     async Execute(@Body() body: ServiceDto) {
         return this.executionService.execute(body);
     }

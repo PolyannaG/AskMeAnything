@@ -1,13 +1,21 @@
-import {Body, Controller, Get, Param, Post, Req, UnauthorizedException, UseGuards} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    Post,
+    Req,
+    ServiceUnavailableException,
+    UnauthorizedException
+} from '@nestjs/common';
 import {StatsService} from "./stats.service";
 import {Request} from "express";
-import {JwtAuthGuard} from "./jwt-auth.guard";
 
 @Controller('stats')
 export class StatsController {
     constructor(private readonly statsService: StatsService) {}
 
-    async onModuleInit() {
+    async onModuleInit(): Promise<string> {
         let subscribed = await this.statsService.Subscribe();
         if (subscribed)
             return "Subscribed successfully";
@@ -15,8 +23,8 @@ export class StatsController {
             return "Something went wrong, cannot subscribe for now";
     }
 
-    async onApplicationShutdown() {
-        let unsubscribed = this.statsService.unSubscribe();
+    async onModuleDestroy() : Promise<string> {
+        let unsubscribed = await this.statsService.unSubscribe();
         if (unsubscribed)
             return "Unsubscribed successfully";
         else
@@ -34,8 +42,10 @@ export class StatsController {
         let auth = await this.statsService.auth(request);
         if (auth)
             return this.statsService.findByKeywordsUser(Userid)
-        else
+        else if (auth === false)
             throw new UnauthorizedException()
+        else
+            throw new ServiceUnavailableException()
     }
 
     @Get('per_day/questions')
@@ -45,32 +55,62 @@ export class StatsController {
 
     //@UseGuards(JwtAuthGuard)
     @Get('per_day_user/questions/:Userid')
-    showQuestionsPerDayUser(@Param('Userid') Userid : number){
-        return this.statsService.showQuestionsPerDayUser(Userid)
+    async showQuestionsPerDayUser(@Param('Userid') Userid : number, @Req() request: Request){
+        let auth = await this.statsService.auth(request);
+        if (auth)
+            return this.statsService.showQuestionsPerDayUser(Userid)
+        else if (auth === false)
+            throw new UnauthorizedException()
+        else
+            throw new ServiceUnavailableException()
     }
 
     //@UseGuards(JwtAuthGuard)
     @Get('per_day/answers')
-    showAnswersPerDay(){
-        return this.statsService.showAnswersPerDay()
+    async showAnswersPerDay(@Req() request: Request){
+        let auth = await this.statsService.auth(request);
+        if (auth)
+            return this.statsService.showAnswersPerDay()
+        else if (auth === false)
+            throw new UnauthorizedException()
+        else
+            throw new ServiceUnavailableException()
     }
 
     //@UseGuards(JwtAuthGuard)
     @Get('per_day_user/answers/:Userid')
-    showAnswersPerDayUser(@Param('Userid') Userid : number){
-        return this.statsService.showAnswersPerDayUser(Userid)
+    async showAnswersPerDayUser(@Param('Userid') Userid : number, @Req() request: Request){
+        let auth = await this.statsService.auth(request);
+        if (auth)
+            return this.statsService.showAnswersPerDayUser(Userid)
+        else if (auth === false)
+            throw new UnauthorizedException()
+        else
+            throw new ServiceUnavailableException()
     }
 
     //@UseGuards(JwtAuthGuard)
     @Get('count_answers_user/:Userid')
-    countAnswersUser(@Param('Userid') Userid : number){
-        return this.statsService.countAnswersUser(Userid)
+    async countAnswersUser(@Param('Userid') Userid : number, @Req() request: Request){
+        let auth = await this.statsService.auth(request);
+        if (auth)
+            return this.statsService.countAnswersUser(Userid)
+        else if (auth === false)
+            throw new UnauthorizedException()
+        else
+            throw new ServiceUnavailableException()
     }
 
     //@UseGuards(JwtAuthGuard)
     @Get('count_questions_user/:Userid')
-    countQuestionsUser(@Param('Userid') Userid : number){
-        return this.statsService.countQuestionsUser(Userid)
+    async countQuestionsUser(@Param('Userid') Userid : number, @Req() request: Request){
+        let auth = await this.statsService.auth(request);
+        if (auth)
+            return this.statsService.countQuestionsUser(Userid)
+        else if (auth === false)
+            throw new UnauthorizedException()
+        else
+            throw new ServiceUnavailableException()
     }
 
 }

@@ -1,13 +1,10 @@
-import {ExecutionContext, HttpException, HttpService, HttpStatus, Injectable} from '@nestjs/common';
+import {HttpException, HttpService, HttpStatus, Injectable} from '@nestjs/common';
 import {JwtService} from "@nestjs/jwt";
 import {UserService} from "../user/user.service";
 import * as bcrypt from "bcrypt";
 import {CreateUserDto} from "./dto/create-user.dto";
 import {RedisService} from "nestjs-redis";
 import {catchError, map} from "rxjs/operators";
-import {Observable} from "rxjs";
-import {Request} from "express";
-import {TokenDto} from "./dto/token.dto";
 
 @Injectable()
 export class AuthenticationService {
@@ -22,19 +19,18 @@ export class AuthenticationService {
         this.client = await this.redisService.getClient();
     }
 
-    async Subscribe(): Promise<boolean> {
+    async Subscribe(): Promise<any> {
         let body = {
             name : "Manage-Users",
             address : "http://localhost:8007/authentication",
             description : "User sign in/out or sign up and authorization provider",
-            services : [{name:"X", executionUrl:"http://localhost:8010/execution/" , url: "X", requestMethod: "x", params:{}},{name:"Authorization", url: "http://localhost:8007/authentication/authorization", requestMethod: "get", params: {token: "User token (string)"}}]
+            services : [{name:"Authorization", url: "http://localhost:8007/authentication/authorization", requestMethod: "post", params: {token: "User token (string)"}}]
         };
 
-        let req =this.httpService.post("http://localhost:8010/management/subscribe", body);
-
-        req.pipe(catchError(async e => {
-            let unsub = await this.client.hget('lost', 'unregistrations');
-            let sub = await this.client.hget('lost', 'registrations');
+        return await this.httpService.post("http://localhost:8010/management/subscribe", body)
+            .pipe(catchError(async e => {
+            let unsub = await this.client.hget('lost', 'unregisters');
+            let sub = await this.client.hget('lost', 'registers');
             let lost_registrations = JSON.parse(sub);
             let lost_unregistrations = JSON.parse(unsub);
             let newUnsub = [];
@@ -45,7 +41,7 @@ export class AuthenticationService {
                         newUnsub.push(lost_unregistrations[j]);
                 }
 
-                await this.client.hset('lost', 'unregistrations', JSON.stringify(newUnsub));
+                await this.client.hset('lost', 'unregisters', JSON.stringify(newUnsub));
             }
 
             if (lost_registrations == null) {
@@ -56,11 +52,10 @@ export class AuthenticationService {
                 lost_registrations.push(body);
             }
 
-            await this.client.hset('lost', 'registrations', JSON.stringify(lost_registrations));
+            await this.client.hset('lost', 'registers', JSON.stringify(lost_registrations));
             return false;
-        }));
+        })).toPromise();
 
-        return req.pipe(map(response => response.data)).toPromise();
     }
 
     async unSubscribe(): Promise<any> {
@@ -68,14 +63,13 @@ export class AuthenticationService {
             name : "Manage-Users",
             address : "http://localhost:8007/authentication",
             description : "User sign in/out or sign up and authorization provider",
-            services : [{name:"X", url: "X", requestMethod: "x", params:{}},{name:"Authorization", url: "http://localhost:8007/authentication/authorization", requestMethod: "get", params: {token: "User token (string)"}}]
+            services : [{name:"Authorization", url: "http://localhost:8007/authentication/authorization", requestMethod: "post", params: {token: "User token (string)"}}]
         };
 
-        let req = this.httpService.post("http://localhost:8010/management/unsubscribe", body);
-
-        req.pipe(catchError(async e => {
-            let unsub = await this.client.hget('lost', 'unregistrations');
-            let sub = await this.client.hget('lost', 'registrations');
+        return await this.httpService.post("http://localhost:8010/management/unsubscribe", body)
+            .pipe(catchError(async e => {
+            let unsub = await this.client.hget('lost', 'unregisters');
+            let sub = await this.client.hget('lost', 'registers');
             let lost_registrations = JSON.parse(sub);
             let lost_unregistrations = JSON.parse(unsub);
             let newSub = [];
@@ -86,7 +80,7 @@ export class AuthenticationService {
                         newSub.push(lost_registrations[j]);
                 }
 
-                await this.client.hset('lost', 'registrations', JSON.stringify(newSub));
+                await this.client.hset('lost', 'registers', JSON.stringify(newSub));
             }
 
             if (lost_unregistrations == null) {
@@ -97,21 +91,25 @@ export class AuthenticationService {
                 lost_unregistrations.push(body);
             }
 
-            await this.client.hset('lost', 'unregistrations', JSON.stringify(lost_unregistrations));
+            await this.client.hset('lost', 'unregisters', JSON.stringify(lost_unregistrations));
             return false;
-        }));
+        })).toPromise();
 
-        return req.pipe(map(response => response.data)).toPromise();
     }
 
-    public async validateRequest(params : TokenDto): Promise<boolean> {
+
+    public async validateRequest(params : object): Promise<boolean> {
         try {
-            const cookie = params.token;
-            const data = await this.jwtService.verifyAsync(cookie);
-            if (data)
-                return true
-            else
+            if (params == {})
                 return false
+            else {
+                const cookie = params["token"];
+                const data = await this.jwtService.verifyAsync(cookie);
+                if (data)
+                    return true
+                else
+                    return false
+            }
         }
         catch (e){
             return false

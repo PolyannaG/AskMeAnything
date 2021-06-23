@@ -7,17 +7,14 @@ import {
     Post,
     Req,
     Res,
-    UnauthorizedException,
-    UseGuards
+    UnauthorizedException
 } from '@nestjs/common';
 import {AuthenticationService} from "./authentication.service";
 import {UserService} from "../user/user.service";
 import {JwtService} from "@nestjs/jwt";
 import * as bcrypt from "bcrypt"
 import {Response, Request} from "express";
-import {JwtAuthGuard} from "./jwt-auth.guard";
 import {CreateUserDto} from "./dto/create-user.dto";
-import {TokenDto} from "./dto/token.dto";
 
 
 @Controller('authentication')
@@ -29,7 +26,7 @@ export class AuthenticationController {
 
     ) {}
 
-    async onModuleInit() {
+    async onModuleInit(): Promise<string> {
         let subscribed = await this.authenticationService.Subscribe();
         if (subscribed)
             return "Subscribed successfully";
@@ -37,17 +34,17 @@ export class AuthenticationController {
             return "Something went wrong, cannot subscribe for now";
     }
 
-    async onApplicationShutdown() {
-        let unsubscribed = this.authenticationService.unSubscribe();
+    async onModuleDestroy(): Promise<string> {
+        let unsubscribed = await this.authenticationService.unSubscribe();
         if (unsubscribed)
             return "Unsubscribed successfully";
         else
             return "Something went wrong, cannot unsubscribe for now";
     }
 
-    @Get('authorization')
-    async Auth(@Body() token : TokenDto) {
-        return this.authenticationService.validateRequest(token)
+    @Post('authorization')
+    async Auth(@Body() token : object) {
+        return await this.authenticationService.validateRequest(token)
     }
 
     @Post('register')
@@ -109,11 +106,25 @@ export class AuthenticationController {
 
     //@UseGuards(JwtAuthGuard)
     @Post('logout')
-    async logout(@Res({passthrough : true}) response: Response){
-        response.clearCookie('token')
-        return{
-            message : "successful logout"
+    async logout(@Req() request: Request ,@Res({passthrough : true}) response: Response){
+        try {
+
+            const cookie = request.cookies['token']
+
+            const data = await this.jwtService.verifyAsync(cookie)
+
+            if (!data)
+                throw new UnauthorizedException()
+
+            response.clearCookie('token')
+            return{
+                message : "successful logout"
+            }
+
+        }catch (e){
+            throw new UnauthorizedException()
         }
+
     }
 
 }
