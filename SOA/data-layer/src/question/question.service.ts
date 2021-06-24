@@ -21,7 +21,7 @@ export class QuestionService {
             text: createQuestionDto.text,
             userId: createQuestionDto.userId
         }
-
+        console.log(createQuestionDto.userId)
         const question = await this.manager.create(Question, question_to_create);
         const question_created = await this.manager.save(question)
 
