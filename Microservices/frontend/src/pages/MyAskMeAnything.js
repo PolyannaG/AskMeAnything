@@ -58,42 +58,55 @@ function MyAskMeAnything(){
 
     const getDummyUser=async () => {
         let user_data={}
-        let resp_questions=await fetch(`http://localhost:8003/statistics/count_questions_user/${id}`,{
-            method: 'GET',
-            headers: {'Content-type': 'application/json'},
-            credentials: 'include'
-        })
-        if (resp_questions.ok){
-            resp_questions=await resp_questions.json()
-            user_data.questions=resp_questions[0].count
+        try {
+            let resp_questions = await fetch(`http://localhost:8003/statistics/count_questions_user/${id}`, {
+                method: 'GET',
+                headers: {'Content-type': 'application/json'},
+                credentials: 'include'
+            })
+            if (resp_questions.ok) {
+                resp_questions = await resp_questions.json()
+                user_data.questions = resp_questions[0].count
+            } else
+                user_data.questions = ""
         }
-        else
-            user_data.questions=false
-        let resp_answers=await fetch(`http://localhost:8003/statistics/count_answers_user/${id}`,{
-            method: 'GET',
-            headers: {'Content-type': 'application/json'},
-            credentials: 'include'
-        })
-        if (resp_answers.ok){
-            resp_answers=await resp_answers.json()
-            user_data.answers=resp_answers[0].count
+        catch (e){
+            user_data.questions = ""
         }
-        else
-            user_data.answers=false
+        try {
+            let resp_answers = await fetch(`http://localhost:8003/statistics/count_answers_user/${id}`, {
+                method: 'GET',
+                headers: {'Content-type': 'application/json'},
+                credentials: 'include'
+            })
+            if (resp_answers.ok) {
+                resp_answers = await resp_answers.json()
+                user_data.answers = resp_answers[0].count
+            } else
+                user_data.answers = ""
+        }
+        catch (e) {
+            user_data.answers = ""
+        }
+        try {
 
-        let resp_user=await fetch('http://localhost:8002/auth/user', {
-            method: 'GET',
-            headers: {'Content-type': 'application/json'},
-            credentials: 'include'
-        })
-        if (resp_user.ok){
-            resp_user=await resp_user.json()
-            user_data.user_since=resp_user.user_since.substring(0,10).split("-").reverse().join("/")
-            user_data.email=resp_user.email
+            let resp_user = await fetch('http://localhost:8002/auth/user', {
+                method: 'GET',
+                headers: {'Content-type': 'application/json'},
+                credentials: 'include'
+            })
+            if (resp_user.ok) {
+                resp_user = await resp_user.json()
+                user_data.user_since = resp_user.user_since.substring(0, 10).split("-").reverse().join("/")
+                user_data.email = resp_user.email
+            } else {
+                user_data.user_since = ""
+                user_data.email = ""
+            }
         }
-        else {
-            user_data.user_since=""
-            user_data.email=""
+        catch (e){
+            user_data.user_since = ""
+            user_data.email = ""
         }
         user_data.username = username
 
@@ -230,15 +243,15 @@ function MyAskMeAnything(){
 
                 })
 
-                mydata.sort(function (a, b) {
+               // mydata.sort(function (a, b) {
                     // Turn your strings into dates, and then subtract them
                     // to get a value that is either negative, positive, or zero.
-                    return b.date_created - a.date_created;
-                });
+                //    return b.date_created - a.date_created;
+               // });
 
-                mydata.reverse()
+               // mydata.reverse()
                 setlastDate(mydata[mydata.length - 1].date_created)
-                //console.log(mydata)
+                console.log(mydata)
                 setQuestionsForShow(mydata)
             } else {
                 setIsMore(false)
@@ -272,34 +285,44 @@ function MyAskMeAnything(){
                // console.log(mydata)
                  for (let i =0; i<resp.length; i++) {
                      if (mydata[i] !== undefined) {
-                         let response = await fetch(`http://localhost:8005/view_question/id/${mydata[i].questionId}`,{
-                             method: 'GET',
-                             headers: {'Content-type': 'application/json'},
-                             credentials: 'include'
-                         })
-                         //  if (response.ok) {
-                         const question = await response.json()
-                         //   console.log(question)
-                         mydata[i].questionText = question[0].text
-                         mydata[i].questionTitle = question[0].title
-                         console.log(question[0].keywords)
-                         if (question[0].keywords !== undefined && question[0].keywords.length !== 0) {
+                         try {
+                             let response = await fetch(`http://localhost:8005/view_question/id/${mydata[i].questionId}`, {
+                                 method: 'GET',
+                                 headers: {'Content-type': 'application/json'},
+                                 credentials: 'include'
+                             })
+                             //if (response.ok) {
+                             const question = await response.json()
+                             //   console.log(question)
+                             mydata[i].questionText = question[0].text
+                             mydata[i].questionTitle = question[0].title
+                             console.log(question[0].keywords)
+                             if (question[0].keywords !== undefined && question[0].keywords.length !== 0) {
 
-                             let keyw = ""
-                             for (let i = 0; i < question[0].keywords.length - 1; i++) {
+                                 let keyw = ""
+                                 for (let i = 0; i < question[0].keywords.length - 1; i++) {
 
-                                 keyw = keyw + question[0].keywords[i].keyword + ", "
-                                 console.log(keyw)
+                                     keyw = keyw + question[0].keywords[i].keyword + ", "
+                                     console.log(keyw)
+                                 }
+                                 // console.log(item.keywords[ item.keywords.length-1])
+                                 keyw = keyw + question[0].keywords[question[0].keywords.length - 1].keyword
+                                 mydata[i].keywords = keyw
                              }
-                             // console.log(item.keywords[ item.keywords.length-1])
-                             keyw = keyw + question[0].keywords[question[0].keywords.length - 1].keyword
-                             mydata[i].keywords = keyw
+                             //   } else {
+                             //       item.questionText = 'Question text not available.'
+                             //       item.questionTitle = 'Question title not available.'
+                             //   }
+                         }catch (e){
+                             mydata[i].questionText = "Failed to load question text."
+                             mydata[i].questionTitle = "Failed to load question title."
                          }
-                         //   } else {
-                         //       item.questionText = 'Question text not available.'
-                         //       item.questionTitle = 'Question title not available.'
-                         //   }
-
+                    // }
+                    // else {
+                    //     console.log('quest service fail')
+                    //           mydata[i].questionText = "Failed to load question text."
+                    //           mydata[i].questionTitle = "Failed to load question title."
+                    // }
                      }
                      if (i===(mydata.length-1)){
                     //     mydata.sort(function (a, b) {
@@ -448,7 +471,7 @@ function MyAskMeAnything(){
                             My questions per keyword:
                         </h2>
                         <p>{' '}</p>
-                        <QuestionsPerKeywordBarChart data={data}/>
+                        {data.length && <QuestionsPerKeywordBarChart data={data}/>}
                         <p>{' '}</p>
                     </div>
                 </Col>

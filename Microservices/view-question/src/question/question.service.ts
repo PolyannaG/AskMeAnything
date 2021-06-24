@@ -49,7 +49,10 @@ export class QuestionService {
     const questions = await this.manager.find(Question, {
       where: {date_created: LessThan(date_from), Userid: Userid},
       take: 10,
-      relations: ["keywords"]
+      relations: ["keywords"],
+      order: {
+        date_created: 'DESC'
+      }
     });
     if (!questions || questions.length == 0)
       throw new NotFoundException(`No questions earlier than date ${date_from} for user with id ${Userid} found.`)

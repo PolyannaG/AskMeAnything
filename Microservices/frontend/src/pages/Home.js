@@ -760,7 +760,7 @@ function Home(){
                             Most popular questions are about:
                         </h2>
                         <p>{' '}</p>
-                       <QuestionsPerKeywordBarChart  data={data}/>
+                        {data.length && <QuestionsPerKeywordBarChart  data={data}/>}
                         <p>{' '}</p>
                     </div>
 
