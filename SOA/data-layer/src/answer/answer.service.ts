@@ -30,16 +30,16 @@ export class AnswerService {
     }
 
     async findQuestionAnswersQuery(QuestionID : number): Promise<Object[]> {
-        return await this.manager.find(Answer, {where: {questionId: QuestionID}});
+        return await this.manager.find(Answer, {where: {question: QuestionID}});
     }
 
     async findAnswersForUserQuery(UserID : number): Promise<Object[]> {
-        return await this.manager.find(Answer, {where: {userId: UserID}});
+        return await this.manager.find(Answer, {where: {user: UserID}});
     }
 
     async findAllDateQuery(date_from: Date, userid: number): Promise<Answer[]> {
         return await this.manager.find(Answer, {
-            where: {date_created: LessThan(date_from), userId: userid},
+            where: {date_created: LessThan(date_from), user: userid},
             order: {
                 date_created: "DESC",
             },

@@ -34,9 +34,10 @@ export class AnswerService {
 
     async findQuestionAnswers(QuestionID : number): Promise<Object[]> {
 
-        const question_answers = await this.httpService.get("http://localhost:8006/answer/findQuestionAnswers"+QuestionID)
+        const question_answers = await this.httpService.get("http://localhost:8006/answer/findQuestionAnswers/"+QuestionID)
             .pipe(map(response => response.data))
             .toPromise();
+
 
         if (question_answers == [])
             return [

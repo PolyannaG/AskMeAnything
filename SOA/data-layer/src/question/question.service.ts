@@ -70,7 +70,7 @@ export class QuestionService {
 
     async findAllUserQuery(date_from: Date, Userid: number): Promise<Question[]> {
         return await this.manager.find(Question, {
-            where: {date_created: LessThan(date_from), userId: Userid},
+            where: {date_created: LessThan(date_from), user: Userid},
             take: 10,
             relations: ["keywords"]
         });
