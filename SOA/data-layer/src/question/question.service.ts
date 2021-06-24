@@ -19,7 +19,7 @@ export class QuestionService {
         const question_to_create = {
             title: createQuestionDto.title,
             text: createQuestionDto.text,
-            userId: createQuestionDto.userId
+            user: {id: createQuestionDto.userId}
         }
 
         const question = await this.manager.create(Question, question_to_create);

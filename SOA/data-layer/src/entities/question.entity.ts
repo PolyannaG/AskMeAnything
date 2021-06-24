@@ -23,7 +23,7 @@ export class Question {
     @OneToMany(() => Answer, answer => answer.question)
     answers: Answer[];
 
-    @ManyToOne(()=> User, user => user.questions)
+    @ManyToOne(()=> User, user => user.questions, {nullable: false, onDelete: "CASCADE"})
     user: User;
 
     @ManyToMany(type => Keyword, keyword => keyword.questions)

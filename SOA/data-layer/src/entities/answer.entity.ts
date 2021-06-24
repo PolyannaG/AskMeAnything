@@ -13,9 +13,9 @@ export class Answer {
     @CreateDateColumn()
     date_created: Date;
 
-    @ManyToOne(() => User, user => user.answers)
+    @ManyToOne(() => User, user => user.answers, {nullable: false, onDelete: "CASCADE"})
     user: User;
 
-    @ManyToOne(() => Question, question => question.answers)
+    @ManyToOne(() => Question, question => question.answers, {nullable: false, onDelete: "CASCADE"})
     question: Question;
 };
