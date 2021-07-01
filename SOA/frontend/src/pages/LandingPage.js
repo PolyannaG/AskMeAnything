@@ -13,6 +13,7 @@ import 'antd/dist/antd.css'
 import {questions_per_day} from "../sample_data/questions_per_day";
 import '../css/HeaderText.css'
 import NavigationBarNotSignedIn from "../components/NavigationBarNotSignedIn";
+import ContributionsPerDayChart from "../components/ContributionsPerDay";
 
 
 function Home(){
@@ -23,7 +24,7 @@ function Home(){
     const [selectedKeywords, setSelectedKeywords]=useState([])
     const [questionsPerDay, setQuestionsPerDay]=useState([])
     const [data, setData]=useState([])
-
+    const [answerContributionsPerDay, setAnswerContributionsPerDay]=useState([])
 
 
     const getQuestionsPerDay=async()=>{
@@ -56,6 +57,41 @@ function Home(){
     }
 
 
+    const getAnswersPerDay=async()=>{
+        let resp= await fetch(`http://localhost:8008/stats/per_day/answers`,{
+            method: 'GET',
+            headers: {'Content-type': 'application/json'},
+            credentials: 'include'
+        })
+        console.log(resp.ok)
+        if (resp.ok){
+
+            resp=await resp.json()
+
+            // resp=resp.map({questionCount : 'y', keyword: 'label'})
+            // console.log(questions_per_day)
+
+            let mydata=resp
+            console.log(mydata)
+            mydata=mydata.map((item)=>{
+                const date=new Date(item.date_part.substring(0,4), item.date_part.substring(5,7)-1 ,item.date_part.substring(8,10)-1)
+                // console.log(date)
+                return {x: date, y : Number(item.count)}
+            })
+
+            mydata.sort(function(a,b){
+                // Turn your strings into dates, and then subtract them
+                // to get a value that is either negative, positive, or zero.
+                return a.x - b.x;
+            });
+            // console.log(mydata)
+
+            return mydata
+        }
+        else return []
+    }
+
+
     const getData= async ()=>{
         let resp= await fetch(`http://localhost:8008/stats/keywords`)
         if (resp.ok){
@@ -78,7 +114,9 @@ function Home(){
     useEffect( ()=>{
 
         //here the data will be fetched from the api
+        getAnswersPerDay().then((resp)=>setAnswerContributionsPerDay(resp))
         getQuestionsPerDay().then(resp => setQuestionsPerDay( resp) )
+
         getData().then((resp)=>{setData(resp)})
         fetchOptions().then()
 
@@ -152,9 +190,9 @@ function Home(){
 
                 <Col>
                     <div style={{marginLeft : '10px', marginRight : '10px'}}>
-                        <h2 class='text-info'>Questions asked this month:</h2>
+                        <h2 class='text-info'>Postings per day this month:</h2>
                         <p>{' '}</p>
-                        {questionsPerDay.length && <QuestionsPerDayChart dataPoints={questionsPerDay}/>}
+                        {(answerContributionsPerDay.length || questionsPerDay.length) && <ContributionsPerDayChart dataQuestions={questionsPerDay} dataAnswers={answerContributionsPerDay}/>}
                         <p>{' '}</p>
                     </div>
                 </Col>
@@ -170,7 +208,7 @@ function Home(){
                         <Card style={{ width: '18rem', alignItems : 'center'}}>
                             <Card.Img variant="top" src="https://marysvillemartialarts.com/wp-content/uploads/2017/08/questions-reponses-profits.jpg" />
                             <Card.Body >
-                                <Card.Title>Ask our users a question!</Card.Title>
+                                <Card.Title style={{marginTop : '6px'}}>Ask our users a question!</Card.Title>
                                 <Button variant="info" href='/sign_up'>Sign up now</Button>
                             </Card.Body>
                         </Card>

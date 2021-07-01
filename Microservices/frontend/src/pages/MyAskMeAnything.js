@@ -296,6 +296,8 @@ function MyAskMeAnything(){
                              //   console.log(question)
                              mydata[i].questionText = question[0].text
                              mydata[i].questionTitle = question[0].title
+                             mydata[i].questionDate=question[0].date_created
+
                              console.log(question[0].keywords)
                              if (question[0].keywords !== undefined && question[0].keywords.length !== 0) {
 
@@ -316,6 +318,8 @@ function MyAskMeAnything(){
                          }catch (e){
                              mydata[i].questionText = "Failed to load question text."
                              mydata[i].questionTitle = "Failed to load question title."
+                             mydata[i].questionDate="Failed to load date."
+
                          }
                     // }
                     // else {
@@ -459,10 +463,10 @@ function MyAskMeAnything(){
                 <Col>
                     <div style={{marginLeft : '10px', marginRight : '10px'}}>
                         <h2 class='text-info'>
-                            My contributions per day:
+                            My contributions per day this month:
                         </h2>
 
-                        {answerContributionsPerDay.length && <ContributionsPerDayChart dataQuestions={questionContributionsPerDay} dataAnswers={answerContributionsPerDay}/>}
+                        {(answerContributionsPerDay.length || questionContributionsPerDay.length) && <ContributionsPerDayChart dataQuestions={questionContributionsPerDay} dataAnswers={answerContributionsPerDay}/>}
                     </div>
                 </Col>
                 <Col>

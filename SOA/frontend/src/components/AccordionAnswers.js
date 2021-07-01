@@ -34,6 +34,13 @@ function AccordionAnswers(props){
                     <Card bg={"light"} border="white" text={"black"}>
                         <Accordion.Toggle as={Card.Header} eventKey={i+1}>
                             {item.questionTitle}
+                            <row className="row justify-content-end">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     className="bi bi-caret-down-fill " viewBox="0 0 16 16">
+                                    <path
+                                        d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                                </svg>
+                            </row>
                         </Accordion.Toggle>
                         <Accordion.Collapse eventKey={i+1}>
                                 <div>
@@ -45,6 +52,9 @@ function AccordionAnswers(props){
                                                 </Accordion.Toggle>
                                                 <Accordion.Collapse id="Coll2" eventKey={i + 1} style={{marginBottom : 10}}>
                                                     <div>
+                                                        <footer className="blockquote-footer text-center text-md-right" style={{Color : 'white'}}>
+                                                            {"asked on: " + item.questionDate.split("T").join(", ").slice(0,-5)}
+                                                        </footer>
                                                         <text>{item.questionText}</text>
                                                         <footer className="blockquote-footer"
                                                                 style={{Color: 'white'}}>
@@ -53,6 +63,9 @@ function AccordionAnswers(props){
                                                     </div>
                                                 </Accordion.Collapse>
                                             </Accordion>
+                                            <footer className="blockquote-footer text-center text-md-right" style={{Color : 'white'}}>
+                                                {"answered on: " + item.date_created.split("T").join(", ").slice(0,-5)}
+                                            </footer>
 
                                             {item.text}
 

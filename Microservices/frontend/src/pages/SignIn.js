@@ -9,7 +9,7 @@ import checkCredentials from "../hooks/checkCredentials";
 
 function SignIn(){
 
-    //let history = useHistory();  //will change when login is added
+    let history = useHistory();  //will change when login is added
 
     const [validated, setValidated] = useState(false)
     const [password, setPassword] = useState()
@@ -36,6 +36,7 @@ function SignIn(){
             }
             else{
                 alert('Invalid username or password!')
+                history.push('/')
             }
             // history.push('./homepage')  //will change when login is added
         }

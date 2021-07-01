@@ -68,13 +68,13 @@ export class StatsController {
     //@UseGuards(JwtAuthGuard)
     @Get('per_day/answers')
     async showAnswersPerDay(@Req() request: Request){
-        let auth = await this.statsService.auth(request);
-        if (auth)
+     //   let auth = await this.statsService.auth(request);
+     //   if (auth)
             return this.statsService.showAnswersPerDay()
-        else if (auth === false)
-            throw new UnauthorizedException()
-        else
-            throw new ServiceUnavailableException()
+     //   else if (auth === false)
+     //       throw new UnauthorizedException()
+     //   else
+      //      throw new ServiceUnavailableException()
     }
 
     //@UseGuards(JwtAuthGuard)

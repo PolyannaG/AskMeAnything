@@ -50,7 +50,7 @@ export class StatisticsController {
     return this.statisticsService.showQuestionsPerDayUser(Userid)
   }
 
-  @UseGuards(JwtAuthGuard)
+
   @Get('per_day/answers')
   showAnswersPerDay(){
     return this.statisticsService.showAnswersPerDay()

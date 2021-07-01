@@ -38,12 +38,14 @@ export class AnswerService {
     }
 
     async findAllDateQuery(date_from: Date, userid: number): Promise<Answer[]> {
-        return await this.manager.find(Answer, {
-            where: {date_created: LessThan(date_from), user: userid},
-            order: {
-                date_created: "DESC",
-            },
-            take: 10,
-        });
+        //   return await this.manager.find(Answer, {
+        ///     where: {date_created: LessThan(date_from), user: userid},
+        //     order: {
+        //        date_created: "DESC",
+        //    },
+        //     take: 10,
+        //   });
+        //  }
+        return await this.manager.query(`SELECT * from "database"."answer" AS "A" where "A"."date_created"<'${date_from}' and "A"."userId"=${userid} ORDER BY "A"."date_created" DESC LIMIT 10`)
     }
 }
