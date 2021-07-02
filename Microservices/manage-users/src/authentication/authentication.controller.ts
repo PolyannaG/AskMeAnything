@@ -28,13 +28,38 @@ export class AuthenticationController {
 
   ) {}
 
+  async onModuleInit() {
+    await this.authenticationService.subscribe();
+    return "Subscribed successfully";
+  }
+
+  @Post('authorization')
+  async Auth(@Body() body : object) {
+    return await this.authenticationService.validateRequest(body);
+  }
+
+  @Post('userId')
+  async getUserId(@Body() body : object) {
+    try {
+      const cookie = body["token"];
+      const data = await this.jwtService.verifyAsync(cookie);
+
+      if (!data)
+        throw new UnauthorizedException()
+
+      return data._id
+
+    } catch (e){
+      throw new UnauthorizedException()
+    }
+  }
+
   @Post('register')
   async register(@Body() registrationData: CreateUserDto) {
     const user=await this.authenticationService.register(registrationData);
     const {password,...result}=user
     return result
   }
-
 
   @Post('login')
   async logIn(@Body ('username') username :string, @Body('password') password :string, @Res({passthrough : true}) response : Response) {
@@ -59,6 +84,7 @@ export class AuthenticationController {
       }
     }
   }
+
   @UseGuards(JwtAuthGuard)
   @Get('user')
    async user(@Req() request: Request){

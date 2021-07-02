@@ -1,4 +1,4 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {HttpService, Injectable, NotFoundException} from '@nestjs/common';
 import {createQueryBuilder, Connection, EntityManager, getConnection, LessThan, Repository} from "typeorm";
 import {InjectConnection, InjectEntityManager, InjectRepository} from "@nestjs/typeorm";
 import {Question} from "./entities/question.entity";
@@ -7,6 +7,8 @@ import {addMonths} from 'date-fns'
 import {RedisService} from "nestjs-redis";
 import {MessageQuestionDto} from "./dto/Message-question.dto";
 import {MessageAnswerDto} from "./dto/Message-answer.dto";
+import {Request} from "express";
+import {map} from "rxjs/operators";
 
 
 @Injectable()
@@ -16,7 +18,8 @@ export class QuestionService {
   constructor(@InjectEntityManager() private manager : EntityManager,
               @InjectRepository(Keyword) private readonly keywordRepository : Repository<Keyword>,
               @InjectRepository(Keyword) private readonly que: Repository<Keyword>,
-              private redisService: RedisService) {
+              private redisService: RedisService,
+              private httpService: HttpService,) {
     this.getClient();
   }
 
@@ -367,6 +370,32 @@ export class QuestionService {
 
       await this.client.hset('answerMessages', "http://localhost:8005/view_question/answer_message", JSON.stringify([]));
       return "Saved data successfully";
+    }
+  }
+
+  async auth(req : Request): Promise<boolean> {
+    try {
+      let cookie = req.cookies['token'];
+      let body = {
+        token: cookie
+      }
+      return await this.httpService.post("http://localhost:4200/get_auth", body).pipe(map(response => response.data)).toPromise();
+    } catch (e) {
+      return null
+    }
+  }
+
+  async cookieUserId(req : Request): Promise<number> {
+    try {
+      const cookie = req.cookies['token'];
+
+      let body = {
+        token: cookie
+      };
+
+      return await this.httpService.post("http://localhost:4200/get_userId", body).pipe(map(response => response.data)).toPromise();
+    } catch (e) {
+      return null
     }
   }
 

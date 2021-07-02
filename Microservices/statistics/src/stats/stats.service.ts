@@ -1,4 +1,4 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {HttpService, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectEntityManager, InjectRepository} from "@nestjs/typeorm";
 import {createQueryBuilder, EntityManager, getConnection, InsertResult, Repository} from "typeorm";
 import {addMonths} from 'date-fns'
@@ -8,6 +8,8 @@ import {MessageAnswerDto} from "./dto/Message-answer.dto";
 import {Answer} from "./entities/answer.entity";
 import {MessageQuestionDto} from "./dto/Message-question.dto";
 import {Question} from "./entities/question.entity";
+import {Request} from "express";
+import {map} from "rxjs/operators";
 
 
 @Injectable()
@@ -15,7 +17,8 @@ export class StatisticsService {
   private client: any;
   constructor(@InjectEntityManager() private manager : EntityManager,
               @InjectRepository(Keyword) private readonly keywordRepository : Repository<Keyword>,
-              private redisService: RedisService) {
+              private redisService: RedisService,
+              private httpService: HttpService,) {
     this.getClient();
   }
   private async getClient() {
@@ -303,6 +306,32 @@ export class StatisticsService {
 
       await this.client.hset('questionMessages', "http://localhost:8003/statistics/question_message", JSON.stringify([]));
       return "Saved data successfully";
+    }
+  }
+
+  async auth(req : Request): Promise<boolean> {
+    try {
+      let cookie = req.cookies['token'];
+      let body = {
+        token: cookie
+      }
+      return await this.httpService.post("http://localhost:4200/get_auth", body).pipe(map(response => response.data)).toPromise();
+    } catch (e) {
+      return null
+    }
+  }
+
+  async cookieUserId(req : Request): Promise<number> {
+    try {
+      const cookie = req.cookies['token'];
+
+      let body = {
+        token: cookie
+      };
+
+      return await this.httpService.post("http://localhost:4200/get_userId", body).pipe(map(response => response.data)).toPromise();
+    } catch (e) {
+      return null
     }
   }
 

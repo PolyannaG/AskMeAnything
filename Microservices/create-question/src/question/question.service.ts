@@ -7,7 +7,8 @@ import {Question} from "./entities/question.entity";
 import {Keyword} from "./entities/keyword.entity";
 import {RedisService} from "nestjs-redis";
 import {MessageAnswerDto} from "./dto/Message-answer.dto";
-import {catchError} from "rxjs/operators";
+import {catchError, map} from "rxjs/operators";
+import {Request} from "express";
 
 
 @Injectable()
@@ -95,6 +96,32 @@ export class QuestionService {
 
       return question_created
     });
+  }
+
+  async auth(req : Request): Promise<boolean> {
+    try {
+      let cookie = req.cookies['token'];
+      let body = {
+        token: cookie
+      }
+      return await this.httpService.post("http://localhost:4200/get_auth", body).pipe(map(response => response.data)).toPromise();
+    } catch (e) {
+      return null
+    }
+  }
+
+  async cookieUserId(req : Request): Promise<number> {
+    try {
+      const cookie = req.cookies['token'];
+
+      let body = {
+        token: cookie
+      };
+
+      return await this.httpService.post("http://localhost:4200/get_userId", body).pipe(map(response => response.data)).toPromise();
+    } catch (e) {
+      return null
+    }
   }
 
   /*
