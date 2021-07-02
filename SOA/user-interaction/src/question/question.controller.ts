@@ -37,8 +37,14 @@ export class QuestionController {
     @Post()
     async create(@Body() createQuestionDto: object, @Req() request: Request) {
         let auth = await this.questionService.auth(request);
-        if (auth)
-            return this.questionService.create(createQuestionDto);
+        if (auth) {
+            let cookieUserId = await this.questionService.cookieUserId(request);
+            if (cookieUserId == createQuestionDto["userId"]) {
+                return this.questionService.create(createQuestionDto);
+            }
+            else //(userId of url) != (userId of token) so unauthorized to create a question as another user
+                throw new UnauthorizedException()
+        }
         else if (auth === false)
             throw new UnauthorizedException()
         else
@@ -73,8 +79,14 @@ export class QuestionController {
     @Get('all_user/:date_from/:Userid')
     async findAllUser(@Param('date_from') date_from: Date, @Param('Userid') Userid : number, @Req() request: Request) {
         let auth = await this.questionService.auth(request);
-        if (auth)
-            return this.questionService.findAllUser(date_from, Userid)
+        if (auth) {
+            let cookieUserId = await this.questionService.cookieUserId(request);
+            if (cookieUserId == Userid) {
+                return this.questionService.findAllUser(date_from, Userid)
+            }
+            else //(userId of url) != (userId of token) so unauthorized to create a question as another user
+                throw new UnauthorizedException()
+        }
         else if (auth === false)
             throw new UnauthorizedException()
         else
@@ -114,8 +126,14 @@ export class QuestionController {
     @Get('start_end_date_user/:userid/:date_from/:date_to')
     async filterByStartAndEndDateUser(@Param('date_from') date_from: Date, @Param('date_to') date_to: Date, @Param('userid') Userid :number, @Req() request: Request){
         let auth = await this.questionService.auth(request);
-        if (auth)
-            return this.questionService.filterByStartAndEndDateUser(date_from, date_to, Userid)
+        if (auth) {
+            let cookieUserId = await this.questionService.cookieUserId(request);
+            if (cookieUserId == Userid) {
+                return this.questionService.filterByStartAndEndDateUser(date_from, date_to, Userid)
+            }
+            else //(userId of url) != (userId of token) so unauthorized to create a question as another user
+                throw new UnauthorizedException()
+        }
         else if (auth === false)
             throw new UnauthorizedException()
         else
@@ -138,8 +156,14 @@ export class QuestionController {
     @Get('keyword_date_user/:keyword/:userid/:date_from')
     async filterByKeywordDateFromUser(@Param('keyword') keyword: String, @Param('date_from') date_from: Date, @Param('userid') Userid: number, @Req() request: Request){
         let auth = await this.questionService.auth(request);
-        if (auth)
-            return this.questionService.filterByKeywordDateFromUser(keyword, date_from, Userid)
+        if (auth) {
+            let cookieUserId = await this.questionService.cookieUserId(request);
+            if (cookieUserId == Userid) {
+                return this.questionService.filterByKeywordDateFromUser(keyword, date_from, Userid)
+            }
+            else //(userId of url) != (userId of token) so unauthorized to create a question as another user
+                throw new UnauthorizedException()
+        }
         else if (auth === false)
             throw new UnauthorizedException()
         else
@@ -162,8 +186,14 @@ export class QuestionController {
     @Get('keyword_date_from_to_user/:keyword/:userid/:date_from/:date_to')
     async filterByKeywordDateFromToUser(@Param('keyword') keyword: String, @Param('date_from') date_from: Date,  @Param('date_to', ) date_to: Date, @Param('userid') Userid: number, @Req() request: Request){
         let auth = await this.questionService.auth(request);
-        if (auth)
-            return this.questionService.filterByKeywordDateFromToUser(keyword, date_from, date_to, Userid)
+        if (auth) {
+            let cookieUserId = await this.questionService.cookieUserId(request);
+            if (cookieUserId == Userid) {
+                return this.questionService.filterByKeywordDateFromToUser(keyword, date_from, date_to, Userid)
+            }
+            else //(userId of url) != (userId of token) so unauthorized to create a question as another user
+                throw new UnauthorizedException()
+        }
         else if (auth === false)
             throw new UnauthorizedException()
         else

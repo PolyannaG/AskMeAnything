@@ -40,8 +40,14 @@ export class StatsController {
     @Get('keywords_user/:Userid')
     async findByKeywordsUser(@Param('Userid') Userid : number, @Req() request: Request)  {
         let auth = await this.statsService.auth(request);
-        if (auth)
-            return this.statsService.findByKeywordsUser(Userid)
+        if (auth) {
+            let cookieUserId = await this.statsService.cookieUserId(request);
+            if (cookieUserId == Userid) {
+                return this.statsService.findByKeywordsUser(Userid)
+            }
+            else //(userId of url) != (userId of token) so unauthorized to create a question as another user
+                throw new UnauthorizedException()
+        }
         else if (auth === false)
             throw new UnauthorizedException()
         else
@@ -57,32 +63,38 @@ export class StatsController {
     @Get('per_day_user/questions/:Userid')
     async showQuestionsPerDayUser(@Param('Userid') Userid : number, @Req() request: Request){
         let auth = await this.statsService.auth(request);
-        if (auth)
-            return this.statsService.showQuestionsPerDayUser(Userid)
+        if (auth) {
+            let cookieUserId = await this.statsService.cookieUserId(request);
+            if (cookieUserId == Userid) {
+                return this.statsService.showQuestionsPerDayUser(Userid)
+            }
+            else //(userId of url) != (userId of token) so unauthorized to create a question as another user
+                throw new UnauthorizedException()
+        }
         else if (auth === false)
             throw new UnauthorizedException()
         else
             throw new ServiceUnavailableException()
     }
 
-    //@UseGuards(JwtAuthGuard)
+
     @Get('per_day/answers')
     async showAnswersPerDay(@Req() request: Request){
-     //   let auth = await this.statsService.auth(request);
-     //   if (auth)
-            return this.statsService.showAnswersPerDay()
-     //   else if (auth === false)
-     //       throw new UnauthorizedException()
-     //   else
-      //      throw new ServiceUnavailableException()
+        return this.statsService.showAnswersPerDay()
     }
 
     //@UseGuards(JwtAuthGuard)
     @Get('per_day_user/answers/:Userid')
     async showAnswersPerDayUser(@Param('Userid') Userid : number, @Req() request: Request){
         let auth = await this.statsService.auth(request);
-        if (auth)
-            return this.statsService.showAnswersPerDayUser(Userid)
+        if (auth) {
+            let cookieUserId = await this.statsService.cookieUserId(request);
+            if (cookieUserId == Userid) {
+                return this.statsService.showAnswersPerDayUser(Userid)
+            }
+            else //(userId of url) != (userId of token) so unauthorized to create a question as another user
+                throw new UnauthorizedException()
+        }
         else if (auth === false)
             throw new UnauthorizedException()
         else
@@ -93,8 +105,14 @@ export class StatsController {
     @Get('count_answers_user/:Userid')
     async countAnswersUser(@Param('Userid') Userid : number, @Req() request: Request){
         let auth = await this.statsService.auth(request);
-        if (auth)
-            return this.statsService.countAnswersUser(Userid)
+        if (auth) {
+            let cookieUserId = await this.statsService.cookieUserId(request);
+            if (cookieUserId == Userid) {
+                return this.statsService.countAnswersUser(Userid)
+            }
+            else //(userId of url) != (userId of token) so unauthorized to create a question as another user
+                throw new UnauthorizedException()
+        }
         else if (auth === false)
             throw new UnauthorizedException()
         else
@@ -105,8 +123,14 @@ export class StatsController {
     @Get('count_questions_user/:Userid')
     async countQuestionsUser(@Param('Userid') Userid : number, @Req() request: Request){
         let auth = await this.statsService.auth(request);
-        if (auth)
-            return this.statsService.countQuestionsUser(Userid)
+        if (auth) {
+            let cookieUserId = await this.statsService.cookieUserId(request);
+            if (cookieUserId == Userid) {
+                return this.statsService.countQuestionsUser(Userid)
+            }
+            else //(userId of url) != (userId of token) so unauthorized to create a question as another user
+                throw new UnauthorizedException()
+        }
         else if (auth === false)
             throw new UnauthorizedException()
         else

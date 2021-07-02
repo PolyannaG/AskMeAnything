@@ -127,4 +127,20 @@ export class AuthenticationController {
 
     }
 
+    @Post('userId')
+    async userId(@Body() params : object): Promise<number> {
+        try {
+            const cookie = params["token"];
+            const data = await this.jwtService.verifyAsync(cookie);
+
+            if (!data)
+                throw new UnauthorizedException()
+
+            return data._id
+
+        } catch (e){
+            throw new UnauthorizedException()
+        }
+    }
+
 }

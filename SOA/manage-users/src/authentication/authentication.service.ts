@@ -24,7 +24,8 @@ export class AuthenticationService {
             name : "Manage-Users",
             address : "http://localhost:8007/authentication",
             description : "User sign in/out or sign up and authorization provider",
-            services : [{name:"Authorization", url: "http://localhost:8007/authentication/authorization", requestMethod: "post", params: {token: "User token (string)"}}]
+            services : [{name:"Authorization", url: "http://localhost:8007/authentication/authorization", requestMethod: "post", params: {token: "User token (string)"}},
+                        {name:"cookieUserId", url: "http://localhost:8007/authentication/userId", requestMethod: "post", params: {token: "User token (string)"}}]
         };
 
         return await this.httpService.post("http://localhost:8010/management/subscribe", body)
