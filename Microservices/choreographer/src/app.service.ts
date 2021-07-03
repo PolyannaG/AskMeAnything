@@ -228,7 +228,7 @@ export class ChoreographerService {
         }
     }
 
-    async getUserId(cookie : object): Promise<boolean> {
+    async getUserId(cookie : object): Promise<number> {
         let sub = await this.client.hget('subscribers', 'auth');
         let subscribers = JSON.parse(sub);
 

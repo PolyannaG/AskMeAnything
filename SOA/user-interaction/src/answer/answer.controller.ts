@@ -36,7 +36,7 @@ export class AnswerController {
         let auth = await this.answerService.auth(request);
         if (auth) {
             let cookieUserId = await this.answerService.cookieUserId(request);
-            if (cookieUserId == params) {
+            if (cookieUserId == createAnswerDto["userId"]) {
                 return this.answerService.create(params, createAnswerDto);
             }
             else //userId of url != userId of token so unauthorized to create an answer as another user

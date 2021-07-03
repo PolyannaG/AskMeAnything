@@ -34,7 +34,7 @@ export class AuthenticationController {
   }
 
   @Post('authorization')
-  async Auth(@Body() body : object) {
+  async Auth(@Body() body : object): Promise<boolean> {
     try {
       if (body == {})
         return false
@@ -52,7 +52,7 @@ export class AuthenticationController {
   }
 
   @Post('userId')
-  async getUserId(@Body() body : object) {
+  async getUserId(@Body() body : object): Promise<number> {
     try {
       const cookie = body["token"];
       const data = await this.jwtService.verifyAsync(cookie);
