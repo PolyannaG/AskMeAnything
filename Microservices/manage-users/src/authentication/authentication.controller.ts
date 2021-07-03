@@ -35,7 +35,20 @@ export class AuthenticationController {
 
   @Post('authorization')
   async Auth(@Body() body : object) {
-    return await this.authenticationService.validateRequest(body);
+    try {
+      if (body == {})
+        return false
+      else {
+        const cookie = body["token"];
+        const data = await this.jwtService.verifyAsync(cookie);
+        if (data)
+          return true
+        else
+          return false
+      }
+    } catch (e){
+      return false
+    }
   }
 
   @Post('userId')

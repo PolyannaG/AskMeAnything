@@ -14,26 +14,26 @@ import {Keyword} from "./keyword.entity";
 
 @Entity()
 export class Question {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('increment', {type: "integer"})
     id: number;
 
-    @Column()
+    @Column({type: 'text', nullable:false})
     title: string;
 
-    @Column({length : 10000})
+    @Column({type: 'text', nullable: false})
     text: string;
 
    // @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
    //date_created: Date;
 
-    @CreateDateColumn()
+    @CreateDateColumn({nullable: false})
     date_created: Date;
 
     //@Column({default: () => 0})
     //sum_answers: number;
 
 
-    @Column()
+    @Column({type: 'integer', nullable: false})
     Userid : number;
 
     @ManyToMany(type => Keyword, keyword => keyword.questions)
