@@ -5,10 +5,9 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {Answer} from "../entities/answer.entity";
 import {Question} from "../entities/question.entity";
 import {Keyword} from "../entities/keyword.entity";
-import {User} from "../entities/user.entity";
 
 @Module({
-  imports : [TypeOrmModule.forFeature([Answer, Question, Keyword, User])],
+  imports : [TypeOrmModule.forFeature([Answer, Question, Keyword])],
   controllers: [QuestionController],
   providers: [QuestionService]
 })

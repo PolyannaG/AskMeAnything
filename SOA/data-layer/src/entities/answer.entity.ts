@@ -1,23 +1,25 @@
 import {Entity, CreateDateColumn, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn} from "typeorm";
-import {User} from "./user.entity";
 import {Question} from "./question.entity";
 
 @Entity()
 export class Answer {
-    @PrimaryGeneratedColumn("increment")
+    @PrimaryGeneratedColumn("increment", {type: 'integer'})
     id: number;
 
-    @Column({length: 10000, nullable: false})
+    @Column({type: 'text', nullable: false})
     text: string;
 
-    @CreateDateColumn()
+    @CreateDateColumn({nullable: false})
     date_created: Date;
 
-    @ManyToOne(() => User, user => user.answers, {nullable: false, onDelete: "CASCADE"})
-   // @JoinColumn({name: 'userId'})
-    user: User;
+    @Column({type: 'integer', nullable: false})
+    userId: number;
+
+    //@ManyToOne(() => User, user => user.answers, {nullable: false, onDelete: "CASCADE"})
+    //@JoinColumn({name: 'userId'})
+    //user: User;
 
     @ManyToOne(() => Question, question => question.answers, {nullable: false, onDelete: "CASCADE"})
-    //@JoinColumn({name: 'questionId'})
+    @JoinColumn({name: 'questionId'})
     question: Question;
 };

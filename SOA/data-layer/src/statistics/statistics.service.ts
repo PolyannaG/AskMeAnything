@@ -14,8 +14,6 @@ export class StatisticsService {
     }
 
     async findByKeywordsUserQuery (Userid: number) : Promise<Object[]> {
-        console.log("statistics service");
-        console.log(Userid);
         return await this.manager.query(`SELECT COUNT(*) as "questionCount", "C"."keywordKeyword" as "keyword" FROM (SELECT * from  "database"."keyword_questions_question" as "A"  INNER JOIN "database"."question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."userId"=${Userid}) as "C"  GROUP BY "C"."keywordKeyword"`)
     }
 

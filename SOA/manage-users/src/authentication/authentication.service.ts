@@ -98,26 +98,6 @@ export class AuthenticationService {
 
     }
 
-
-    public async validateRequest(params : object): Promise<boolean> {
-        try {
-            if (params == {})
-                return false
-            else {
-                const cookie = params["token"];
-                const data = await this.jwtService.verifyAsync(cookie);
-                if (data)
-                    return true
-                else
-                    return false
-            }
-        }
-        catch (e){
-            return false
-        }
-    }
-
-
     public async register(registrationData: CreateUserDto) : Promise<any>{
         // const hashedPassword = await bcrypt.hash(registrationData.password, 10);
         const hashedPassword = await bcrypt.hash(registrationData.password, '$2b$12$mzZXxm.lIzmqEMht8NVw1O');
