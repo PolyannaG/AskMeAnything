@@ -18,7 +18,7 @@ export class AnswerService {
             const answer_to_be_created = {
                 text: createAnswerDto.text,
                 question : {id: paramId},
-                user : {id: createAnswerDto.userId}
+                userId : createAnswerDto.userId
             }
             const the_answer = await this.manager.create(Answer, answer_to_be_created);
             const answer_created = await this.manager.save(the_answer);
@@ -34,7 +34,7 @@ export class AnswerService {
     }
 
     async findAnswersForUserQuery(UserID : number): Promise<Object[]> {
-        return await this.manager.find(Answer, {where: {user: UserID}});
+        return await this.manager.find(Answer, {where: {userId: UserID}});
     }
 
     async findAllDateQuery(date_from: Date, userid: number): Promise<Answer[]> {

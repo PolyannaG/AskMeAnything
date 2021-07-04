@@ -183,7 +183,12 @@ export class StatsService {
     }
 
     async auth(req : Request): Promise<boolean> {
-        let services = await this.httpService.get("http://localhost:8010/discovery/services").pipe(map(response =>response.data)).toPromise();
+        let services;
+        try {
+            services = await this.httpService.get("http://localhost:8010/discovery/services").pipe(map(response => response.data)).toPromise();
+        } catch (e) {
+            services = null
+        }
 
         if (services == null) {
             return null
@@ -211,8 +216,52 @@ export class StatsService {
             params: {token: cookie}
         };
 
-        return await this.httpService.post("http://localhost:8010/execution", body).pipe(map(response => response.data)).toPromise();
+        try {
+            return await this.httpService.post("http://localhost:8010/execution", body).pipe(map(response => response.data)).toPromise();
+        } catch (e) {
+            return null
+        }
+    }
 
+    async cookieUserId(req : Request): Promise<number> {
+        let services;
+        try {
+            services = await this.httpService.get("http://localhost:8010/discovery/services").pipe(map(response =>response.data)).toPromise();
+        } catch (e) {
+            services = null
+        }
+
+        if (services == null) {
+            return null
+            //return false
+        }
+
+        let cookieUserId = [];
+        for (let i = 0; i < services.length; i++) {
+            if (services[i]["name"] == "cookieUserId") {
+                cookieUserId.push(services[i])
+            }
+        }
+
+        if (!cookieUserId.length) {
+            return null
+            //return false
+        }
+
+        const cookie = req.cookies['token'];
+
+        let body = {
+            name: cookieUserId[0]["name"],
+            url: cookieUserId[0]["url"],
+            requestMethod: cookieUserId[0]["requestMethod"],
+            params: {token: cookie}
+        };
+
+        try {
+            return await this.httpService.post("http://localhost:8010/execution", body).pipe(map(response => response.data)).toPromise();
+        } catch (e) {
+            return null
+        }
     }
 
 }

@@ -6,7 +6,8 @@ import {CreateAnswerDto} from "./dto/create-answer.dto";
 import {Answer} from "./entities/answer.entity";
 import {Question} from "./entities/question.entity";
 import {MessageDto} from "./dto/Message.dto";
-import {catchError} from "rxjs/operators";
+import {catchError, map} from "rxjs/operators";
+import {Request} from "express";
 
 
 @Injectable()
@@ -144,6 +145,32 @@ export class AnswerService {
       }
       await this.client.hset('questionMessages', "http://localhost:8000/create_answer/message", JSON.stringify([]));
       return "Saved data successfully";
+    }
+  }
+
+  async auth(req : Request): Promise<boolean> {
+    try {
+      let cookie = req.cookies['token'];
+      let body = {
+        token: cookie
+      }
+      return await this.httpService.post("http://localhost:4200/get_auth", body).pipe(map(response => response.data)).toPromise();
+    } catch (e) {
+      return null
+    }
+  }
+
+  async cookieUserId(req : Request): Promise<number> {
+    try {
+      const cookie = req.cookies['token'];
+
+      let body = {
+        token: cookie
+      };
+
+      return await this.httpService.post("http://localhost:4200/get_userId", body).pipe(map(response => response.data)).toPromise();
+    } catch (e) {
+      return null
     }
   }
 

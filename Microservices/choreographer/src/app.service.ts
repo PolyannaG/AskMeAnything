@@ -2,7 +2,8 @@ import {HttpException, HttpService, HttpStatus, Injectable} from '@nestjs/common
 import {RedisService} from "nestjs-redis";
 import {SendAnswerDto} from "./dto/send-answer.dto";
 import {SendQuestionDto} from "./dto/send-question.dto";
-import {catchError} from "rxjs/operators";
+import {catchError, map} from "rxjs/operators";
+import {Request} from "express";
 
 @Injectable()
 export class ChoreographerService {
@@ -210,5 +211,38 @@ export class ChoreographerService {
         }
         return HttpStatus.OK;
     }
+
+    async getAuthorization(cookie : object): Promise<boolean> {
+        let sub = await this.client.hget('subscribers', 'auth');
+        let subscribers = JSON.parse(sub);
+
+        if (subscribers == null) {
+            return null;
+        }
+
+        //i only have one subscriber - the authentication service subscriber
+        try {
+            return await this.httpService.post(subscribers[0]+'/authorization', cookie).pipe(map(response => response.data)).toPromise();
+        } catch (e) {
+            return null
+        }
+    }
+
+    async getUserId(cookie : object): Promise<number> {
+        let sub = await this.client.hget('subscribers', 'auth');
+        let subscribers = JSON.parse(sub);
+
+        if (subscribers == null) {
+            return null;
+        }
+
+        //i only have one subscriber - the authentication service subscriber
+        try {
+            return await this.httpService.post(subscribers[0]+'/userId', cookie).pipe(map(response => response.data)).toPromise();
+        } catch (e) {
+            return null
+        }
+    }
+
 
 }

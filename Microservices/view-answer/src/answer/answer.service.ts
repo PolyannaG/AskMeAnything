@@ -1,24 +1,36 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {HttpService, Injectable, NotFoundException} from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import {createQueryBuilder, EntityManager, LessThan} from "typeorm";
-
-
 import {RedisService} from "nestjs-redis";
-
 import {addMonths} from 'date-fns'
 import {Answer} from "./entities/answer.entity";
 import {MessageDto} from "./dto/Message.dto";
+import {Request} from "express";
+import {catchError, map} from "rxjs/operators";
 
 
 @Injectable()
 export class ViewAnswerService {
   private client: any;
   constructor(@InjectEntityManager() private manager : EntityManager,
+              private httpService: HttpService,
               private redisService: RedisService) {
     this.getClient();
   }
   private async getClient() {
     this.client = await this.redisService.getClient();
+  }
+
+  async auth(req : Request): Promise<boolean> {
+    try {
+      let cookie = req.cookies['token'];
+      let body = {
+        token: cookie
+      }
+      return await this.httpService.post("http://localhost:4200/get_auth", body).pipe(map(response => response.data)).toPromise();
+    } catch (e) {
+      return null
+    }
   }
   
   async findQuestionAnswers(QuestionID : number): Promise<Object[]> {
@@ -165,6 +177,20 @@ export class ViewAnswerService {
 
       await this.client.hset('answerMessages', "http://localhost:8004/view_answer/message", JSON.stringify([]));
       return "Saved data successfully";
+    }
+  }
+
+  async cookieUserId(req : Request): Promise<number> {
+    try {
+      const cookie = req.cookies['token'];
+
+      let body = {
+        token: cookie
+      };
+
+      return await this.httpService.post("http://localhost:4200/get_userId", body).pipe(map(response => response.data)).toPromise();
+    } catch (e) {
+      return null
     }
   }
 

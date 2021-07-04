@@ -19,7 +19,7 @@ export class QuestionService {
         const question_to_create = {
             title: createQuestionDto.title,
             text: createQuestionDto.text,
-            user: {id: createQuestionDto.userId}
+            userId: createQuestionDto.userId
         }
         console.log(createQuestionDto.userId)
         const question = await this.manager.create(Question, question_to_create);
@@ -70,7 +70,7 @@ export class QuestionService {
 
     async findAllUserQuery(date_from: Date, Userid: number): Promise<Question[]> {
         return await this.manager.find(Question, {
-            where: {date_created: LessThan(date_from), user: Userid},
+            where: {date_created: LessThan(date_from), userId: Userid},
             order: {
                 date_created: "DESC",
             },

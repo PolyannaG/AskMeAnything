@@ -43,8 +43,22 @@ export class AuthenticationController {
     }
 
     @Post('authorization')
-    async Auth(@Body() token : object) {
-        return await this.authenticationService.validateRequest(token)
+    async Auth(@Body() params : object) {
+        try {
+            if (params == {})
+                return false
+            else {
+                const cookie = params["token"];
+                const data = await this.jwtService.verifyAsync(cookie);
+                if (data)
+                    return true
+                else
+                    return false
+            }
+        }
+        catch (e){
+            return false
+        }
     }
 
     @Post('register')
@@ -125,6 +139,22 @@ export class AuthenticationController {
             throw new UnauthorizedException()
         }
 
+    }
+
+    @Post('userId')
+    async userId(@Body() params : object): Promise<number> {
+        try {
+            const cookie = params["token"];
+            const data = await this.jwtService.verifyAsync(cookie);
+
+            if (!data)
+                throw new UnauthorizedException()
+
+            return data._id
+
+        } catch (e){
+            throw new UnauthorizedException()
+        }
     }
 
 }

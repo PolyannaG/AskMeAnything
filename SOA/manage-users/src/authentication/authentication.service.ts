@@ -24,7 +24,8 @@ export class AuthenticationService {
             name : "Manage-Users",
             address : "http://localhost:8007/authentication",
             description : "User sign in/out or sign up and authorization provider",
-            services : [{name:"Authorization", url: "http://localhost:8007/authentication/authorization", requestMethod: "post", params: {token: "User token (string)"}}]
+            services : [{name:"Authorization", url: "http://localhost:8007/authentication/authorization", requestMethod: "post", params: {token: "User token (string)"}},
+                        {name:"cookieUserId", url: "http://localhost:8007/authentication/userId", requestMethod: "post", params: {token: "User token (string)"}}]
         };
 
         return await this.httpService.post("http://localhost:8010/management/subscribe", body)
@@ -96,26 +97,6 @@ export class AuthenticationService {
         })).toPromise();
 
     }
-
-
-    public async validateRequest(params : object): Promise<boolean> {
-        try {
-            if (params == {})
-                return false
-            else {
-                const cookie = params["token"];
-                const data = await this.jwtService.verifyAsync(cookie);
-                if (data)
-                    return true
-                else
-                    return false
-            }
-        }
-        catch (e){
-            return false
-        }
-    }
-
 
     public async register(registrationData: CreateUserDto) : Promise<any>{
         // const hashedPassword = await bcrypt.hash(registrationData.password, 10);

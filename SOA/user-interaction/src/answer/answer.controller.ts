@@ -34,8 +34,14 @@ export class AnswerController {
     @Post('/:id')
     async createAnswer(@Param('id') params: number, @Body() createAnswerDto: object, @Req() request: Request) {
         let auth = await this.answerService.auth(request);
-        if (auth)
-            return this.answerService.create(params, createAnswerDto);
+        if (auth) {
+            let cookieUserId = await this.answerService.cookieUserId(request);
+            if (cookieUserId == createAnswerDto["userId"]) {
+                return this.answerService.create(params, createAnswerDto);
+            }
+            else //userId of url != userId of token so unauthorized to create an answer as another user
+                throw new UnauthorizedException()
+        }
         else if (auth === false)
             throw new UnauthorizedException()
         else
@@ -51,8 +57,14 @@ export class AnswerController {
     @Get('for_user/:id')
     async findAnswersForUser(@Param('id') id: number, @Req() request: Request) {
         let auth = await this.answerService.auth(request);
-        if (auth)
-            return this.answerService.findAnswersForUser(id)
+        if (auth) {
+            let cookieUserId = await this.answerService.cookieUserId(request);
+            if (cookieUserId == id) {
+                return this.answerService.findAnswersForUser(id)
+            }
+            else //userId of url != userId of token so unauthorized to create an answer as another user
+                throw new UnauthorizedException()
+        }
         else if (auth === false)
             throw new UnauthorizedException()
         else
@@ -63,8 +75,14 @@ export class AnswerController {
     @Get('all_user/:userid/:date_from')
     async findAllDate(@Param('date_from') date_from: Date, @Param('userid') userid : number, @Req() request: Request) {
         let auth = await this.answerService.auth(request);
-        if (auth)
-            return this.answerService.findAllDate(date_from, userid)
+        if (auth) {
+            let cookieUserId = await this.answerService.cookieUserId(request);
+            if (cookieUserId == userid) {
+                return this.answerService.findAllDate(date_from, userid)
+            }
+            else //userId of url != userId of token so unauthorized to create an answer as another user
+                throw new UnauthorizedException()
+        }
         else if (auth === false)
             throw new UnauthorizedException()
         else

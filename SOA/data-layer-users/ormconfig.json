@@ -1,0 +1,20 @@
+{
+  "type": "postgres",
+  "username": "postgres",
+  "password": "katerinaliaga",
+  "port": 5432,
+  "host": "localhost",
+  "database": "AskMeAnythingSoa",
+  "schema": "users",
+  "entities": [
+    "dist/**/*.entity{.ts,.js}"
+  ],
+  "synchronize": false,
+  "logging": true,
+  "migrations": [
+    "dist/migration/*{.ts,.js}"
+  ],
+  "cli": {
+    "migrationsDir": "src/migration"
+  }
+}
