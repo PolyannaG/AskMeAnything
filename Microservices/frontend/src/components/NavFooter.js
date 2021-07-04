@@ -30,7 +30,7 @@ function NavFooter(){
                     </Modal.Body>
                     <Modal.Body>
                         <h5>Aikaterini Liagka:</h5>
-                        email: polyanna.gkotsi@gmail.com
+                        email: katerinaliaga1999@gmail.com
                     </Modal.Body>
                 </Modal.Body>
                 <Modal.Footer>
