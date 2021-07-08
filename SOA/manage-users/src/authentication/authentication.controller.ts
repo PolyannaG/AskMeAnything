@@ -76,21 +76,21 @@ export class AuthenticationController {
         //console.log(user)
         if (!user){
             response.status(400)
-            response.clearCookie('token')
+           // response.clearCookie('token')
             return new HttpException('invalid username', HttpStatus.BAD_REQUEST)
         }
         // @ts-ignore
         else if (!await bcrypt.compare(password, user.password)){
             response.status(400)
-            response.clearCookie('token')
+           // response.clearCookie('token')
             return new HttpException('invalid password', HttpStatus.BAD_REQUEST)
         }
         else {
             // @ts-ignore
             const token = await this.authenticationService.getCookieWithJwtToken(user.id, user.username);
-            response.cookie('token', token, {httpOnly: true})
+            response.set({ 'x-access-token': token });
             return {
-                message: 'success'
+                message: token
             }
         }
     }
@@ -100,18 +100,22 @@ export class AuthenticationController {
     async user(@Req() request: Request){
         try {
 
-            const cookie = request.cookies['token']
+           // const cookie = request.cookies['token']
+            const cookie = request.headers['x-access-token']
 
-            const data = await this.jwtService.verifyAsync(cookie)
+            if (typeof cookie === "string") {
+                const data = await this.jwtService.verifyAsync(cookie)
 
-            if (!data)
-                throw new UnauthorizedException()
 
-            const user=await this.userService.findOne(data._id)
-            // @ts-ignore
-            const {password, ...result}=user
+                if (!data)
+                    throw new UnauthorizedException()
 
-            return result
+                const user = await this.userService.findOne(data._id)
+                // @ts-ignore
+                const {password, ...result} = user
+
+                return result
+            }
 
         }catch (e){
             throw new UnauthorizedException()
@@ -123,16 +127,20 @@ export class AuthenticationController {
     async logout(@Req() request: Request ,@Res({passthrough : true}) response: Response){
         try {
 
-            const cookie = request.cookies['token']
+           // const cookie = request.cookies['token']
+            const cookie = request.headers['x-access-token']
 
-            const data = await this.jwtService.verifyAsync(cookie)
+            if (typeof cookie === "string") {
+                const data = await this.jwtService.verifyAsync(cookie)
 
-            if (!data)
-                throw new UnauthorizedException()
 
-            response.clearCookie('token')
-            return{
-                message : "successful logout"
+                if (!data)
+                    throw new UnauthorizedException()
+
+                // response.clearCookie('token')
+                return {
+                    message: "successful logout"
+                }
             }
 
         }catch (e){

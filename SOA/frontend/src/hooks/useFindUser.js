@@ -20,9 +20,10 @@ export default function useFindUser() {
     useEffect(() => {
         async function findUser() {
             console.log('finfDuseCalled')
-            await fetch('http://localhost:8007/authentication/user',{
+            const tok = localStorage.getItem('token');
+            await fetch('https://manageuserssoa.herokuapp.com/authentication/user',{
                 method : 'GET',
-                headers:{'Content-type':'application/json'},
+                headers:{'Content-type':'application/json', 'x-access-token':tok},
                 credentials:'include'
             })
                 .then(res => res.json())

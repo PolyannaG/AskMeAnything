@@ -20,14 +20,15 @@ function NewAnswer(){
     const [titles, setTitles]=useState([])
     const [specificQuestion, setSpecificQuestion]=useState([])
     const [answerText, setAnswerText]=useState([])
+    const tok = localStorage.getItem('token');
 
 
     const GetQuestionByID = async (Question) =>{
         console.log(Question)
         if (Question !== null) {
-            let resp= await fetch(`http://localhost:8005/view_question/id/${Question.id}`,{
+            let resp= await fetch(` https://viewquestionms.herokuapp.com/view_question/id/${Question.id}`,{
                 method: 'GET',
-                headers: {'Content-type': 'application/json'},
+                headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
             })
             if (resp.ok){
@@ -50,9 +51,9 @@ function NewAnswer(){
                     }
                 })
 
-                let response = await fetch(`http://localhost:8004/view_answer/for_question/${Question.id}`,{
+                let response = await fetch(` https://viewanswerms.herokuapp.com/view_answer/for_question/${Question.id}`,{
                     method: 'GET',
-                    headers: {'Content-type': 'application/json'},
+                    headers: {'Content-type': 'application/json', 'x-access-token':tok},
                     credentials: 'include'
                 })
                 if (response.ok){
@@ -86,9 +87,9 @@ function NewAnswer(){
         }
         else
         {
-            let resp = await fetch(`http://localhost:8005/view_question/all_titles`, {
+            let resp = await fetch(` https://viewquestionms.herokuapp.com/view_question/all_titles`, {
                 method: 'GET',
-                headers: {'Content-type': 'application/json'},
+                headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
             })
             if (resp.ok) {
@@ -123,9 +124,9 @@ function NewAnswer(){
             event.stopPropagation()
             //history.go(-1) //we need to go to the previous page
             try {
-                let resp = await fetch(`http://localhost:8000/create_answer/${specificQuestion.id}`, {
+                let resp = await fetch(` https://answerquestionms.herokuapp.com/create_answer/${specificQuestion.id}`, {
                     method: 'POST',
-                    headers: {'Content-type': 'application/json'},
+                    headers: {'Content-type': 'application/json', 'x-access-token':tok},
                     credentials: 'include',
                     body: JSON.stringify({
                         text: answerText,

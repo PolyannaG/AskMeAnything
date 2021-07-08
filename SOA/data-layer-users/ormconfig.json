@@ -1,16 +1,16 @@
 {
   "type": "postgres",
-  "username": "postgres",
-  "password": "katerinaliaga",
+  "username": "vnafzeaxsnooda",
+  "password": "e01738a329f42f7ccf240baee9afde995d3859e4ab1871eeaaaff1ab315de535",
   "port": 5432,
-  "host": "localhost",
-  "database": "AskMeAnythingSoa",
-  "schema": "users",
+  "host": "ec2-54-73-58-75.eu-west-1.compute.amazonaws.com",
+  "database": "df6b8iou398vt8",
   "entities": [
     "dist/**/*.entity{.ts,.js}"
   ],
   "synchronize": false,
   "logging": true,
+  "ssl": { "rejectUnauthorized": false },
   "migrations": [
     "dist/migration/*{.ts,.js}"
   ],

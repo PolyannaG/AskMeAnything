@@ -1,6 +1,6 @@
 export default async function createUser(username,password, email){
     try{
-        const resp=await fetch('http://localhost:8007/authentication/register',{
+        const resp=await fetch('https://manageuserssoa.herokuapp.com/authentication/register',{
             method: 'POST',
             headers:{'Content-type':'application/json'},
             credentials:'include',

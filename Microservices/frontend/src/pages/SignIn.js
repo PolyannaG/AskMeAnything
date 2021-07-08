@@ -5,11 +5,13 @@ import {Link, Redirect} from "react-router-dom";
 import '../css/SignInSignUp.css'
 import { useHistory } from "react-router-dom";
 import checkCredentials from "../hooks/checkCredentials";
+import { useCookies } from "react-cookie";
 
 
 function SignIn(){
 
     let history = useHistory();  //will change when login is added
+    const [cookies, setCookie] = useCookies(["user"]);
 
     const [validated, setValidated] = useState(false)
     const [password, setPassword] = useState()
@@ -29,8 +31,11 @@ function SignIn(){
             console.log(username,password)
             const isUser=await checkCredentials(username,password)
             if (isUser){
+
+
                 //history.push('./homepage')
                 //setRedirect(true)
+
                 console.log('Successful login')
                 document.location.reload()
             }

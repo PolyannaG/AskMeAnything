@@ -7,23 +7,27 @@ function NavigationBar(){
 
     const { id, username, isLoading } = useContext(UserContext);
     const history = useHistory();
+    const tok = localStorage.getItem('token');
 
     async function handleSignOut(){
         try{
 
-            const resp=await fetch('http://localhost:8002/auth/logout',{
+          /*  const resp=await fetch('https://manageusersms.herokuapp.com/auth/logout',{
                 method: 'POST',
-                headers:{'Content-type':'application/json'},
+                headers:{'Content-type':'application/json', 'x-access-token':tok},
                 credentials:'include'
             })
             if (!resp.ok){
                 console.log('error loging out')
             }
             else{
+
+           */
                 console.log('successful logout')
+                localStorage.clear()
                 window.location.reload();
             }
-        }
+       // }
         catch (err){
             console.log(err)
         }
@@ -33,13 +37,7 @@ function NavigationBar(){
     return(
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
             <Navbar.Brand href="/homepage">
-                <img
-                    alt=""
-                    src="../../favicon.ico"
-                    width="30"
-                    height="30"
-                    className="d-inline-block align-top"
-                />{' '}
+                {' '}
                 AskMeAnything
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />

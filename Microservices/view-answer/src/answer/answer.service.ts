@@ -23,11 +23,12 @@ export class ViewAnswerService {
 
   async auth(req : Request): Promise<boolean> {
     try {
-      let cookie = req.cookies['token'];
-      let body = {
+     // let cookie = req.cookies['token'];
+      const cookie = req.headers['x-access-token'];
+      const body = {
         token: cookie
       }
-      return await this.httpService.post("http://localhost:4200/get_auth", body).pipe(map(response => response.data)).toPromise();
+      return await this.httpService.post("https://choreographerms.herokuapp.com/get_auth", body).pipe(map(response => response.data)).toPromise();
     } catch (e) {
       return null
     }
@@ -90,7 +91,7 @@ export class ViewAnswerService {
   async subscribe (): Promise<string> {
     let sub = await this.client.hget('subscribers', 'answers');
     let subscribers = JSON.parse(sub);
-    let myAddress = "http://localhost:8004/view_answer/message";
+    let myAddress = "https://viewanswerms.herokuapp.com/view_answer/message";
     let alreadySubscribed = false;
 
     if (subscribers == null){
@@ -124,7 +125,7 @@ export class ViewAnswerService {
       return "No messages";
 
     await this.manager.transaction(async h =>{
-      let databaseAnswers = await this.manager.query(`SELECT a.id as id FROM view_answer.answer AS a`);
+      let databaseAnswers = await this.manager.query(`SELECT a.id as id FROM answer AS a`);
       let databaseAnswerIDs = [];
 
       for (let i=0; i<databaseAnswers.length; i++){
@@ -163,7 +164,7 @@ export class ViewAnswerService {
   }
 
   async retrieveLostMessages() : Promise<string> {
-    let msg = await this.client.hget('answerMessages', "http://localhost:8004/view_answer/message");
+    let msg = await this.client.hget('answerMessages', "https://viewanswerms.herokuapp.com/view_answer/message");
     let messages = JSON.parse(msg);
 
     if (messages == null || messages == []) {
@@ -175,20 +176,21 @@ export class ViewAnswerService {
         await this.updateAnswersDatabase(messages[i])
       }
 
-      await this.client.hset('answerMessages', "http://localhost:8004/view_answer/message", JSON.stringify([]));
+      await this.client.hset('answerMessages', "https://viewanswerms.herokuapp.com/view_answer/message", JSON.stringify([]));
       return "Saved data successfully";
     }
   }
 
   async cookieUserId(req : Request): Promise<number> {
     try {
-      const cookie = req.cookies['token'];
+     // const cookie = req.cookies['token'];
+      const cookie = req.headers['x-access-token'];
 
-      let body = {
+      const body = {
         token: cookie
       };
 
-      return await this.httpService.post("http://localhost:4200/get_userId", body).pipe(map(response => response.data)).toPromise();
+      return await this.httpService.post("https://choreographerms.herokuapp.com/get_userId", body).pipe(map(response => response.data)).toPromise();
     } catch (e) {
       return null
     }

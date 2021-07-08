@@ -14,7 +14,7 @@ export class StatisticsService {
     }
 
     async findByKeywordsUserQuery (Userid: number) : Promise<Object[]> {
-        return await this.manager.query(`SELECT COUNT(*) as "questionCount", "C"."keywordKeyword" as "keyword" FROM (SELECT * from  "database"."keyword_questions_question" as "A"  INNER JOIN "database"."question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."userId"=${Userid}) as "C"  GROUP BY "C"."keywordKeyword"`)
+        return await this.manager.query(`SELECT COUNT(*) as "questionCount", "C"."keywordKeyword" as "keyword" FROM (SELECT * from  "keyword_questions_question" as "A"  INNER JOIN "question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."userId"=${Userid}) as "C"  GROUP BY "C"."keywordKeyword"`)
     }
 
     async showQuestionsPerDayQuery () : Promise<Object[]> {
@@ -48,11 +48,11 @@ export class StatisticsService {
     }
 
     async countAnswersUserQuery (Userid: number) : Promise<Object[]> {
-        return await this.manager.query(`SELECT COUNT(*) FROM "database"."answer" as A WHERE A."userId"=${Userid}`)
+        return await this.manager.query(`SELECT COUNT(*) FROM "answer" as A WHERE A."userId"=${Userid}`)
     }
 
     async countQuestionsUserQuery (Userid: number) : Promise<Object[]> {
-        return await this.manager.query(`SELECT COUNT(*) FROM "database"."question" as A WHERE A."userId"=${Userid}`)
+        return await this.manager.query(`SELECT COUNT(*) FROM "question" as A WHERE A."userId"=${Userid}`)
     }
 
 

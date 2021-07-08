@@ -20,14 +20,15 @@ function NewAnswer(){
     const [titles, setTitles]=useState([])
     const [specificQuestion, setSpecificQuestion]=useState([])
     const [answerText, setAnswerText]=useState([])
+    const tok = localStorage.getItem('token');
 
 
     const GetQuestionByID = async (Question) =>{
         console.log(Question)
         if (Question !== null) {
-            let resp= await fetch(`http://localhost:8009/user_interaction/question/id/${Question.id}`,{
+            let resp= await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/question/id/${Question.id}`,{
                 method: 'GET',
-                headers: {'Content-type': 'application/json'},
+                headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
             })
             if (resp.ok){
@@ -50,9 +51,9 @@ function NewAnswer(){
                     }
                 })
 
-                let response = await fetch(`http://localhost:8009/user_interaction/answer/for_question/${Question.id}`,{
+                let response = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/answer/for_question/${Question.id}`,{
                     method: 'GET',
-                    headers: {'Content-type': 'application/json'},
+                    headers: {'Content-type': 'application/json', 'x-access-token':tok},
                     credentials: 'include'
                 })
                 if (response.ok){
@@ -86,9 +87,9 @@ function NewAnswer(){
         }
         else
         {
-            let resp = await fetch(`http://localhost:8009/user_interaction/question/all_titles`, {
+            let resp = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/question/all_titles`, {
                 method: 'GET',
-                headers: {'Content-type': 'application/json'},
+                headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
             })
             if (resp.ok) {
@@ -123,9 +124,9 @@ function NewAnswer(){
             event.stopPropagation()
             //history.go(-1) //we need to go to the previous page
             try {
-                let resp = await fetch(`http://localhost:8009/user_interaction/answer/${specificQuestion.id}`, {
+                let resp = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/answer/${specificQuestion.id}`, {
                     method: 'POST',
-                    headers: {'Content-type': 'application/json'},
+                    headers: {'Content-type': 'application/json', 'x-access-token':tok},
                     credentials: 'include',
                     body: JSON.stringify({
                         text: answerText,

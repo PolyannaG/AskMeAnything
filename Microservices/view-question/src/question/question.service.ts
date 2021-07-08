@@ -42,7 +42,7 @@ export class QuestionService {
   }
 
   async findAllTitles(): Promise<Question[]> {
-    const titles=await this.manager.query(`SELECT title , id FROM view_question.question`)
+    const titles=await this.manager.query(`SELECT title , id FROM question`)
     if (!titles || titles.length == 0)
       throw new NotFoundException(`No questions earlier found.`)
     return titles
@@ -106,7 +106,7 @@ export class QuestionService {
 
     //let quest = await createQueryBuilder("Question").leftJoin("Question.keywords", "questions",'"questionID"="id"').where(`date_created <= '${date_from}'`).getMany()
     console.log(date_from);
-    const quest= await this.manager.query(`SELECT * FROM (SELECT * from  "view_question"."keyword_questions_question" as "A"  INNER JOIN "view_question"."question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"<'${date_from}' AND "A"."keywordKeyword"='${keyword}') as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
+    const quest= await this.manager.query(`SELECT * FROM (SELECT * from  "keyword_questions_question" as "A"  INNER JOIN "question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"<'${date_from}' AND "A"."keywordKeyword"='${keyword}') as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
 
     console.log(quest);
     if (!quest || !quest.length)
@@ -124,7 +124,7 @@ export class QuestionService {
 
     //let quest = await createQueryBuilder("Question").leftJoin("Question.keywords", "questions",'"questionID"="id"').where(`date_created <= '${date_from}'`).getMany()
 
-    const quest= await this.manager.query(`SELECT * FROM (SELECT * from  "view_question"."keyword_questions_question" as "A"  INNER JOIN "view_question"."question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"<'${date_from}' AND "A"."keywordKeyword"='${keyword}' AND "B"."Userid"=${Userid}) as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
+    const quest= await this.manager.query(`SELECT * FROM (SELECT * from  "keyword_questions_question" as "A"  INNER JOIN "question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"<'${date_from}' AND "A"."keywordKeyword"='${keyword}' AND "B"."Userid"=${Userid}) as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
 
     if (!quest || !quest.length)
       throw new NotFoundException(`No questions found for keyword ${keyword} and before ${date_from} and user id ${Userid}.`)
@@ -141,7 +141,7 @@ export class QuestionService {
 
     //let quest = await createQueryBuilder("Question").leftJoin("Question.keywords", "questions",'"questionID"="id"').where(`date_created <= '${date_from}'`).getMany()
 
-    const quest= await this.manager.query(`SELECT * FROM (SELECT * from  "view_question"."keyword_questions_question" as "A"  INNER JOIN "view_question"."question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"<'${date_from}' AND "B"."date_created">='${date_to}' AND "A"."keywordKeyword"='${keyword}') as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
+    const quest= await this.manager.query(`SELECT * FROM (SELECT * from  "keyword_questions_question" as "A"  INNER JOIN "question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"<'${date_from}' AND "B"."date_created">='${date_to}' AND "A"."keywordKeyword"='${keyword}') as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
 
     if (!quest || !quest.length)
       throw new NotFoundException(`No questions found for keyword ${keyword} and before ${date_from} and after ${date_to}.`)
@@ -158,7 +158,7 @@ export class QuestionService {
 
     //let quest = await createQueryBuilder("Question").leftJoin("Question.keywords", "questions",'"questionID"="id"').where(`date_created <= '${date_from}'`).getMany()
 
-    const quest= await this.manager.query(`SELECT * FROM (SELECT * from  "view_question"."keyword_questions_question" as "A"  INNER JOIN "view_question"."question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"< '${date_from}' AND "B"."date_created">='${date_to}' AND "A"."keywordKeyword"='${keyword}' AND "B"."Userid"=${Userid}) as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
+    const quest= await this.manager.query(`SELECT * FROM (SELECT * from  "keyword_questions_question" as "A"  INNER JOIN "question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"< '${date_from}' AND "B"."date_created">='${date_to}' AND "A"."keywordKeyword"='${keyword}' AND "B"."Userid"=${Userid}) as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
 
     if (!quest || !quest.length)
       throw new NotFoundException(`No questions found for keyword ${keyword} and before ${date_from} and after ${date_to} and user id ${Userid}.`)
@@ -172,7 +172,7 @@ export class QuestionService {
   }
 
   async findAllKeywords(): Promise<Keyword[]>{
-    const keyw=await this.manager.query('SELECT * FROM view_question.keyword ORDER BY keyword')
+    const keyw=await this.manager.query('SELECT * FROM keyword ORDER BY keyword')
     if (!keyw || !keyw.length)
       throw new NotFoundException(`No keywords found.`)
     return keyw
@@ -180,7 +180,7 @@ export class QuestionService {
   }
 
   async findSpecificKeywords(keyword: String): Promise<Keyword[]>{
-    const keyw=await this.manager.query(`SELECT * FROM view_question.keyword AS A WHERE A.keyword LIKE '%${keyword}%' ORDER BY keyword`)
+    const keyw=await this.manager.query(`SELECT * FROM keyword AS A WHERE A.keyword LIKE '%${keyword}%' ORDER BY keyword`)
     if (!keyw || !keyw.length)
       throw new NotFoundException(`No keywords found.`)
     return keyw
@@ -192,7 +192,7 @@ export class QuestionService {
   async subscribeQuestions (): Promise<string> {
     let sub = await this.client.hget('subscribers', 'questions');
     let subscribers = JSON.parse(sub);
-    let myAddress = "http://localhost:8005/view_question/question_message";
+    let myAddress = "https://viewquestionms.herokuapp.com/view_question/question_message";
     let alreadySubscribed = false;
 
     if (subscribers == null){
@@ -226,7 +226,7 @@ export class QuestionService {
       return "No messages";
 
     await this.manager.transaction(async h =>{
-      let databaseQuestions = await this.manager.query(`SELECT q.id as id FROM view_question.question AS q`);
+      let databaseQuestions = await this.manager.query(`SELECT q.id as id FROM question AS q`);
       let databaseQuestionIDs = [];
 
       for (let i=0; i<databaseQuestions.length; i++){
@@ -245,7 +245,7 @@ export class QuestionService {
   async subscribeAnswers (): Promise<string> {
     let sub = await this.client.hget('subscribers', 'answers');
     let subscribers = JSON.parse(sub);
-    let myAddress = "http://localhost:8005/view_question/answer_message";
+    let myAddress = "https://viewquestionms.herokuapp.com/view_question/answer_message";
     let alreadySubscribed = false;
 
     if (subscribers == null){
@@ -338,7 +338,7 @@ export class QuestionService {
   }
 
   async retrieveLostQuestionMessages() : Promise<string> {
-    let msg = await this.client.hget('questionMessages', "http://localhost:8005/view_question/question_message");
+    let msg = await this.client.hget('questionMessages', "https://viewquestionms.herokuapp.com/view_question/question_message");
     let messages = JSON.parse(msg);
 
     if (messages == null || messages == []) {
@@ -350,13 +350,13 @@ export class QuestionService {
         await this.updateQuestionDatabases(messages[i])
       }
 
-      await this.client.hset('questionMessages', "http://localhost:8005/view_question/question_message", JSON.stringify([]));
+      await this.client.hset('questionMessages', "https://viewquestionms.herokuapp.com/view_question/question_message", JSON.stringify([]));
       return "Saved data successfully";
     }
   }
 
   async retrieveLostAnswerMessages() : Promise<string> {
-    let msg = await this.client.hget('answerMessages', "http://localhost:8005/view_question/answer_message");
+    let msg = await this.client.hget('answerMessages', "https://viewquestionms.herokuapp.com/view_question/answer_message");
     let messages = JSON.parse(msg);
 
     if (messages == null || messages == []) {
@@ -368,18 +368,19 @@ export class QuestionService {
         await this.updateSumAnswers(messages[i]);
       }
 
-      await this.client.hset('answerMessages', "http://localhost:8005/view_question/answer_message", JSON.stringify([]));
+      await this.client.hset('answerMessages', "https://viewquestionms.herokuapp.com/view_question/answer_message", JSON.stringify([]));
       return "Saved data successfully";
     }
   }
 
   async auth(req : Request): Promise<boolean> {
     try {
-      let cookie = req.cookies['token'];
-      let body = {
+     // let cookie = req.cookies['token'];
+      const cookie = req.headers['x-access-token'];
+      const body = {
         token: cookie
       }
-      return await this.httpService.post("http://localhost:4200/get_auth", body).pipe(map(response => response.data)).toPromise();
+      return await this.httpService.post("https://choreographerms.herokuapp.com/get_auth", body).pipe(map(response => response.data)).toPromise();
     } catch (e) {
       return null
     }
@@ -387,13 +388,14 @@ export class QuestionService {
 
   async cookieUserId(req : Request): Promise<number> {
     try {
-      const cookie = req.cookies['token'];
+     // const cookie = req.cookies['token'];
+      const cookie = req.headers['x-access-token'];
 
-      let body = {
+      const body = {
         token: cookie
       };
 
-      return await this.httpService.post("http://localhost:4200/get_userId", body).pipe(map(response => response.data)).toPromise();
+      return await this.httpService.post("https://choreographerms.herokuapp.com/get_userId", body).pipe(map(response => response.data)).toPromise();
     } catch (e) {
       return null
     }

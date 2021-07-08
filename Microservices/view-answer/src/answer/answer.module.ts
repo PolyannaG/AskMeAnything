@@ -7,12 +7,6 @@ import {ViewAnswerService} from "./answer.service";
 import {ViewAnswerController} from "./answer.controller";
 import {Answer} from "./entities/answer.entity";
 
-const options={
-  port: 6379,
-  host: "localhost",
-  password: '',
-  db: 0
-};
 
 @Module({
   imports: [TypeOrmModule.forFeature([Answer]),

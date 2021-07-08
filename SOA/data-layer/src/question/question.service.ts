@@ -64,7 +64,7 @@ export class QuestionService {
     }
 
     async findAllTitlesQuery(): Promise<Question[]> {
-        return await this.manager.query(`SELECT title , id FROM database.question`)
+        return await this.manager.query(`SELECT title , id FROM question`)
 
     }
 
@@ -97,27 +97,27 @@ export class QuestionService {
     }
 
     async filterByKeywordDateFromQuery(keyword: String, date_from: Date): Promise<Object[]> {
-        return await this.manager.query(`SELECT * FROM (SELECT * from  "database"."keyword_questions_question" as "A"  INNER JOIN "database"."question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"<'${date_from}' AND "A"."keywordKeyword"='${keyword}') as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
+        return await this.manager.query(`SELECT * FROM (SELECT * from  "keyword_questions_question" as "A"  INNER JOIN "question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"<'${date_from}' AND "A"."keywordKeyword"='${keyword}') as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
     }
 
     async filterByKeywordDateFromUserQuery(keyword: String, date_from: Date, Userid : number): Promise<Object[]> {
-        return await this.manager.query(`SELECT * FROM (SELECT * from  "database"."keyword_questions_question" as "A"  INNER JOIN "database"."question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"<'${date_from}' AND "A"."keywordKeyword"='${keyword}' AND "B"."userId"=${Userid}) as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
+        return await this.manager.query(`SELECT * FROM (SELECT * from  "keyword_questions_question" as "A"  INNER JOIN "question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"<'${date_from}' AND "A"."keywordKeyword"='${keyword}' AND "B"."userId"=${Userid}) as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
     }
 
     async filterByKeywordDateFromToQuery(keyword: String, date_from: Date, date_to : Date): Promise<Object[]> {
-        return await this.manager.query(`SELECT * FROM (SELECT * from  "database"."keyword_questions_question" as "A"  INNER JOIN "database"."question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"<'${date_from}' AND "B"."date_created">='${date_to}' AND "A"."keywordKeyword"='${keyword}') as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
+        return await this.manager.query(`SELECT * FROM (SELECT * from  "keyword_questions_question" as "A"  INNER JOIN "question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"<'${date_from}' AND "B"."date_created">='${date_to}' AND "A"."keywordKeyword"='${keyword}') as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
     }
 
     async filterByKeywordDateFromToUserQuery(keyword: String, date_from: Date,  date_to : Date, Userid : number): Promise<Object[]> {
-        return await this.manager.query(`SELECT * FROM (SELECT * from  "database"."keyword_questions_question" as "A"  INNER JOIN "database"."question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"< '${date_from}' AND "B"."date_created">='${date_to}' AND "A"."keywordKeyword"='${keyword}' AND "B"."userId"=${Userid}) as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
+        return await this.manager.query(`SELECT * FROM (SELECT * from  "keyword_questions_question" as "A"  INNER JOIN "question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."date_created"< '${date_from}' AND "B"."date_created">='${date_to}' AND "A"."keywordKeyword"='${keyword}' AND "B"."userId"=${Userid}) as "C" ORDER BY "C"."date_created" DESC LIMIT 10`)
     }
 
     async findAllKeywordsQuery(): Promise<Keyword[]> {
-        return await this.manager.query('SELECT * FROM database.keyword ORDER BY keyword')
+        return await this.manager.query('SELECT * FROM keyword ORDER BY keyword')
     }
 
     async findSpecificKeywordsQuery(keyword: String): Promise<Keyword[]> {
-        return await this.manager.query(`SELECT * FROM database.keyword AS A WHERE A.keyword LIKE '%${keyword}%' ORDER BY keyword`)
+        return await this.manager.query(`SELECT * FROM keyword AS A WHERE A.keyword LIKE '%${keyword}%' ORDER BY keyword`)
 
     }
 

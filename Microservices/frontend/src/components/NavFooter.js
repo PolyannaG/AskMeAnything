@@ -56,7 +56,7 @@ function NavFooter(){
                     architecture in the other case.
                     <h1></h1>
                     The technologies used for the backend development are NestJS, JWT for access token authentication and a Redis server for messaging.
-                    For the frontend development we have used ReactJS and Bootstrap / React-Bootstrap for styling. Feel free to navigate on our pages as well as our code!
+                    For the frontend development we have used ReactJS and Bootstrap / React-Bootstrap for styling. The project is deployed on Heroku. Feel free to navigate on our pages as well as our code!
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="info" onClick={() => setModalShow2(false)}>Close</Button>

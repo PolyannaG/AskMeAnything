@@ -1,0 +1,15 @@
+{
+  "type": "postgres",
+  "host": "ec2-54-78-36-245.eu-west-1.compute.amazonaws.com",
+  "port": 5432,
+  "username": "pnnxlnqolunhpv",
+  "password": "41759656c5745001ea81ee8cb6345c05861953bb0a26c942bfa626bd892bd7d7",
+  "database": "dm5m4n52edm4i",
+  "entities": ["dist/**/*.entity{.ts,.js}"],
+  "logging": true,
+  "ssl": { "rejectUnauthorized": false },
+  "migrations": ["dist/migration/*{.js,.ts}"],
+  "cli": {
+    "migrationsDir": "/src/migration"
+  }
+}

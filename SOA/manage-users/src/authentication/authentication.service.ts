@@ -24,11 +24,11 @@ export class AuthenticationService {
             name : "Manage-Users",
             address : "http://localhost:8007/authentication",
             description : "User sign in/out or sign up and authorization provider",
-            services : [{name:"Authorization", url: "http://localhost:8007/authentication/authorization", requestMethod: "post", params: {token: "User token (string)"}},
-                        {name:"cookieUserId", url: "http://localhost:8007/authentication/userId", requestMethod: "post", params: {token: "User token (string)"}}]
+            services : [{name:"Authorization", url: "https://manageuserssoa.herokuapp.com/authentication/authorization", requestMethod: "post", params: {token: "User token (string)"}},
+                        {name:"cookieUserId", url: "https://manageuserssoa.herokuapp.com/authentication/userId", requestMethod: "post", params: {token: "User token (string)"}}]
         };
 
-        return await this.httpService.post("http://localhost:8010/management/subscribe", body)
+        return await this.httpService.post("https://esbsoa.herokuapp.com/management/subscribe", body)
             .pipe(catchError(async e => {
             let unsub = await this.client.hget('lost', 'unregisters');
             let sub = await this.client.hget('lost', 'registers');
@@ -62,12 +62,12 @@ export class AuthenticationService {
     async unSubscribe(): Promise<any> {
         let body = {
             name : "Manage-Users",
-            address : "http://localhost:8007/authentication",
+            address : "https://manageuserssoa.herokuapp.com/authentication",
             description : "User sign in/out or sign up and authorization provider",
-            services : [{name:"Authorization", url: "http://localhost:8007/authentication/authorization", requestMethod: "post", params: {token: "User token (string)"}}]
+            services : [{name:"Authorization", url: "https://manageuserssoa.herokuapp.com/authentication/authorization", requestMethod: "post", params: {token: "User token (string)"}}]
         };
 
-        return await this.httpService.post("http://localhost:8010/management/unsubscribe", body)
+        return await this.httpService.post("https://esbsoa.herokuapp.com/management/unsubscribe", body)
             .pipe(catchError(async e => {
             let unsub = await this.client.hget('lost', 'unregisters');
             let sub = await this.client.hget('lost', 'registers');

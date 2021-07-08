@@ -27,14 +27,15 @@ function Home(){
     const [dateFrom, setDateFrom]=useState(undefined)
     const [dateTo, setDateTo]=useState(undefined)
     const [selectedKeywords, setSelectedKeywords]=useState([])
+    const tok = localStorage.getItem('token');
 
 
 
 
     const getQuestionsPerDay=async()=>{
-        let resp= await fetch(`http://localhost:8003/statistics/per_day/questions`,{
+        let resp= await fetch(`https://statisticsms.herokuapp.com/statistics/per_day/questions`,{
             method: 'GET',
-            headers: {'Content-type': 'application/json'},
+            headers: {'Content-type': 'application/json', 'x-access-token':tok},
             credentials: 'include'
         })
         if (resp.ok){
@@ -64,9 +65,9 @@ function Home(){
     }
 
     const getAnswersPerDay=async()=>{
-        let resp= await fetch(`http://localhost:8003/statistics/per_day/answers`,{
+        let resp= await fetch(`https://statisticsms.herokuapp.com/statistics/per_day/answers`,{
             method: 'GET',
-            headers: {'Content-type': 'application/json'},
+            headers: {'Content-type': 'application/json', 'x-access-token':tok},
             credentials: 'include'
         })
         if (resp.ok){
@@ -97,9 +98,9 @@ function Home(){
     }
 
     const getData= async ()=>{
-        let resp= await fetch(`http://localhost:8003/statistics/keywords`,{
+        let resp= await fetch(`https://statisticsms.herokuapp.com/statistics/keywords`,{
             method: 'GET',
-            headers: {'Content-type': 'application/json'},
+            headers: {'Content-type': 'application/json', 'x-access-token':tok},
             credentials: 'include'
         })
         if (resp.ok){
@@ -143,9 +144,9 @@ function Home(){
                     else
                         date=lastDate
                     console.log(date)
-                    let resp = await fetch(`http://localhost:8005/view_question/keyword_date_from_to/${selectedKeywords.label}/${date}/${dateTo}`,{
+                    let resp = await fetch(`https://viewquestionms.herokuapp.com/view_question/keyword_date_from_to/${selectedKeywords.label}/${date}/${dateTo}`,{
                         method: 'GET',
-                        headers: {'Content-type': 'application/json'},
+                        headers: {'Content-type': 'application/json', 'x-access-token':tok},
                         credentials: 'include'
                     })
 
@@ -170,9 +171,9 @@ function Home(){
                             }
                         })
                         await mydata.map(async (item) => {
-                            let response = await fetch(`http://localhost:8004/view_answer/for_question/${item.id}`,{
+                            let response = await fetch(`https://viewanswerms.herokuapp.com/view_answer/for_question/${item.id}`,{
                                 method: 'GET',
-                                headers: {'Content-type': 'application/json'},
+                                headers: {'Content-type': 'application/json', 'x-access-token':tok},
                                 credentials: 'include'
                             })
 
@@ -211,9 +212,9 @@ function Home(){
                     else
                         date=lastDate
                     console.log(date)
-                    let resp = await fetch(`http://localhost:8005/view_question/keyword_date/${selectedKeywords.label}/${date}`,{
+                    let resp = await fetch(`https://viewquestionms.herokuapp.com/view_question/keyword_date/${selectedKeywords.label}/${date}`,{
                         method: 'GET',
-                        headers: {'Content-type': 'application/json'},
+                        headers: {'Content-type': 'application/json', 'x-access-token':tok},
                         credentials: 'include'
                     })
 
@@ -238,9 +239,9 @@ function Home(){
                             }
                         })
                         await mydata.map(async (item) => {
-                            let response = await fetch(`http://localhost:8004/view_answer/for_question/${item.id}`,{
+                            let response = await fetch(`https://viewanswerms.herokuapp.com/view_answer/for_question/${item.id}`,{
                                 method: 'GET',
-                                headers: {'Content-type': 'application/json'},
+                                headers: {'Content-type': 'application/json', 'x-access-token':tok},
                                 credentials: 'include'
                             })
 
@@ -283,9 +284,9 @@ function Home(){
                     else
                         date=lastDate
                     console.log(date)
-                    let resp = await fetch(`http://localhost:8005/view_question/keyword_date_from_to/${selectedKeywords.label}/${date}/${dateTo}`,{
+                    let resp = await fetch(`https://viewquestionms.herokuapp.com/view_question/keyword_date_from_to/${selectedKeywords.label}/${date}/${dateTo}`,{
                         method: 'GET',
-                        headers: {'Content-type': 'application/json'},
+                        headers: {'Content-type': 'application/json', 'x-access-token':tok},
                         credentials: 'include'
                     })
 
@@ -310,9 +311,9 @@ function Home(){
                             }
                         })
                         await mydata.map(async (item) => {
-                            let response = await fetch(`http://localhost:8004/view_answer/for_question/${item.id}`,{
+                            let response = await fetch(`https://viewanswerms.herokuapp.com/view_answer/for_question/${item.id}`,{
                                 method: 'GET',
-                                headers: {'Content-type': 'application/json'},
+                                headers: {'Content-type': 'application/json', 'x-access-token':tok},
                                 credentials: 'include'
                             })
 
@@ -357,9 +358,9 @@ function Home(){
                     else
                         date=lastDate
                     console.log(date)
-                    let resp = await fetch(`http://localhost:8005/view_question/keyword_date/${selectedKeywords.label}/${date}`,{
+                    let resp = await fetch(`https://viewquestionms.herokuapp.com/view_question/keyword_date/${selectedKeywords.label}/${date}`,{
                         method: 'GET',
-                        headers: {'Content-type': 'application/json'},
+                        headers: {'Content-type': 'application/json', 'x-access-token':tok},
                         credentials: 'include'
                     })
 
@@ -384,9 +385,9 @@ function Home(){
                             }
                         })
                         await mydata.map(async (item) => {
-                            let response = await fetch(`http://localhost:8004/view_answer/for_question/${item.id}`,{
+                            let response = await fetch(`https://viewanswerms.herokuapp.com/view_answer/for_question/${item.id}`,{
                                 method: 'GET',
-                                headers: {'Content-type': 'application/json'},
+                                headers: {'Content-type': 'application/json', 'x-access-token':tok},
                                 credentials: 'include'
                             })
 
@@ -428,9 +429,9 @@ function Home(){
                     else
                         date=lastDate
                     console.log(date)
-                    let resp = await fetch(`http://localhost:8005/view_question/start_end_date/${date}/${dateTo}`,{
+                    let resp = await fetch(`https://viewquestionms.herokuapp.com/view_question/start_end_date/${date}/${dateTo}`,{
                         method: 'GET',
-                        headers: {'Content-type': 'application/json'},
+                        headers: {'Content-type': 'application/json', 'x-access-token':tok},
                         credentials: 'include'
                     })
 
@@ -455,9 +456,9 @@ function Home(){
                             }
                         })
                         await mydata.map(async (item) => {
-                            let response = await fetch(`http://localhost:8004/view_answer/for_question/${item.id}`,{
+                            let response = await fetch(`https://viewanswerms.herokuapp.com/view_answer/for_question/${item.id}`,{
                                 method: 'GET',
-                                headers: {'Content-type': 'application/json'},
+                                headers: {'Content-type': 'application/json', 'x-access-token':tok},
                                 credentials: 'include'
                             })
 
@@ -497,9 +498,9 @@ function Home(){
                     else
                         date=lastDate
                     console.log(date)
-                    let resp = await fetch(`http://localhost:8005/view_question/all/${date}`,{
+                    let resp = await fetch(`https://viewquestionms.herokuapp.com/view_question/all/${date}`,{
                         method: 'GET',
-                        headers: {'Content-type': 'application/json'},
+                        headers: {'Content-type': 'application/json', 'x-access-token':tok},
                         credentials: 'include'
                     })
 
@@ -524,9 +525,9 @@ function Home(){
                             }
                         })
                         await mydata.map(async (item) => {
-                            let response = await fetch(`http://localhost:8004/view_answer/for_question/${item.id}`,{
+                            let response = await fetch(`https://viewanswerms.herokuapp.com/view_answer/for_question/${item.id}`,{
                                 method: 'GET',
-                                headers: {'Content-type': 'application/json'},
+                                headers: {'Content-type': 'application/json', 'x-access-token':tok},
                                 credentials: 'include'
                             })
 
@@ -572,9 +573,9 @@ function Home(){
                     else
                         date=lastDate
                     console.log(dateTo)
-                    let resp = await fetch(`http://localhost:8005/view_question/start_end_date/${date}/${dateTo}`,{
+                    let resp = await fetch(`https://viewquestionms.herokuapp.com/view_question/start_end_date/${date}/${dateTo}`,{
                         method: 'GET',
-                        headers: {'Content-type': 'application/json'},
+                        headers: {'Content-type': 'application/json', 'x-access-token':tok},
                         credentials: 'include'
                     })
 
@@ -599,9 +600,9 @@ function Home(){
                             }
                         })
                         await mydata.map(async (item) => {
-                            let response = await fetch(`http://localhost:8004/view_answer/for_question/${item.id}`,{
+                            let response = await fetch(`https://viewanswerms.herokuapp.com/view_answer/for_question/${item.id}`,{
                                 method: 'GET',
-                                headers: {'Content-type': 'application/json'},
+                                headers: {'Content-type': 'application/json', 'x-access-token':tok},
                                 credentials: 'include'
                             })
 
@@ -652,9 +653,9 @@ function Home(){
                 date = lastDate
             }
             //  console.log(lastDate)
-            let resp = await fetch(`http://localhost:8005/view_question/all/${date}`,{
+            let resp = await fetch(`https://viewquestionms.herokuapp.com/view_question/all/${date}`,{
                 method: 'GET',
-                headers: {'Content-type': 'application/json'},
+                headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
             })
 
@@ -679,9 +680,9 @@ function Home(){
                     }
                 })
                 await mydata.map(async (item) => {
-                    let response = await fetch(`http://localhost:8004/view_answer/for_question/${item.id}`,{
+                    let response = await fetch(`https://viewanswerms.herokuapp.com/view_answer/for_question/${item.id}`,{
                         method: 'GET',
-                        headers: {'Content-type': 'application/json'},
+                        headers: {'Content-type': 'application/json', 'x-access-token':tok},
                         credentials: 'include'
                     })
 
@@ -721,9 +722,9 @@ function Home(){
         //value can be used to fetch the appropriate words
         if (value) {  //will fetch some keywords based on search
             console.log("user has typed something")
-            let resp = await fetch(`http://localhost:8005/view_question/specific_keywords/${value}`,{
+            let resp = await fetch(`https://viewquestionms.herokuapp.com/view_question/specific_keywords/${value}`,{
                 method: 'GET',
-                headers: {'Content-type': 'application/json'},
+                headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
             })
 

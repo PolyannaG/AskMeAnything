@@ -1,6 +1,6 @@
 export default async function checkCredentials(username,password){
     try{
-        const resp=await fetch('http://localhost:8007/authentication/login',{
+        const resp=await fetch('https://manageuserssoa.herokuapp.com/authentication/login',{
             method: 'POST',
             headers:{'Content-type':'application/json'},
             credentials:'include',
@@ -16,8 +16,9 @@ export default async function checkCredentials(username,password){
         if (!resp.ok) console.log("resp of login not ok")
 
         if (resp.ok){
-            // const response=await resp.json()
-            console.log(resp)
+            const response=await resp.json()
+            console.log(response.message)
+            localStorage.setItem('token', response.message)
             return true
         }
         else if (resp.status===400){

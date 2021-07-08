@@ -8,11 +8,11 @@ async function bootstrap() {
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: 'https://askmeanythingsoa.herokuapp.com',
     credentials : true,
     maxAge : 600
   })
   await app.enableShutdownHooks();
-  await app.listen(8007);
+  await app.listen(process.env.PORT || 8007);
 }
 bootstrap();

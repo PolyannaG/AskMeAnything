@@ -9,12 +9,13 @@ import { ExecutionService } from './execution/execution.service';
 import { DiscoveryService } from './discovery/discovery.service';
 import { ManagementService } from './management/management.service';
 
-const options = {
-  port: 6379,
-  host: "localhost",
-  password: '',
-  db: 0
+var rtg   = require("url").parse("redis://redistogo:43001732e767859ad9723a153e99288b@soapfish.redistogo.com:11482");
+const options={
+  port: rtg.port,
+  host: rtg.hostname,
+  password: rtg.auth.split(":")[1],
 };
+
 
 @Module({
   imports: [RedisModule.register(options), HttpModule],

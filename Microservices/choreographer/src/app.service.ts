@@ -231,6 +231,7 @@ export class ChoreographerService {
     async getUserId(cookie : object): Promise<number> {
         let sub = await this.client.hget('subscribers', 'auth');
         let subscribers = JSON.parse(sub);
+        console.log(subscribers)
 
         if (subscribers == null) {
             return null;
@@ -239,6 +240,7 @@ export class ChoreographerService {
         //i only have one subscriber - the authentication service subscriber
         try {
             return await this.httpService.post(subscribers[0]+'/userId', cookie).pipe(map(response => response.data)).toPromise();
+            console.log(subscribers)
         } catch (e) {
             return null
         }

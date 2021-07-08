@@ -46,6 +46,6 @@ export class AnswerService {
         //     take: 10,
         //   });
         //  }
-        return await this.manager.query(`SELECT * from "database"."answer" AS "A" where "A"."date_created"<'${date_from}' and "A"."userId"=${userid} ORDER BY "A"."date_created" DESC LIMIT 10`)
+        return await this.manager.query(`SELECT * from "answer" AS "A" where "A"."date_created"<'${date_from}' and "A"."userId"=${userid} ORDER BY "A"."date_created" DESC LIMIT 10`)
     }
 }
