@@ -2,11 +2,14 @@ import csv
 import string
 import random
 import bcrypt
+import time
+from datetime import datetime
 from random_username.generate import generate_username
-from Functions import passwordGenerator, emailGenerator, ReturnCorrectDate, MoreRecentDate
+from Functions import passwordGenerator, emailGenerator, ReturnCorrectDate, MoreRecentDate, random_date, StrToDate
 from random_timestamp import random_timestamp
 from faker import Faker
 fake = Faker()
+
 
 #csv file headers
 headerQuestions = ['id', 'title', 'text', 'date_created', 'Userid']
@@ -68,7 +71,7 @@ passw = []
 usernames = generate_username(102)
 password_length = [8,9,10,11,12,13,14,15]
 
-for i in range(1, 101):
+for i in range(1, 21):
     row['id']=i
     row['username']=usernames[i]
     rowPass['username']=usernames[i]
@@ -133,9 +136,9 @@ for i in range(1, 301):
     rowPopularity['text'] = text
 
     if i % 5 == 0:
-        UserId = 8
+        UserId = 1
     else :
-        UserId = random.randint(1,98)
+        UserId = random.randint(1,19)
     rowQuestion['Userid']=UserId
     rowPopularity['Userid']=UserId
     rowStatsQ['Userid']=UserId
@@ -145,8 +148,8 @@ for i in range(1, 301):
         question_date = ReturnCorrectDate(registered)
     else :
         #Recent dates for the statistics : CHANGE BEFORE PRESENTATION
-        recent_day = random.randint(1, 24) #because current day is 24/05/2021
-        question_date = random_timestamp(year=2021, month=5, day=recent_day)
+        question_date_str = random_date("2021-06-10 00:00:00", "2021-07-20 00:00:00", random.random())
+        question_date = StrToDate(question_date_str, '%Y-%m-%d %H:%M:%S')
 
     rowQuestion['date_created']=question_date
     rowPopularity['date_created']=question_date
@@ -170,9 +173,9 @@ for i in range(1, 301):
         rowAnswers['text'] = text
 
         if count % 15 == 0:
-            userid = 8
+            userid = 1
         else :
-            userid = random.randint(1,98)
+            userid = random.randint(1,19)
 
         rowAnswers['Userid']=userid
         rowStatsA['Userid']=userid
@@ -183,7 +186,9 @@ for i in range(1, 301):
                 answer_date1 = ReturnCorrectDate(question_date)
             else :
                 #Recent dates for the statistics : CHANGE BEFORE PRESENTATION
-                answer_date1 = random_timestamp( year=2021, month=5, day=random.randint( (recent_day)+1, 30 ) )
+                answer_date1_str = random_date(question_date_str, "2021-07-30 00:00:00", random.random())
+                answer_date1 = StrToDate(answer_date1_str, '%Y-%m-%d %H:%M:%S')
+                #answer_date1 = random_timestamp( year=2021, month=5, day=random.randint( (recent_day)+1, 30 ) )
             answer_date2 = ReturnCorrectDate(Ans_registered)
             answer_date = MoreRecentDate(answer_date1, answer_date2)
             if answer_date != 0:
