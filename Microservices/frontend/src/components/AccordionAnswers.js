@@ -18,6 +18,12 @@ function AccordionAnswers(props){
 
     }
 
+    function correctDate (d) {
+        let myDate = new Date(d);
+        myDate.setTime(myDate.getTime() - (myDate.getTimezoneOffset() * 60000));
+        return myDate.toISOString().split("T").join(", ").slice(0,-5)
+    }
+
     useEffect(()=>{
         console.log(Object.keys(props.answers[0]))
         console.log(props.answers[0].userid)
@@ -53,7 +59,7 @@ function AccordionAnswers(props){
                                         <Accordion.Collapse id="Coll2" eventKey={i + 1} style={{marginBottom : 10}}>
                                             <div>
                                                 <footer className="blockquote-footer text-center text-md-right" style={{Color : 'white'}}>
-                                                    {"asked on: " + item.questionDate.split("T").join(", ").slice(0,-5)}
+                                                    {"asked on: " + correctDate(item.questionDate)}
                                                 </footer>
                                                 <text>{item.questionText}</text>
                                                 <footer className="blockquote-footer"
@@ -64,7 +70,7 @@ function AccordionAnswers(props){
                                         </Accordion.Collapse>
                                     </Accordion>
                                     <footer className="blockquote-footer text-center text-md-right" style={{Color : 'white'}}>
-                                        {"answered on: " + item.date_created.split("T").join(", ").slice(0,-5)}
+                                        {"answered on: " + correctDate(item.date_created)}
                                     </footer>
 
                                     {item.text}
