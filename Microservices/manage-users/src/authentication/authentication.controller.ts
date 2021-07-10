@@ -81,19 +81,20 @@ export class AuthenticationController {
     console.log(user)
     if (!user){
       response.status(400)
-      response.clearCookie('token')
+      //response.clearCookie('token')
       return new HttpException('invalid username', HttpStatus.BAD_REQUEST)
     }
     else if (!await bcrypt.compare(password, user.password)){
       response.status(400)
-      response.clearCookie('token')
+     // response.clearCookie('token')
       return new HttpException('invalid password', HttpStatus.BAD_REQUEST)
     }
     else {
       const token = await this.authenticationService.getCookieWithJwtToken(user.id, user.username);
-      response.cookie('token', token, {httpOnly: true})
+      //response.cookie('token', token, { httpOnly: true, secure: true });
+      response.set({ 'x-access-token': token });
       return {
-        message: 'success'
+        message: token
       }
     }
   }
@@ -103,19 +104,24 @@ export class AuthenticationController {
    async user(@Req() request: Request){
     try {
 
-      const cookie = request.cookies['token']
+     // const cookie = request.cookies['token']
+      const cookie = request.headers['x-access-token']
+      console.log('cookie is:');
+      console.log(request.headers['x-access-token'])
 
-      const data = await this.jwtService.verifyAsync(cookie)
-      //console.log(data)
-      if (!data)
-        throw new UnauthorizedException()
+      if (typeof cookie === 'string') {
+        const data = await this.jwtService.verifyAsync(cookie)
 
-      const user=await this.userService.findOne(data._id)
-      const {password, ...result}=user
+        //console.log(data)
+        if (!data)
+          throw new UnauthorizedException()
 
-      return result
+        const user = await this.userService.findOne(data._id)
+        const { password, ...result } = user;
 
-    }catch (e){
+        return result
+      }
+    } catch (e) {
       throw new UnauthorizedException()
     }
   }
@@ -123,9 +129,9 @@ export class AuthenticationController {
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   async logout(@Res({passthrough : true}) response: Response){
-    response.clearCookie('token')
+    //response.clearCookie('token')
     return{
-      message : "successful logout"
+      message : "procceed to logout"
     }
   }
 

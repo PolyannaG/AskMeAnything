@@ -30,6 +30,12 @@ function AccordionQuestions(props){
            setloaded(loaded-1)
     })
 
+    function correctDate (d) {
+        let myDate = new Date(d);
+        myDate.setTime(myDate.getTime() - (myDate.getTimezoneOffset() * 60000));
+        return myDate.toISOString().split("T").join(", ").slice(0,-5)
+    }
+
 
     return(
         <Accordion defaultActiveKey="0" style={{marginLeft : "10%", marginRight : "10%"}}>
@@ -51,7 +57,7 @@ function AccordionQuestions(props){
                                 <blockquote className="blockquote mb-0 text-left">
                                     <p>
                                         <footer className="blockquote-footer text-center text-md-right" style={{Color : 'white'}}>
-                                            {"asked on: " + item.date_created.split("T").join(", ").slice(0,-5)}
+                                            {"asked on: " + correctDate(item.date_created)}
                                         </footer>
                                         {' '}
                                         {item.text}
@@ -79,7 +85,7 @@ function AccordionQuestions(props){
 
                                                                     <Carousel.Item id={j + 1}>
                                                                         <footer className="blockquote-footer text-center text-md-right" style={{Color : 'white'}}>
-                                                                            {"answered on: " + ans.date_created.split("T").join(", ").slice(0,-5)}
+                                                                            {"answered on: " + correctDate(ans.date_created)}
                                                                         </footer>
                                                                         {ans.text}
                                                                         <footer className="blockquote-footer"

@@ -17,6 +17,7 @@ function NewQuestion(){
     const [text,setText]=useState()
     const [title,setTitle]=useState()
     const [keywords,setKeywords]=useState()
+    const tok = localStorage.getItem('token');
 
 
     const [validated, setValidated] = useState(false)
@@ -32,9 +33,9 @@ function NewQuestion(){
                 //history.go(-1) //we need to go to the previous page
                 event.preventDefault()
                 event.stopPropagation()
-                const resp = await fetch(`http://localhost:8001/create_question`, {
+                const resp = await fetch(` https://createquestionms.herokuapp.com/create_question`, {
                     method: 'POST',
-                    headers: {'Content-type': 'application/json'},
+                    headers: {'Content-type': 'application/json', 'x-access-token':tok},
                     credentials: 'include',
                     body: JSON.stringify({
                         title: title,

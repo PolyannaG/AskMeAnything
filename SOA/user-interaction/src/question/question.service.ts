@@ -18,14 +18,14 @@ export class QuestionService {
 
 
     async create(createQuestionDto: object) : Promise<Object>{
-        let created_question = await this.httpService.post("http://localhost:8006/question/create", createQuestionDto)
+        let created_question = await this.httpService.post("https://datalayersoa.herokuapp.com/question/create", createQuestionDto)
             .pipe(map(response => response.data))
             .toPromise();
         return created_question
     }
 
     async findAll(date_from: Date): Promise<Object[]> {
-        const questions = await this.httpService.get("http://localhost:8006/question/findAll/"+date_from)
+        const questions = await this.httpService.get("https://datalayersoa.herokuapp.com/question/findAll/"+date_from)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -35,7 +35,7 @@ export class QuestionService {
     }
 
     async findAllTitles(): Promise<Object[]> {
-        const titles = await this.httpService.get("http://localhost:8006/question/findAllTitles")
+        const titles = await this.httpService.get("https://datalayersoa.herokuapp.com/question/findAllTitles")
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -45,7 +45,7 @@ export class QuestionService {
     }
 
     async findAllUser(date_from: Date, Userid: number): Promise<Object[]> {
-        const questions = await this.httpService.get("http://localhost:8006/question/findAllUser/"+date_from+"/"+Userid)
+        const questions = await this.httpService.get("https://datalayersoa.herokuapp.com/question/findAllUser/"+date_from+"/"+Userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -55,7 +55,7 @@ export class QuestionService {
     }
 
     async findOne(id: number): Promise<Object[]> {
-        const question = await this.httpService.get("http://localhost:8006/question/findOne/"+id)
+        const question = await this.httpService.get("https://datalayersoa.herokuapp.com/question/findOne/"+id)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -65,7 +65,7 @@ export class QuestionService {
     }
 
     async getMostPopular(): Promise<Object[]> {
-        const questions = await this.httpService.get("http://localhost:8006/question/getMostPopular")
+        const questions = await this.httpService.get("https://datalayersoa.herokuapp.com/question/getMostPopular")
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -75,7 +75,7 @@ export class QuestionService {
     }
 
     async filterByStartAndEndDate(date_from: Date, date_to: Date): Promise<Object[]> {
-        const questions = await this.httpService.get("http://localhost:8006/question/filterByStartAndEndDate/"+date_from+"/"+date_to)
+        const questions = await this.httpService.get("https://datalayersoa.herokuapp.com/question/filterByStartAndEndDate/"+date_from+"/"+date_to)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -83,7 +83,7 @@ export class QuestionService {
             throw new NotFoundException(`No questions earlier than date ${date_from} and later than date ${date_to} found.`)
 
         for (let i = 0; i < questions.length; i++) {
-            let keyw = await this.httpService.get("http://localhost:8006/question/findOne/"+questions[i].id)
+            let keyw = await this.httpService.get("https://datalayersoa.herokuapp.com/question/findOne/"+questions[i].id)
                 .pipe(map(response => response.data))
                 .toPromise();
 
@@ -94,7 +94,7 @@ export class QuestionService {
     }
 
     async filterByStartAndEndDateUser(date_from: Date, date_to: Date, Userid : number): Promise<Object[]> {
-        const questions = await this.httpService.get("http://localhost:8006/question/filterByStartAndEndDateUser/"+date_from+"/"+date_to+"/"+Userid)
+        const questions = await this.httpService.get("https://datalayersoa.herokuapp.com/question/filterByStartAndEndDateUser/"+date_from+"/"+date_to+"/"+Userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -102,7 +102,7 @@ export class QuestionService {
             throw new NotFoundException(`No questions earlier than date ${date_from} and later than date ${date_to} and user id ${Userid} found .`)
 
         for (let i = 0; i < questions.length; i++) {
-            let keyw = await this.httpService.get("http://localhost:8006/question/findOne/"+questions[i].id)
+            let keyw = await this.httpService.get("https://datalayersoa.herokuapp.com/question/findOne/"+questions[i].id)
                 .pipe(map(response => response.data))
                 .toPromise();
 
@@ -113,7 +113,7 @@ export class QuestionService {
     }
 
     async filterByKeywordDateFrom(keyword: String, date_from: Date): Promise<Object[]> {
-        const quest= await this.httpService.get("http://localhost:8006/question/filterByKeywordDateFrom/"+keyword+"/"+date_from)
+        const quest= await this.httpService.get("https://datalayersoa.herokuapp.com/question/filterByKeywordDateFrom/"+keyword+"/"+date_from)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -121,7 +121,7 @@ export class QuestionService {
             throw new NotFoundException(`No questions found for keyword ${keyword} and before ${date_from}.`)
 
         for (let i = 0; i < quest.length; i++) {
-            let keyw = await this.httpService.get("http://localhost:8006/question/findOne/"+quest[i].id)
+            let keyw = await this.httpService.get("https://datalayersoa.herokuapp.com/question/findOne/"+quest[i].id)
                 .pipe(map(response => response.data))
                 .toPromise();
 
@@ -133,7 +133,7 @@ export class QuestionService {
     }
 
     async filterByKeywordDateFromUser(keyword: String, date_from: Date, Userid : number): Promise<Object[]> {
-        const quest= await this.httpService.get("http://localhost:8006/question/filterByKeywordDateFromUser/"+keyword+"/"+date_from+"/"+Userid)
+        const quest= await this.httpService.get("https://datalayersoa.herokuapp.com/question/filterByKeywordDateFromUser/"+keyword+"/"+date_from+"/"+Userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -141,7 +141,7 @@ export class QuestionService {
             throw new NotFoundException(`No questions found for keyword ${keyword} and before ${date_from} and user id ${Userid}.`)
 
         for (let i = 0; i < quest.length; i++) {
-            let keyw = await this.httpService.get("http://localhost:8006/question/findOne/"+quest[i].id)
+            let keyw = await this.httpService.get("https://datalayersoa.herokuapp.com/question/findOne/"+quest[i].id)
                 .pipe(map(response => response.data))
                 .toPromise();
 
@@ -153,7 +153,7 @@ export class QuestionService {
     }
 
     async filterByKeywordDateFromTo(keyword: String, date_from: Date, date_to : Date): Promise<Object[]> {
-        const quest= await this.httpService.get("http://localhost:8006/question/filterByKeywordDateFromTo/"+keyword+"/"+date_from+"/"+date_to)
+        const quest= await this.httpService.get("https://datalayersoa.herokuapp.com/question/filterByKeywordDateFromTo/"+keyword+"/"+date_from+"/"+date_to)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -161,7 +161,7 @@ export class QuestionService {
             throw new NotFoundException(`No questions found for keyword ${keyword} and before ${date_from} and after ${date_to}.`)
 
         for (let i = 0; i < quest.length; i++) {
-            let keyw = await this.httpService.get("http://localhost:8006/question/findOne/"+quest[i].id)
+            let keyw = await this.httpService.get("https://datalayersoa.herokuapp.com/question/findOne/"+quest[i].id)
                 .pipe(map(response => response.data))
                 .toPromise();
 
@@ -173,7 +173,7 @@ export class QuestionService {
     }
 
     async filterByKeywordDateFromToUser(keyword: String, date_from: Date,  date_to : Date, Userid : number): Promise<Object[]> {
-        const quest= await this.httpService.get("http://localhost:8006/question/filterByKeywordDateFromToUser/"+keyword+"/"+date_from+"/"+date_to+"/"+Userid)
+        const quest= await this.httpService.get("https://datalayersoa.herokuapp.com/question/filterByKeywordDateFromToUser/"+keyword+"/"+date_from+"/"+date_to+"/"+Userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -181,7 +181,7 @@ export class QuestionService {
             throw new NotFoundException(`No questions found for keyword ${keyword} and before ${date_from} and after ${date_to} and user id ${Userid}.`)
 
         for (let i = 0; i < quest.length; i++) {
-            let keyw = await this.httpService.get("http://localhost:8006/question/findOne/"+quest[i].id)
+            let keyw = await this.httpService.get("https://datalayersoa.herokuapp.com/question/findOne/"+quest[i].id)
                 .pipe(map(response => response.data))
                 .toPromise();
 
@@ -193,7 +193,7 @@ export class QuestionService {
     }
 
     async findAllKeywords(): Promise<Object[]>{
-        const keyw = await this.httpService.get("http://localhost:8006/question/findAllKeywords")
+        const keyw = await this.httpService.get("https://datalayersoa.herokuapp.com/question/findAllKeywords")
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -204,7 +204,7 @@ export class QuestionService {
     }
 
     async findSpecificKeywords(keyword: String): Promise<Object[]>{
-        const keyw = await this.httpService.get("http://localhost:8006/question/findSpecificKeywords/"+keyword)
+        const keyw = await this.httpService.get("https://datalayersoa.herokuapp.com/question/findSpecificKeywords/"+keyword)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -219,12 +219,12 @@ export class QuestionService {
     async Subscribe(): Promise<any> {
         let body = {
             name : "Questions",
-            address : "http://localhost:8009/user_interaction/question",
+            address : "https://userinteractionsoa.herokuapp.com/user_interaction/question",
             description : "Creates questions and fetches answers with various filter combinations (dates, keywords)",
             services : []
         };
 
-        return await this.httpService.post("http://localhost:8010/management/subscribe", body)
+        return await this.httpService.post("https://esbsoa.herokuapp.com/management/subscribe", body)
             .pipe(catchError(async e => {
                 let unsub = await this.client.hget('lost', 'unregisters');
                 let sub = await this.client.hget('lost', 'registers');
@@ -258,12 +258,12 @@ export class QuestionService {
     async unSubscribe(): Promise<any> {
         let body = {
             name : "Questions",
-            address : "http://localhost:8009/user_interaction/question",
+            address : "https://userinteractionsoa.herokuapp.com/user_interaction/question",
             description : "Creates questions and fetches answers with various filter combinations (dates, keywords)",
             services : []
         };
 
-        return await this.httpService.post("http://localhost:8010/management/unsubscribe", body)
+        return await this.httpService.post("https://esbsoa.herokuapp.com/management/unsubscribe", body)
             .pipe(catchError(async e => {
                 let unsub = await this.client.hget('lost', 'unregisters');
                 let sub = await this.client.hget('lost', 'registers');
@@ -297,7 +297,7 @@ export class QuestionService {
     async auth(req : Request): Promise<boolean> {
         let services;
         try {
-            services = await this.httpService.get("http://localhost:8010/discovery/services").pipe(map(response => response.data)).toPromise();
+            services = await this.httpService.get("https://esbsoa.herokuapp.com/discovery/services").pipe(map(response => response.data)).toPromise();
         } catch (e) {
             services = null
         }
@@ -319,9 +319,10 @@ export class QuestionService {
             //return false
         }
 
-        const cookie = req.cookies['token'];
+       // const cookie = req.cookies['token'];
+        const cookie = req.headers['x-access-token']
 
-        let body = {
+        const body = {
             name: authorization[0]["name"],
             url: authorization[0]["url"],
             requestMethod: authorization[0]["requestMethod"],
@@ -329,7 +330,7 @@ export class QuestionService {
         };
 
         try {
-            return await this.httpService.post("http://localhost:8010/execution", body).pipe(map(response => response.data)).toPromise();
+            return await this.httpService.post("https://esbsoa.herokuapp.com/execution", body).pipe(map(response => response.data)).toPromise();
         } catch (e) {
             return null
         }
@@ -338,7 +339,7 @@ export class QuestionService {
     async cookieUserId(req : Request): Promise<number> {
         let services;
         try {
-            services = await this.httpService.get("http://localhost:8010/discovery/services").pipe(map(response =>response.data)).toPromise();
+            services = await this.httpService.get("https://esbsoa.herokuapp.com/discovery/services").pipe(map(response =>response.data)).toPromise();
         } catch (e) {
             services = null
         }
@@ -360,9 +361,10 @@ export class QuestionService {
             //return false
         }
 
-        const cookie = req.cookies['token'];
+       // const cookie = req.cookies['token'];
+        const cookie = req.headers['x-access-token']
 
-        let body = {
+        const body = {
             name: cookieUserId[0]["name"],
             url: cookieUserId[0]["url"],
             requestMethod: cookieUserId[0]["requestMethod"],
@@ -370,7 +372,7 @@ export class QuestionService {
         };
 
         try {
-            return await this.httpService.post("http://localhost:8010/execution", body).pipe(map(response => response.data)).toPromise();
+            return await this.httpService.post("https://esbsoa.herokuapp.com/execution", body).pipe(map(response => response.data)).toPromise();
         } catch (e) {
             return null
         }

@@ -1,7 +1,7 @@
 import {Entity, Column, PrimaryColumn, ManyToMany, CreateDateColumn} from "typeorm";
 import {Keyword} from "./keyword.entity";
 
-@Entity({schema: "view_question"})
+@Entity()
 export class Question {
     @PrimaryColumn({type: 'integer'})
     id: number;

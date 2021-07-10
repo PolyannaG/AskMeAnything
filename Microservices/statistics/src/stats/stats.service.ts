@@ -37,7 +37,7 @@ export class StatisticsService {
 
   async findByKeywordsUser(Userid: number): Promise<Object[]> {
 
-    const quest= await this.manager.query(`SELECT COUNT(*) as "questionCount", "C"."keywordKeyword" as "keyword" FROM (SELECT * from  "statistics"."keyword_questions_question" as "A"  INNER JOIN "statistics"."question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."Userid"=${Userid}) as "C"  GROUP BY "C"."keywordKeyword"`)
+    const quest= await this.manager.query(`SELECT COUNT(*) as "questionCount", "C"."keywordKeyword" as "keyword" FROM (SELECT * from  "keyword_questions_question" as "A"  INNER JOIN "question" as "B" ON "A"."questionId"="B"."id" WHERE "B"."Userid"=${Userid}) as "C"  GROUP BY "C"."keywordKeyword"`)
 
     if (!quest || !quest.length)
       throw new NotFoundException(`No questions for user with id "${Userid}" found.`)
@@ -50,7 +50,7 @@ export class StatisticsService {
     d_to.setTime(d_to.getTime() - (d_to.getTimezoneOffset() * 60000));
     const date = d_to.toISOString();
 
-    const quest = await createQueryBuilder().select(`SUBSTRING(cast(date_created as varchar),0,11)  as date_part,COUNT(*)`).from('question', 'Question').andWhere(`date_created <= '${date}'`).andWhere(`date_created >= '${(addMonths(d_to, -1)).toISOString()}'`).groupBy(`SUBSTRING(cast(date_created as varchar),0,11)`).orderBy('count', 'DESC').take(10).getRawMany()
+    const quest = await createQueryBuilder().select(`SUBSTRING(cast(date_created as varchar),0,11)  as date_part,COUNT(*)`).from('question', 'Question').andWhere(`date_created <= '${date}'`).andWhere(`date_created >= '${(addMonths(d_to, -1)).toISOString()}'`).groupBy(`SUBSTRING(cast(date_created as varchar),0,11)`).orderBy('count', 'DESC').getRawMany()
 
     //const quest = await this.questionRepository.query(`SELECT ARRAY_AGG(question.id) AS questions, * from Question WHERE date_created <= '${date}' AND date_created >= '${(addMonths(d_to, -1)).toISOString()}' GROUP BY EXTRACT(DAY FROM date_created)`)
     //const quest = await this.questionRepository.query(`SELECT COUNT(qu) ,EXTRACT(DAY FROM date_created) AS day from Question WHERE date_created <= '${date}' AND date_created >= '${(addMonths(d_to, -1)).toISOString()}' GROUP BY EXTRACT(DAY FROM date_created)`)
@@ -64,7 +64,7 @@ export class StatisticsService {
     const d_to = new Date();
     d_to.setTime(d_to.getTime() - (d_to.getTimezoneOffset() * 60000));
     const date = d_to.toISOString();
-    const quest = await createQueryBuilder().select(`SUBSTRING(cast(date_created as varchar),0,11)  as date_part,COUNT(*)`).from('question', 'Question').andWhere(`date_created <= '${date}'`).andWhere(`date_created >= '${(addMonths(d_to, -1)).toISOString()}'`).andWhere(`Question.Userid=${Userid}`).groupBy(`SUBSTRING(cast(date_created as varchar),0,11)`).orderBy('count', 'DESC').take(10).getRawMany()
+    const quest = await createQueryBuilder().select(`SUBSTRING(cast(date_created as varchar),0,11)  as date_part,COUNT(*)`).from('question', 'Question').andWhere(`date_created <= '${date}'`).andWhere(`date_created >= '${(addMonths(d_to, -1)).toISOString()}'`).andWhere(`Question.Userid=${Userid}`).groupBy(`SUBSTRING(cast(date_created as varchar),0,11)`).orderBy('count', 'DESC').getRawMany()
     if (!quest || !quest.length)
       throw new NotFoundException(`No questions found ths last month for user with id ${Userid}.`)
     return quest
@@ -76,7 +76,7 @@ export class StatisticsService {
     d_to.setTime(d_to.getTime() - (d_to.getTimezoneOffset() * 60000));
     const date = d_to.toISOString();
 
-    const ans = await createQueryBuilder().select(`SUBSTRING(cast(date_created as varchar),0,11)  as date_part,COUNT(*)` ).from('answer', 'Answer').andWhere(`date_created <= '${date}'`).andWhere(`date_created >= '${(addMonths(d_to, -1)).toISOString()}'`).groupBy(  `SUBSTRING(cast(date_created as varchar),0,11)`).orderBy('count', 'DESC').take(10).getRawMany()
+    const ans = await createQueryBuilder().select(`SUBSTRING(cast(date_created as varchar),0,11)  as date_part,COUNT(*)` ).from('answer', 'Answer').andWhere(`date_created <= '${date}'`).andWhere(`date_created >= '${(addMonths(d_to, -1)).toISOString()}'`).groupBy(  `SUBSTRING(cast(date_created as varchar),0,11)`).orderBy('count', 'DESC').getRawMany()
 
     if (!ans || !ans.length)
       throw new NotFoundException(`No answers found this last month.`)
@@ -88,21 +88,21 @@ export class StatisticsService {
     d_to.setTime(d_to.getTime() - (d_to.getTimezoneOffset() * 60000));
     const date = d_to.toISOString();
 
-    const quest = await createQueryBuilder().select(`SUBSTRING(cast(date_created as varchar),0,11)  as date_part,COUNT(*)`).from('Answer', 'Answer').andWhere(`date_created <= '${date}'`).andWhere(`date_created >= '${(addMonths(d_to, -1)).toISOString()}'`).andWhere(`"Answer"."Userid"=${Userid}`).groupBy(`SUBSTRING(cast(date_created as varchar),0,11)`).orderBy('count', 'DESC').take(10).getRawMany()
+    const quest = await createQueryBuilder().select(`SUBSTRING(cast(date_created as varchar),0,11)  as date_part,COUNT(*)`).from('Answer', 'Answer').andWhere(`date_created <= '${date}'`).andWhere(`date_created >= '${(addMonths(d_to, -1)).toISOString()}'`).andWhere(`"Answer"."Userid"=${Userid}`).groupBy(`SUBSTRING(cast(date_created as varchar),0,11)`).orderBy('count', 'DESC').getRawMany()
     if (!quest || !quest.length)
       throw new NotFoundException(`No answers found ths last month for user with id ${Userid}.`)
     return quest
   }
 
   async countAnswersUser(Userid: number): Promise<Object[]>{
-    const quest=await this.manager.query(`SELECT COUNT(*) FROM "statistics"."answer" as A WHERE A."Userid"=${Userid}`)
+    const quest=await this.manager.query(`SELECT COUNT(*) FROM "answer" as A WHERE A."Userid"=${Userid}`)
     if (!quest || !quest.length)
       throw new NotFoundException(`No answers found for user with id ${Userid}.`)
     return quest
   }
 
   async countQuestionsUser(Userid: number): Promise<Object[]>{
-    const quest=await this.manager.query(`SELECT COUNT(*) FROM "statistics"."question" as A WHERE A."Userid"=${Userid}`)
+    const quest=await this.manager.query(`SELECT COUNT(*) FROM "question" as A WHERE A."Userid"=${Userid}`)
     if (!quest || !quest.length)
       throw new NotFoundException(`No questions found for user with id ${Userid}.`)
     return quest
@@ -112,7 +112,7 @@ export class StatisticsService {
   async subscribeAnswers (): Promise<string> {
     let sub = await this.client.hget('subscribers', 'answers');
     let subscribers = JSON.parse(sub);
-    let myAddress = "http://localhost:8003/statistics/answer_message";
+    let myAddress = "https://statisticsms.herokuapp.com/statistics/answer_message";
     let alreadySubscribed = false;
 
     if (subscribers == null){
@@ -146,7 +146,7 @@ export class StatisticsService {
       return "No messages";
 
     await this.manager.transaction(async h =>{
-      let databaseAnswers = await this.manager.query(`SELECT a.id as id FROM statistics.answer AS a`);
+      let databaseAnswers = await this.manager.query(`SELECT a.id as id FROM answer AS a`);
       let databaseAnswerIDs = [];
 
       for (let i=0; i<databaseAnswers.length; i++){
@@ -165,7 +165,7 @@ export class StatisticsService {
   async subscribeQuestions (): Promise<string> {
     let sub = await this.client.hget('subscribers', 'questions');
     let subscribers = JSON.parse(sub);
-    let myAddress = "http://localhost:8003/statistics/question_message";
+    let myAddress = "https://statisticsms.herokuapp.com/statistics/question_message";
     let alreadySubscribed = false;
 
     if (subscribers == null){
@@ -199,7 +199,7 @@ export class StatisticsService {
       return "No messages";
 
     await this.manager.transaction(async h =>{
-      let databaseQuestions = await this.manager.query(`SELECT q.id as id FROM statistics.question AS q`);
+      let databaseQuestions = await this.manager.query(`SELECT q.id as id FROM question AS q`);
       let databaseQuestionIDs = [];
 
       for (let i=0; i<databaseQuestions.length; i++){
@@ -274,7 +274,7 @@ export class StatisticsService {
   }
 
   async retrieveLostAnswerMessages() : Promise<string> {
-    let msg = await this.client.hget('answerMessages', "http://localhost:8003/statistics/answer_message");
+    let msg = await this.client.hget('answerMessages', "https://statisticsms.herokuapp.com/statistics/answer_message");
     let messages = JSON.parse(msg);
 
     if (messages == null || messages == []) {
@@ -286,13 +286,13 @@ export class StatisticsService {
         await this.updateAnswersDatabase(messages[i]);
       }
 
-      await this.client.hset('answerMessages', "http://localhost:8003/statistics/answer_message", JSON.stringify([]));
+      await this.client.hset('answerMessages', "https://statisticsms.herokuapp.com/statistics/answer_message", JSON.stringify([]));
       return "Saved data successfully";
     }
   }
 
   async retrieveLostQuestionMessages() : Promise<string> {
-    let msg = await this.client.hget('questionMessages', "http://localhost:8003/statistics/question_message");
+    let msg = await this.client.hget('questionMessages', "https://statisticsms.herokuapp.com/statistics/question_message");
     let messages = JSON.parse(msg);
 
     if (messages == null || messages == []) {
@@ -304,18 +304,19 @@ export class StatisticsService {
         await this.updateQuestionDatabase(messages[i]);
       }
 
-      await this.client.hset('questionMessages', "http://localhost:8003/statistics/question_message", JSON.stringify([]));
+      await this.client.hset('questionMessages', "https://statisticsms.herokuapp.com/statistics/question_message", JSON.stringify([]));
       return "Saved data successfully";
     }
   }
 
   async auth(req : Request): Promise<boolean> {
     try {
-      let cookie = req.cookies['token'];
-      let body = {
-        token: cookie
+      //let cookie = req.cookies['token'];
+      const cookie = req.headers['x-access-token'];
+      const body = {
+        token: cookie,
       }
-      return await this.httpService.post("http://localhost:4200/get_auth", body).pipe(map(response => response.data)).toPromise();
+      return await this.httpService.post("https://choreographerms.herokuapp.com/get_auth", body).pipe(map(response => response.data)).toPromise();
     } catch (e) {
       return null
     }
@@ -323,13 +324,14 @@ export class StatisticsService {
 
   async cookieUserId(req : Request): Promise<number> {
     try {
-      const cookie = req.cookies['token'];
+      // const cookie = req.cookies['token'];
+      const cookie = req.headers['x-access-token'];
 
-      let body = {
-        token: cookie
+      const body = {
+        token: cookie,
       };
 
-      return await this.httpService.post("http://localhost:4200/get_userId", body).pipe(map(response => response.data)).toPromise();
+      return await this.httpService.post("https://choreographerms.herokuapp.com/get_userId", body).pipe(map(response => response.data)).toPromise();
     } catch (e) {
       return null
     }

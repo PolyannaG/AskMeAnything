@@ -22,7 +22,7 @@ export class AuthenticationService {
     async subscribe (): Promise<string> {
         let sub = await this.client.hget('subscribers', 'auth');
         let subscribers = JSON.parse(sub);
-        let myAddress = "http://localhost:8002/auth";
+        let myAddress = " https://manageusersms.herokuapp.com/auth";
         let alreadySubscribed = false;
 
         if (subscribers == null){

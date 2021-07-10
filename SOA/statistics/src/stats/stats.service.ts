@@ -17,7 +17,7 @@ export class StatsService {
 
 
     async findByKeywords(): Promise<Object[]> {
-      const quest = await this.httpService.get("http://localhost:8006/statistics/findByKeywords")
+      const quest = await this.httpService.get("https://datalayersoa.herokuapp.com/statistics/findByKeywords")
           .pipe(map(response => response.data))
           .toPromise();
 
@@ -29,7 +29,7 @@ export class StatsService {
 
     async findByKeywordsUser(Userid: number): Promise<Object[]> {
 
-        const quest= await this.httpService.get("http://localhost:8006/statistics/findByKeywordsUser/"+Userid)
+        const quest= await this.httpService.get("https://datalayersoa.herokuapp.com/statistics/findByKeywordsUser/"+Userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -41,7 +41,7 @@ export class StatsService {
 
     async showQuestionsPerDay(): Promise<Object[]> {
 
-        const quest = await this.httpService.get("http://localhost:8006/statistics/showQuestionsPerDay")
+        const quest = await this.httpService.get("https://datalayersoa.herokuapp.com/statistics/showQuestionsPerDay")
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -51,7 +51,7 @@ export class StatsService {
     }
 
     async showQuestionsPerDayUser(Userid:number) : Promise<Object[]>{
-        const quest = await this.httpService.get("http://localhost:8006/statistics/showQuestionsPerDayUser/"+Userid)
+        const quest = await this.httpService.get("https://datalayersoa.herokuapp.com/statistics/showQuestionsPerDayUser/"+Userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -62,7 +62,7 @@ export class StatsService {
     }
 
     async showAnswersPerDay() : Promise<Object[]>{
-        const ans = await this.httpService.get("http://localhost:8006/statistics/showAnswersPerDay")
+        const ans = await this.httpService.get("https://datalayersoa.herokuapp.com/statistics/showAnswersPerDay")
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -72,7 +72,7 @@ export class StatsService {
     }
 
     async showAnswersPerDayUser(Userid: number): Promise<Object[]> {
-        const quest = await this.httpService.get("http://localhost:8006/statistics/showAnswersPerDayUser/"+Userid)
+        const quest = await this.httpService.get("https://datalayersoa.herokuapp.com/statistics/showAnswersPerDayUser/"+Userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -82,7 +82,7 @@ export class StatsService {
     }
 
     async countAnswersUser(Userid: number): Promise<Object[]>{
-        const quest = await this.httpService.get("http://localhost:8006/statistics/countAnswersUser/"+Userid)
+        const quest = await this.httpService.get("https://datalayersoa.herokuapp.com/statistics/countAnswersUser/"+Userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -92,7 +92,7 @@ export class StatsService {
     }
 
     async countQuestionsUser(Userid: number): Promise<Object[]>{
-        const quest = await this.httpService.get("http://localhost:8006/statistics/countQuestionsUser/"+Userid)
+        const quest = await this.httpService.get("https://datalayersoa.herokuapp.com/statistics/countQuestionsUser/"+Userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -110,7 +110,7 @@ export class StatsService {
             services : []
         };
 
-        return await this.httpService.post("http://localhost:8010/management/subscribe", body)
+        return await this.httpService.post("https://esbsoa.herokuapp.com/management/subscribe", body)
             .pipe(catchError(async e => {
                 let unsub = await this.client.hget('lost', 'unregisters');
                 let sub = await this.client.hget('lost', 'registers');
@@ -144,12 +144,12 @@ export class StatsService {
     async unSubscribe(): Promise<any> {
         let body = {
             name : "Statistics",
-            address : "http://localhost:8008/stats",
+            address : "https://statisticssoa.herokuapp.com/stats",
             description : "Returns data about Questions or/and Answers or/and Keywords or/and Users for statistic analysis",
             services : []
         };
 
-        return await this.httpService.post("http://localhost:8010/management/unsubscribe", body)
+        return await this.httpService.post("https://esbsoa.herokuapp.com/management/unsubscribe", body)
             .pipe(catchError(async e => {
                 console.log("in error");
                 let unsub = await this.client.hget('lost', 'unregisters');
@@ -185,7 +185,7 @@ export class StatsService {
     async auth(req : Request): Promise<boolean> {
         let services;
         try {
-            services = await this.httpService.get("http://localhost:8010/discovery/services").pipe(map(response => response.data)).toPromise();
+            services = await this.httpService.get("https://esbsoa.herokuapp.com/discovery/services").pipe(map(response => response.data)).toPromise();
         } catch (e) {
             services = null
         }
@@ -207,9 +207,10 @@ export class StatsService {
             //return false
         }
 
-        const cookie = req.cookies['token'];
+        //const cookie = req.cookies['token'];
+        const cookie = req.headers['x-access-token']
 
-        let body = {
+        const body = {
             name: authorization[0]["name"],
             url: authorization[0]["url"],
             requestMethod: authorization[0]["requestMethod"],
@@ -217,7 +218,7 @@ export class StatsService {
         };
 
         try {
-            return await this.httpService.post("http://localhost:8010/execution", body).pipe(map(response => response.data)).toPromise();
+            return await this.httpService.post("https://esbsoa.herokuapp.com/execution", body).pipe(map(response => response.data)).toPromise();
         } catch (e) {
             return null
         }
@@ -226,7 +227,7 @@ export class StatsService {
     async cookieUserId(req : Request): Promise<number> {
         let services;
         try {
-            services = await this.httpService.get("http://localhost:8010/discovery/services").pipe(map(response =>response.data)).toPromise();
+            services = await this.httpService.get("https://esbsoa.herokuapp.com/discovery/services").pipe(map(response =>response.data)).toPromise();
         } catch (e) {
             services = null
         }
@@ -248,9 +249,10 @@ export class StatsService {
             //return false
         }
 
-        const cookie = req.cookies['token'];
+       // const cookie = req.cookies['token'];
+        const cookie = req.headers['x-access-token']
 
-        let body = {
+        const body = {
             name: cookieUserId[0]["name"],
             url: cookieUserId[0]["url"],
             requestMethod: cookieUserId[0]["requestMethod"],
@@ -258,7 +260,7 @@ export class StatsService {
         };
 
         try {
-            return await this.httpService.post("http://localhost:8010/execution", body).pipe(map(response => response.data)).toPromise();
+            return await this.httpService.post("https://esbsoa.herokuapp.com/execution", body).pipe(map(response => response.data)).toPromise();
         } catch (e) {
             return null
         }

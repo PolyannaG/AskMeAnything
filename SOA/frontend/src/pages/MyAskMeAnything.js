@@ -27,13 +27,14 @@ function MyAskMeAnything(){
     const { id, username, isLoading } = useContext(UserContext);
     const [data, setData]=useState([])
     const [done,setDone]=useState(false)
+    const tok = localStorage.getItem('token');
 
     let quest=1
 
     const getData= async ()=>{
-        let resp= await fetch(`http://localhost:8008/stats/keywords_user/${id}`,{
+        let resp= await fetch(`https://statisticssoa.herokuapp.com/stats/keywords_user/${id}`,{
             method: 'GET',
-            headers: {'Content-type': 'application/json'},
+            headers: {'Content-type': 'application/json', 'x-access-token':tok},
             credentials: 'include'
         })
         if (resp.ok){
@@ -59,9 +60,9 @@ function MyAskMeAnything(){
     const getDummyUser=async () => {
         let user_data={}
         try {
-            let resp_questions = await fetch(`http://localhost:8008/stats/count_questions_user/${id}`, {
+            let resp_questions = await fetch(`https://statisticssoa.herokuapp.com/stats/count_questions_user/${id}`, {
                 method: 'GET',
-                headers: {'Content-type': 'application/json'},
+                headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
             })
             if (resp_questions.ok) {
@@ -74,9 +75,9 @@ function MyAskMeAnything(){
             user_data.questions = ""
         }
         try {
-            let resp_answers = await fetch(`http://localhost:8008/stats/count_answers_user/${id}`, {
+            let resp_answers = await fetch(`https://statisticssoa.herokuapp.com/stats/count_answers_user/${id}`, {
                 method: 'GET',
-                headers: {'Content-type': 'application/json'},
+                headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
             })
             if (resp_answers.ok) {
@@ -90,9 +91,9 @@ function MyAskMeAnything(){
         }
         try {
 
-            let resp_user = await fetch('http://localhost:8007/authentication/user', {
+            let resp_user = await fetch('https://manageuserssoa.herokuapp.com/authentication/user', {
                 method: 'GET',
-                headers: {'Content-type': 'application/json'},
+                headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
             })
             if (resp_user.ok) {
@@ -114,9 +115,9 @@ function MyAskMeAnything(){
     }
 
     const getQuestionsPerDay=async()=>{
-        let resp= await fetch(`http://localhost:8008/stats/per_day_user/questions/${id}`,{
+        let resp= await fetch(`https://statisticssoa.herokuapp.com/stats/per_day_user/questions/${id}`,{
             method: 'GET',
-            headers: {'Content-type': 'application/json'},
+            headers: {'Content-type': 'application/json', 'x-access-token':tok},
             credentials: 'include'
         })
         if (resp.ok){
@@ -145,9 +146,9 @@ function MyAskMeAnything(){
         else return []
     }
     const getAnswersPerDay=async()=>{
-        let resp= await fetch(`http://localhost:8008/stats/per_day_user/answers/${id}`,{
+        let resp= await fetch(`https://statisticssoa.herokuapp.com/stats/per_day_user/answers/${id}`,{
             method: 'GET',
-            headers: {'Content-type': 'application/json'},
+            headers: {'Content-type': 'application/json', 'x-access-token':tok},
             credentials: 'include'
         })
         if (resp.ok){
@@ -204,9 +205,9 @@ function MyAskMeAnything(){
                 date = lastDate
             }
             console.log(lastDate)
-            let resp = await fetch(`http://localhost:8009/user_interaction/question/all_user/${date}/${id}`,{
+            let resp = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/question/all_user/${date}/${id}`,{
                 method: 'GET',
-                headers: {'Content-type': 'application/json'},
+                headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
             })
 
@@ -231,9 +232,9 @@ function MyAskMeAnything(){
                     }
                 })
                 await mydata.map(async (item) => {
-                    let response = await fetch(`http://localhost:8009/user_interaction/answer/for_question/${item.id}`,{
+                    let response = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/answer/for_question/${item.id}`,{
                         method: 'GET',
-                        headers: {'Content-type': 'application/json'},
+                        headers: {'Content-type': 'application/json', 'x-access-token':tok},
                         credentials: 'include'
                     })
 
@@ -273,9 +274,9 @@ function MyAskMeAnything(){
             }
             console.log(lastDate)
             setDone(false)
-            let resp = await fetch(`http://localhost:8009/user_interaction/answer/all_user/${id}/${date}`,{
+            let resp = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/answer/all_user/${id}/${date}`,{
                 method: 'GET',
-                headers: {'Content-type': 'application/json'},
+                headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
             })
             if (resp.ok){
@@ -286,9 +287,9 @@ function MyAskMeAnything(){
                  for (let i =0; i<resp.length; i++) {
                      if (mydata[i] !== undefined) {
                          try {
-                             let response = await fetch(`http://localhost:8009/user_interaction/question/id/${mydata[i].questionId}`, {
+                             let response = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/question/id/${mydata[i].questionId}`, {
                                  method: 'GET',
-                                 headers: {'Content-type': 'application/json'},
+                                 headers: {'Content-type': 'application/json', 'x-access-token':tok},
                                  credentials: 'include'
                              })
                              //if (response.ok) {

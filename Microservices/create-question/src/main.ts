@@ -9,10 +9,10 @@ async function bootstrap() {
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors({
-    origin: 'http://localhost:3000',
-    credentials : true,
-    maxAge : 600
-  })
-  await app.listen(8001);
+    origin : 'https://askmeanythingms.herokuapp.com',
+    credentials: true,
+    maxAge: 600,
+  });
+  await app.listen(process.env.PORT || 8001);
 }
 bootstrap();

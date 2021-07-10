@@ -31,7 +31,7 @@ function Home(){
 
 
     const getQuestionsPerDay=async()=>{
-        let resp= await fetch(`http://localhost:8003/statistics/per_day/questions`)
+        let resp= await fetch(`https://statisticsms.herokuapp.com/statistics/per_day/questions`)
         if (resp.ok){
 
             resp=await resp.json()
@@ -60,7 +60,7 @@ function Home(){
     }
 
     const getAnswersPerDay=async()=>{
-        let resp= await fetch(`http://localhost:8003/statistics/per_day/answers`,{
+        let resp= await fetch(`https://statisticsms.herokuapp.com/statistics/per_day/answers`,{
             method: 'GET',
             headers: {'Content-type': 'application/json'},
             credentials: 'include'
@@ -94,7 +94,7 @@ function Home(){
     }
 
     const getData= async ()=>{
-        let resp= await fetch(`http://localhost:8003/statistics/keywords`)
+        let resp= await fetch(`https://statisticsms.herokuapp.com/statistics/keywords`)
         if (resp.ok){
 
             resp=await resp.json()
@@ -129,7 +129,7 @@ function Home(){
            // const date=new Date(Date.now()).toISOString()
            // console.log(date)
            // let resp = await fetch(`http://localhost:8005/view_question/all/${date}`)
-            let resp = await fetch(`http://localhost:8005/view_question/most_popular`)
+            let resp = await fetch(`https://viewquestionms.herokuapp.com/view_question/most_popular`)
             resp = await resp.json()
             console.log(resp)
             let mydata=resp
@@ -149,7 +149,7 @@ function Home(){
                 }
             })
              mydata.map(async (item)=>{
-                let response=await fetch(`http://localhost:8004/view_answer/for_question/${item.id}`)
+                let response=await fetch(`https://viewanswerms.herokuapp.com/view_answer/for_question/${item.id}`)
 
                 const answers=await response.json()
                  //console.log(answers[0].answers)

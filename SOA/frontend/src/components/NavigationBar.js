@@ -10,8 +10,8 @@ function NavigationBar(){
 
     async function handleSignOut(){
         try{
-
-            const resp=await fetch('http://localhost:8007/authentication/logout',{
+/*
+            const resp=await fetch('https://manageuserssoa.herokuapp.com/authentication/logout',{
                 method: 'POST',
                 headers:{'Content-type':'application/json'},
                 credentials:'include'
@@ -20,9 +20,12 @@ function NavigationBar(){
                 console.log('error loging out')
             }
             else{
+
+ */
                 console.log('successful logout')
+            localStorage.clear()
                 window.location.reload();
-            }
+          //  }
         }
         catch (err){
             console.log(err)
@@ -33,13 +36,7 @@ function NavigationBar(){
     return(
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
             <Navbar.Brand href="/homepage">
-                <img
-                    alt=""
-                    src="../../favicon.ico"
-                    width="30"
-                    height="30"
-                    className="d-inline-block align-top"
-                />{' '}
+               {' '}
                 AskMeAnything
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />

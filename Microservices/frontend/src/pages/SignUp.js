@@ -35,23 +35,26 @@ function SignUp(){
                 //history.push('./homepage')
                 //setRedirect(true)
                 console.log('Successful creation of user')
-                const login=await checkCredentials(username,password)
+               /* const login=await checkCredentials(username,password)
                 if (!login){
                     console.log('error logging new user in')
                 }
                 else{
                     console.log("successfully logged new user in")
-                    const resp=await fetch('http://localhost:8002/auth/logout',{
+                    const tok = localStorage.getItem('token');
+                    const resp=await fetch('https://manageusersms.herokuapp.com/auth/logout',{
                         method: 'POST',
-                        headers:{'Content-type':'application/json'},
+                        headers:{'Content-type':'application/json', 'x-access-token':tok},
                         credentials:'include'
                     })
+
+                */
                     //document.location.reload()
                     alert('Signed up successfully!')
                     history.push('/')
                 }
 
-            }
+          //  }
             else{
                 console.log('error in creating user')
             }
