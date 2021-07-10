@@ -36,6 +36,15 @@ function NavigationBar(){
     return(
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
             <Navbar.Brand href="/homepage">
+                <Image
+                    alt=""
+                    src="../../favicon.ico"
+                    width="30"
+                    height="30"
+                    className="d-inline-block align-top"
+                    rounded
+
+                />
                {' '}
                 AskMeAnything
             </Navbar.Brand>

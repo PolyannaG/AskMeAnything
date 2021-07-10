@@ -18,11 +18,13 @@ function AccordionAnswers(props){
 
     }
 
+
     function correctDate (d) {
         let myDate = new Date(d);
         myDate.setTime(myDate.getTime() - (myDate.getTimezoneOffset() * 60000));
         return myDate.toISOString().split("T").join(", ").slice(0,-5)
     }
+
 
     useEffect(()=>{
         console.log(Object.keys(props.answers[0]))

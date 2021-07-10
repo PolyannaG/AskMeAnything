@@ -1,5 +1,5 @@
 import React from "react";
-import {Navbar, NavDropdown, Nav, Button} from "react-bootstrap";
+import {Navbar, NavDropdown, Nav, Button, Image} from "react-bootstrap";
 
 
 function NavigationBarNotSignedIn(){
@@ -8,6 +8,14 @@ function NavigationBarNotSignedIn(){
         <div>
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
             <Navbar.Brand href="/">
+                <Image
+                    alt=""
+                    src="../../favicon.ico"
+                    width="30"
+                    height="30"
+                    className="d-inline-block align-top"
+                    rounded
+                />
                 {' '}
                 AskMeAnything
             </Navbar.Brand>
