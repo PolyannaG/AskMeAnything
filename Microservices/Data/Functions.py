@@ -1,6 +1,8 @@
 import string
 import random
 import bcrypt
+import time
+from datetime import datetime
 from random_timestamp import random_timestamp
 
 
@@ -62,3 +64,21 @@ def MoreRecentDate(date1, date2):
             elif date2.day > date1.day :
                 return date2
     return 0
+
+
+def str_time_prop(start, end, time_format, prop):
+
+    stime = time.mktime(time.strptime(start, time_format))
+    etime = time.mktime(time.strptime(end, time_format))
+
+    ptime = stime + prop * (etime - stime)
+
+    return time.strftime(time_format, time.localtime(ptime))
+
+
+def random_date(start, end, prop):
+    return str_time_prop(start, end, '%Y-%m-%d %H:%M:%S', prop)
+
+
+def StrToDate(strDate, time_format):
+    return datetime.strptime(strDate, time_format)

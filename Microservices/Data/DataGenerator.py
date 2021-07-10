@@ -2,11 +2,14 @@ import csv
 import string
 import random
 import bcrypt
+import time
+from datetime import datetime
 from random_username.generate import generate_username
-from Functions import passwordGenerator, emailGenerator, ReturnCorrectDate, MoreRecentDate
+from Functions import passwordGenerator, emailGenerator, ReturnCorrectDate, MoreRecentDate, random_date, StrToDate
 from random_timestamp import random_timestamp
 from faker import Faker
 fake = Faker()
+
 
 #csv file headers
 headerQuestions = ['id', 'title', 'text', 'date_created', 'Userid']
@@ -65,10 +68,10 @@ row = {}
 rowPass = {}
 users = []
 passw = []
-usernames = generate_username(102)
+usernames = generate_username(12)
 password_length = [8,9,10,11,12,13,14,15]
 
-for i in range(1, 101):
+for i in range(1, 11):
     row['id']=i
     row['username']=usernames[i]
     rowPass['username']=usernames[i]
@@ -114,7 +117,7 @@ popularityQuestions = []
 questionStats = []
 answerStats = []
 count = 1
-for i in range(1, 301):
+for i in range(1, 451):
     rowQuestion['id']=i
     rowPopularity['id']=i
     rowStatsQ['id']=i
@@ -132,21 +135,20 @@ for i in range(1, 301):
     rowQuestion['text'] = text
     rowPopularity['text'] = text
 
-    if i % 5 == 0:
-        UserId = 8
-    else :
-        UserId = random.randint(1,98)
+    UserId = random.randint(1,10)
+
     rowQuestion['Userid']=UserId
     rowPopularity['Userid']=UserId
     rowStatsQ['Userid']=UserId
 
     registered = dates_register[UserId]
-    if i < 150 :
+
+    if i < 50 :
         question_date = ReturnCorrectDate(registered)
     else :
         #Recent dates for the statistics : CHANGE BEFORE PRESENTATION
-        recent_day = random.randint(1, 24) #because current day is 24/05/2021
-        question_date = random_timestamp(year=2021, month=5, day=recent_day)
+        question_date_str = random_date("2021-06-10 00:00:00", "2021-09-10 00:00:00", random.random())
+        question_date = StrToDate(question_date_str, '%Y-%m-%d %H:%M:%S')
 
     rowQuestion['date_created']=question_date
     rowPopularity['date_created']=question_date
@@ -169,21 +171,20 @@ for i in range(1, 301):
         text = paragraph_str[:-1]
         rowAnswers['text'] = text
 
-        if count % 15 == 0:
-            userid = 8
-        else :
-            userid = random.randint(1,98)
+        userid = random.randint(1,10)
 
         rowAnswers['Userid']=userid
         rowStatsA['Userid']=userid
         Ans_registered = dates_register[userid]
 
         while True:
-            if i < 150 :
+            if i < 50 :
                 answer_date1 = ReturnCorrectDate(question_date)
             else :
                 #Recent dates for the statistics : CHANGE BEFORE PRESENTATION
-                answer_date1 = random_timestamp( year=2021, month=5, day=random.randint( (recent_day)+1, 30 ) )
+                answer_date1_str = random_date(question_date_str, "2021-09-10 00:00:00", random.random())
+                answer_date1 = StrToDate(answer_date1_str, '%Y-%m-%d %H:%M:%S')
+                #answer_date1 = random_timestamp( year=2021, month=5, day=random.randint( (recent_day)+1, 30 ) )
             answer_date2 = ReturnCorrectDate(Ans_registered)
             answer_date = MoreRecentDate(answer_date1, answer_date2)
             if answer_date != 0:
@@ -213,7 +214,7 @@ writerAnswersStats.writerows(answerStats)
 #Question_ids for answer question
 rowID = {}
 questionIDs =[]
-for i in range(1, 301):
+for i in range(1, 451):
     rowID['id']=i
     questionIDs.append(rowID)
     rowID={}
@@ -242,7 +243,7 @@ writerKeyword.writerows(keywords)
 #Question-Keyword Table
 rowQK = {}
 QuestionsKeywords = []
-for i in range(1, 301):
+for i in range(1, 451):
     num_keywords = random.randint(0,6)
     already_keyword = []
     for j in range(num_keywords):
