@@ -32,7 +32,7 @@ function Home(){
 
 
     const getQuestionsPerDay=async()=>{
-        let resp= await fetch(`https://statisticssoa.herokuapp.com/stats/per_day/questions`,{
+        let resp= await fetch(`https://statisticssoaapp.herokuapp.com/stats/per_day/questions`,{
             method: 'GET',
             headers: {'Content-type': 'application/json','x-access-token':tok},
             credentials: 'include'
@@ -64,7 +64,7 @@ function Home(){
     }
 
     const getAnswersPerDay=async()=>{
-        let resp= await fetch(`https://statisticssoa.herokuapp.com/stats/per_day/answers`,{
+        let resp= await fetch(`https://statisticssoaapp.herokuapp.com/stats/per_day/answers`,{
             method: 'GET',
             headers: {'Content-type': 'application/json','x-access-token':tok},
             credentials: 'include'
@@ -97,7 +97,7 @@ function Home(){
     }
 
     const getData= async ()=>{
-        let resp= await fetch(`https://statisticssoa.herokuapp.com/stats/keywords`,{
+        let resp= await fetch(`https://statisticssoaapp.herokuapp.com/stats/keywords`,{
             method: 'GET',
             headers: {'Content-type': 'application/json','x-access-token':tok},
             credentials: 'include'
@@ -143,7 +143,7 @@ function Home(){
                     else
                         date=lastDate
                     console.log(date)
-                    let resp = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/question/keyword_date_from_to/${selectedKeywords.label}/${date}/${dateTo}`,{
+                    let resp = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/question/keyword_date_from_to/${selectedKeywords.label}/${date}/${dateTo}`,{
                         method: 'GET',
                         headers: {'Content-type': 'application/json','x-access-token':tok},
                         credentials: 'include'
@@ -170,7 +170,7 @@ function Home(){
                             }
                         })
                         await mydata.map(async (item) => {
-                            let response = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/answer/for_question/${item.id}`,{
+                            let response = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/answer/for_question/${item.id}`,{
                                 method: 'GET',
                                 headers: {'Content-type': 'application/json','x-access-token':tok},
                                 credentials: 'include'
@@ -211,7 +211,7 @@ function Home(){
                     else
                         date=lastDate
                     console.log(date)
-                    let resp = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/question/keyword_date/${selectedKeywords.label}/${date}`,{
+                    let resp = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/question/keyword_date/${selectedKeywords.label}/${date}`,{
                         method: 'GET',
                         headers: {'Content-type': 'application/json','x-access-token':tok},
                         credentials: 'include'
@@ -238,7 +238,7 @@ function Home(){
                             }
                         })
                         await mydata.map(async (item) => {
-                            let response = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/answer/for_question/${item.id}`,{
+                            let response = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/answer/for_question/${item.id}`,{
                                 method: 'GET',
                                 headers: {'Content-type': 'application/json','x-access-token':tok},
                                 credentials: 'include'
@@ -283,7 +283,7 @@ function Home(){
                     else
                         date=lastDate
                     console.log(date)
-                    let resp = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/question/keyword_date_from_to/${selectedKeywords.label}/${date}/${dateTo}`,{
+                    let resp = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/question/keyword_date_from_to/${selectedKeywords.label}/${date}/${dateTo}`,{
                         method: 'GET',
                         headers: {'Content-type': 'application/json','x-access-token':tok},
                         credentials: 'include'
@@ -310,7 +310,7 @@ function Home(){
                             }
                         })
                         await mydata.map(async (item) => {
-                            let response = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/answer/for_question/${item.id}`,{
+                            let response = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/answer/for_question/${item.id}`,{
                                 method: 'GET',
                                 headers: {'Content-type': 'application/json','x-access-token':tok},
                                 credentials: 'include'
@@ -357,7 +357,7 @@ function Home(){
                     else
                         date=lastDate
                     console.log(date)
-                    let resp = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/question/keyword_date/${selectedKeywords.label}/${date}`,{
+                    let resp = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/question/keyword_date/${selectedKeywords.label}/${date}`,{
                         method: 'GET',
                         headers: {'Content-type': 'application/json','x-access-token':tok},
                         credentials: 'include'
@@ -384,7 +384,7 @@ function Home(){
                             }
                         })
                         await mydata.map(async (item) => {
-                            let response = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/answer/for_question/${item.id}`,{
+                            let response = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/answer/for_question/${item.id}`,{
                                 method: 'GET',
                                 headers: {'Content-type': 'application/json','x-access-token':tok},
                                 credentials: 'include'
@@ -428,7 +428,7 @@ function Home(){
                     else
                         date=lastDate
                     console.log(date)
-                    let resp = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/question/start_end_date/${date}/${dateTo}`,{
+                    let resp = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/question/start_end_date/${date}/${dateTo}`,{
                         method: 'GET',
                         headers: {'Content-type': 'application/json','x-access-token':tok},
                         credentials: 'include'
@@ -455,7 +455,7 @@ function Home(){
                             }
                         })
                         await mydata.map(async (item) => {
-                            let response = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/answer/for_question/${item.id}`,{
+                            let response = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/answer/for_question/${item.id}`,{
                                 method: 'GET',
                                 headers: {'Content-type': 'application/json','x-access-token':tok},
                                 credentials: 'include'
@@ -497,7 +497,7 @@ function Home(){
                     else
                         date=lastDate
                     console.log(date)
-                    let resp = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/question/all/${date}`,{
+                    let resp = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/question/all/${date}`,{
                         method: 'GET',
                         headers: {'Content-type': 'application/json','x-access-token':tok},
                         credentials: 'include'
@@ -524,7 +524,7 @@ function Home(){
                             }
                         })
                         await mydata.map(async (item) => {
-                            let response = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/answer/for_question/${item.id}`,{
+                            let response = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/answer/for_question/${item.id}`,{
                                 method: 'GET',
                                 headers: {'Content-type': 'application/json','x-access-token':tok},
                                 credentials: 'include'
@@ -572,7 +572,7 @@ function Home(){
                     else
                         date=lastDate
                     console.log(dateTo)
-                    let resp = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/question/start_end_date/${date}/${dateTo}`,{
+                    let resp = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/question/start_end_date/${date}/${dateTo}`,{
                         method: 'GET',
                         headers: {'Content-type': 'application/json','x-access-token':tok},
                         credentials: 'include'
@@ -599,7 +599,7 @@ function Home(){
                             }
                         })
                         await mydata.map(async (item) => {
-                            let response = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/answer/for_question/${item.id}`,{
+                            let response = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/answer/for_question/${item.id}`,{
                                 method: 'GET',
                                 headers: {'Content-type': 'application/json','x-access-token':tok},
                                 credentials: 'include'
@@ -652,7 +652,7 @@ function Home(){
                 date = lastDate
             }
             //  console.log(lastDate)
-            let resp = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/question/all/${date}`,{
+            let resp = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/question/all/${date}`,{
                 method: 'GET',
                 headers: {'Content-type': 'application/json','x-access-token':tok},
                 credentials: 'include'
@@ -679,7 +679,7 @@ function Home(){
                     }
                 })
                 await mydata.map(async (item) => {
-                    let response = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/answer/for_question/${item.id}`,{
+                    let response = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/answer/for_question/${item.id}`,{
                         method: 'GET',
                         headers: {'Content-type': 'application/json','x-access-token':tok},
                         credentials: 'include'
@@ -721,7 +721,7 @@ function Home(){
         //value can be used to fetch the appropriate words
         if (value) {  //will fetch some keywords based on search
             console.log("user has typed something")
-            let resp = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/question/specific_keywords/${value}`,{
+            let resp = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/question/specific_keywords/${value}`,{
                 method: 'GET',
                 headers: {'Content-type': 'application/json','x-access-token':tok},
                 credentials: 'include'

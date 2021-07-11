@@ -16,14 +16,14 @@ export class AnswerService {
 
 
     async create (paramId: number, createAnswerDto: object) : Promise<Object> {
-        const myQuestion = await this.httpService.get("https://datalayersoa.herokuapp.com/answer/checkForQuestion/"+paramId)
+        const myQuestion = await this.httpService.get("https://datalayersoaapp.herokuapp.com/answer/checkForQuestion/"+paramId)
             .pipe(map(response => response.data))
             .toPromise();
 
         if (!myQuestion)
             throw new NotFoundException(`Question with id ${paramId} not found, so it can't be answered`);
         else {
-            const created_answer = await this.httpService.post("https://datalayersoa.herokuapp.com/answer/createAnswer/"+paramId, createAnswerDto)
+            const created_answer = await this.httpService.post("https://datalayersoaapp.herokuapp.com/answer/createAnswer/"+paramId, createAnswerDto)
                 .pipe(map(response => response.data))
                 .toPromise();
 
@@ -34,7 +34,7 @@ export class AnswerService {
 
     async findQuestionAnswers(QuestionID : number): Promise<Object[]> {
 
-        const question_answers = await this.httpService.get("https://datalayersoa.herokuapp.com/answer/findQuestionAnswers/"+QuestionID)
+        const question_answers = await this.httpService.get("https://datalayersoaapp.herokuapp.com/answer/findQuestionAnswers/"+QuestionID)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -57,7 +57,7 @@ export class AnswerService {
     }
 
     async findAnswersForUser(UserID : number): Promise<Object[]> {
-        const my_answers = await this.httpService.get("https://datalayersoa.herokuapp.com/answer/findAnswersForUser/"+UserID)
+        const my_answers = await this.httpService.get("https://datalayersoaapp.herokuapp.com/answer/findAnswersForUser/"+UserID)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -79,7 +79,7 @@ export class AnswerService {
     }
 
     async findAllDate(date_from: Date, userid: number): Promise<Object[]> {
-        const ans = await this.httpService.get("https://datalayersoa.herokuapp.com/answer/findAllDate/"+date_from+"/"+userid)
+        const ans = await this.httpService.get("https://datalayersoaapp.herokuapp.com/answer/findAllDate/"+date_from+"/"+userid)
             .pipe(map(response => response.data))
             .toPromise();
 
@@ -92,12 +92,12 @@ export class AnswerService {
     async Subscribe(): Promise<any> {
         let body = {
             name : "Answers",
-            address : "https://userinteractionsoa.herokuapp.com/user_interaction/answer",
+            address : "https://userinteractionsoaapp.herokuapp.com/user_interaction/answer",
             description : "Creates answers to existing questions and fetches answers per question or user",
             services : []
         };
 
-        return await this.httpService.post("https://esbsoa.herokuapp.com/management/subscribe", body)
+        return await this.httpService.post("https://esbsoaapp.herokuapp.com/management/subscribe", body)
             .pipe(catchError(async e => {
                 let unsub = await this.client.hget('lost', 'unregisters');
                 let sub = await this.client.hget('lost', 'registers');
@@ -131,12 +131,12 @@ export class AnswerService {
     async unSubscribe(): Promise<any> {
         let body = {
             name : "Answers",
-            address : "https://userinteractionsoa.herokuapp.com/user_interaction/answer",
+            address : "https://userinteractionsoaapp.herokuapp.com/user_interaction/answer",
             description : "Creates answers to existing questions and fetches answers per question or user",
             services : []
         };
 
-        return await this.httpService.post("https://esbsoa.herokuapp.com/management/unsubscribe", body)
+        return await this.httpService.post("https://esbsoaapp.herokuapp.com/management/unsubscribe", body)
             .pipe(catchError(async e => {
                 let unsub = await this.client.hget('lost', 'unregisters');
                 let sub = await this.client.hget('lost', 'registers');
@@ -169,7 +169,7 @@ export class AnswerService {
     async auth(req : Request): Promise<boolean> {
         let services;
         try {
-            services = await this.httpService.get("https://esbsoa.herokuapp.com/discovery/services").pipe(map(response =>response.data)).toPromise();
+            services = await this.httpService.get("https://esbsoaapp.herokuapp.com/discovery/services").pipe(map(response =>response.data)).toPromise();
         } catch (e) {
             services = null
         }
@@ -202,7 +202,7 @@ export class AnswerService {
         };
 
         try {
-            return await this.httpService.post("https://esbsoa.herokuapp.com/execution", body).pipe(map(response => response.data)).toPromise();
+            return await this.httpService.post("https://esbsoaapp.herokuapp.com/execution", body).pipe(map(response => response.data)).toPromise();
         } catch (e) {
             return null
         }
@@ -211,7 +211,7 @@ export class AnswerService {
     async cookieUserId(req : Request): Promise<number> {
         let services;
         try {
-            services = await this.httpService.get("https://esbsoa.herokuapp.com/discovery/services").pipe(map(response =>response.data)).toPromise();
+            services = await this.httpService.get("https://esbsoaapp.herokuapp.com/discovery/services").pipe(map(response =>response.data)).toPromise();
         } catch (e) {
             services = null
         }
@@ -244,7 +244,7 @@ export class AnswerService {
         };
 
         try {
-            return await this.httpService.post("https://esbsoa.herokuapp.com/execution", body).pipe(map(response => response.data)).toPromise();
+            return await this.httpService.post("https://esbsoaapp.herokuapp.com/execution", body).pipe(map(response => response.data)).toPromise();
         } catch (e) {
             return null
         }

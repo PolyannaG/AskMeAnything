@@ -28,7 +28,7 @@ function Home(){
 
 
     const getQuestionsPerDay=async()=>{
-        let resp= await fetch(`https://statisticssoa.herokuapp.com/stats/per_day/questions`)
+        let resp= await fetch(`https://statisticssoaapp.herokuapp.com/stats/per_day/questions`)
         if (resp.ok){
 
             resp=await resp.json()
@@ -58,7 +58,7 @@ function Home(){
 
 
     const getAnswersPerDay=async()=>{
-        let resp= await fetch(`https://statisticssoa.herokuapp.com/stats/per_day/answers`,{
+        let resp= await fetch(`https://statisticssoaapp.herokuapp.com/stats/per_day/answers`,{
             method: 'GET',
             headers: {'Content-type': 'application/json'},
             credentials: 'include'
@@ -93,7 +93,7 @@ function Home(){
 
 
     const getData= async ()=>{
-        let resp= await fetch(`https://statisticssoa.herokuapp.com/stats/keywords`)
+        let resp= await fetch(`https://statisticssoaapp.herokuapp.com/stats/keywords`)
         if (resp.ok){
 
             resp=await resp.json()
@@ -129,7 +129,7 @@ function Home(){
            // const date=new Date(Date.now()).toISOString()
            // console.log(date)
            // let resp = await fetch(`http://localhost:8005/view_question/all/${date}`)
-            let resp = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/question/most_popular`)
+            let resp = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/question/most_popular`)
             resp = await resp.json()
             console.log(resp)
             let mydata=resp
@@ -149,7 +149,7 @@ function Home(){
                 }
             })
              mydata.map(async (item)=>{
-                let response=await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/answer/for_question/${item.id}`)
+                let response=await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/answer/for_question/${item.id}`)
 
                 const answers=await response.json()
                  //console.log(answers[0].answers)

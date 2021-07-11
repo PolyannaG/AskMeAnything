@@ -33,7 +33,7 @@ function NewQuestion(){
                 //history.go(-1) //we need to go to the previous page
                 event.preventDefault()
                 event.stopPropagation()
-                const resp = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/question`, {
+                const resp = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/question`, {
                     method: 'POST',
                     headers: {'Content-type': 'application/json', 'x-access-token':tok},
                     credentials: 'include',

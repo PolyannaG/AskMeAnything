@@ -28,7 +28,7 @@ export class ViewAnswerService {
       const body = {
         token: cookie
       }
-      return await this.httpService.post("https://choreographerms.herokuapp.com/get_auth", body).pipe(map(response => response.data)).toPromise();
+      return await this.httpService.post("https://choreographermsapp.herokuapp.com/get_auth", body).pipe(map(response => response.data)).toPromise();
     } catch (e) {
       return null
     }
@@ -91,7 +91,7 @@ export class ViewAnswerService {
   async subscribe (): Promise<string> {
     let sub = await this.client.hget('subscribers', 'answers');
     let subscribers = JSON.parse(sub);
-    let myAddress = "https://viewanswerms.herokuapp.com/view_answer/message";
+    let myAddress = "https://viewanswermsapp.herokuapp.com/view_answer/message";
     let alreadySubscribed = false;
 
     if (subscribers == null){
@@ -164,7 +164,7 @@ export class ViewAnswerService {
   }
 
   async retrieveLostMessages() : Promise<string> {
-    let msg = await this.client.hget('answerMessages', "https://viewanswerms.herokuapp.com/view_answer/message");
+    let msg = await this.client.hget('answerMessages', "https://viewanswermsapp.herokuapp.com/view_answer/message");
     let messages = JSON.parse(msg);
 
     if (messages == null || messages == []) {
@@ -176,7 +176,7 @@ export class ViewAnswerService {
         await this.updateAnswersDatabase(messages[i])
       }
 
-      await this.client.hset('answerMessages', "https://viewanswerms.herokuapp.com/view_answer/message", JSON.stringify([]));
+      await this.client.hset('answerMessages', "https://viewanswermsapp.herokuapp.com/view_answer/message", JSON.stringify([]));
       return "Saved data successfully";
     }
   }
@@ -190,7 +190,7 @@ export class ViewAnswerService {
         token: cookie
       };
 
-      return await this.httpService.post("https://choreographerms.herokuapp.com/get_userId", body).pipe(map(response => response.data)).toPromise();
+      return await this.httpService.post("https://choreographermsapp.herokuapp.com/get_userId", body).pipe(map(response => response.data)).toPromise();
     } catch (e) {
       return null
     }

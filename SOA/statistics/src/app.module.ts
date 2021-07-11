@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { StatsModule } from './stats/stats.module';
 import {RedisModule} from "nestjs-redis";
 
-var rtg   = require("url").parse("redis://redistogo:43001732e767859ad9723a153e99288b@soapfish.redistogo.com:11482");
+var rtg   = require("url").parse("redis://redistogo:9b4ebaba46ff3777eb0b7162f4c96fc8@soapfish.redistogo.com:11555");
 const options={
     port: rtg.port,
     host: rtg.hostname,

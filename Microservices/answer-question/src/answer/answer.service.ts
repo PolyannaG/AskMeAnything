@@ -39,7 +39,7 @@ export class AnswerService {
         const the_answer = await this.manager.create(Answer, answer_to_be_created);
         const answer_created = await this.manager.save(the_answer);
 
-        await this.httpService.post('https://choreographerms.herokuapp.com/answers', answer_created).pipe(
+        await this.httpService.post('https://choreographermsapp.herokuapp.com/answers', answer_created).pipe(
             catchError(async e => {
               let m = await this.client.hget('choreographer', 'answers');
               let lost_answers = JSON.parse(m);
@@ -64,7 +64,7 @@ export class AnswerService {
   async subscribe (): Promise<string> {
     let sub = await this.client.hget('subscribers', 'questions');
     let subscribers = JSON.parse(sub);
-    let myAddress = "https://answerquestionms.herokuapp.com/create_answer/message";
+    let myAddress = "https://answerquestionmsapp.herokuapp.com/create_answer/message";
     let alreadySubscribed = false;
 
     if (subscribers == null){
@@ -132,7 +132,7 @@ export class AnswerService {
   }
 
   async retrieveLostMessages() : Promise<string> {
-    let msg = await this.client.hget('questionMessages', "https://answerquestionms.herokuapp.com/create_answer/message");
+    let msg = await this.client.hget('questionMessages', "https://answerquestionmsapp.herokuapp.com/create_answer/message");
     let messages = JSON.parse(msg);
 
     if (messages == null || messages == []) {
@@ -143,7 +143,7 @@ export class AnswerService {
       for (let i = 0; i < messages.length; i++) {
         await this.updateQuestionDatabase(messages[i]);
       }
-      await this.client.hset('questionMessages', "https://answerquestionms.herokuapp.com/create_answer/message", JSON.stringify([]));
+      await this.client.hset('questionMessages', "https://answerquestionmsapp.herokuapp.com/create_answer/message", JSON.stringify([]));
       return "Saved data successfully";
     }
   }
@@ -155,7 +155,7 @@ export class AnswerService {
       const body = {
         token: cookie
       }
-      return await this.httpService.post("https://choreographerms.herokuapp.com/get_auth", body).pipe(map(response => response.data)).toPromise();
+      return await this.httpService.post("https://choreographermsapp.herokuapp.com/get_auth", body).pipe(map(response => response.data)).toPromise();
     } catch (e) {
       return null
     }
@@ -170,7 +170,7 @@ export class AnswerService {
         token: cookie
       };
 
-      return await this.httpService.post("https://choreographerms.herokuapp.com/get_userId", body).pipe(map(response => response.data)).toPromise();
+      return await this.httpService.post("https://choreographermsapp.herokuapp.com/get_userId", body).pipe(map(response => response.data)).toPromise();
     } catch (e) {
       return null
     }

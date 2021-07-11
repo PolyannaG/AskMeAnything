@@ -32,7 +32,7 @@ function MyAskMeAnything(){
     let quest=1
 
     const getData= async ()=>{
-        let resp= await fetch(`https://statisticsms.herokuapp.com/statistics/keywords_user/${id}`,{
+        let resp= await fetch(`https://statisticsmsapp.herokuapp.com/statistics/keywords_user/${id}`,{
             method: 'GET',
             headers: {'Content-type': 'application/json', 'x-access-token':tok},
             credentials: 'include'
@@ -60,7 +60,7 @@ function MyAskMeAnything(){
     const getDummyUser=async () => {
         let user_data={}
         try {
-            let resp_questions = await fetch(`https://statisticsms.herokuapp.com/statistics/count_questions_user/${id}`, {
+            let resp_questions = await fetch(`https://statisticsmsapp.herokuapp.com/statistics/count_questions_user/${id}`, {
                 method: 'GET',
                 headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
@@ -75,7 +75,7 @@ function MyAskMeAnything(){
             user_data.questions = ""
         }
         try {
-            let resp_answers = await fetch(`https://statisticsms.herokuapp.com/statistics/count_answers_user/${id}`, {
+            let resp_answers = await fetch(`https://statisticsmsapp.herokuapp.com/statistics/count_answers_user/${id}`, {
                 method: 'GET',
                 headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
@@ -91,7 +91,7 @@ function MyAskMeAnything(){
         }
         try {
 
-            let resp_user = await fetch('https://manageusersms.herokuapp.com/auth/user', {
+            let resp_user = await fetch('https://manageusersmsapp.herokuapp.com/auth/user', {
                 method: 'GET',
                 headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
@@ -115,7 +115,7 @@ function MyAskMeAnything(){
     }
 
     const getQuestionsPerDay=async()=>{
-        let resp= await fetch(`https://statisticsms.herokuapp.com/statistics/per_day_user/questions/${id}`,{
+        let resp= await fetch(`https://statisticsmsapp.herokuapp.com/statistics/per_day_user/questions/${id}`,{
             method: 'GET',
             headers: {'Content-type': 'application/json', 'x-access-token':tok},
             credentials: 'include'
@@ -146,7 +146,7 @@ function MyAskMeAnything(){
         else return []
     }
     const getAnswersPerDay=async()=>{
-        let resp= await fetch(`https://statisticsms.herokuapp.com/statistics/per_day_user/answers/${id}`,{
+        let resp= await fetch(`https://statisticsmsapp.herokuapp.com/statistics/per_day_user/answers/${id}`,{
             method: 'GET',
             headers: {'Content-type': 'application/json', 'x-access-token':tok},
             credentials: 'include'
@@ -205,7 +205,7 @@ function MyAskMeAnything(){
                 date = lastDate
             }
             console.log(lastDate)
-            let resp = await fetch(`https://viewquestionms.herokuapp.com/view_question/all_user/${date}/${id}`,{
+            let resp = await fetch(`https://viewquestionmsapp.herokuapp.com/view_question/all_user/${date}/${id}`,{
                 method: 'GET',
                 headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
@@ -232,7 +232,7 @@ function MyAskMeAnything(){
                     }
                 })
                 await mydata.map(async (item) => {
-                    let response = await fetch(`https://viewanswerms.herokuapp.com/view_answer/for_question/${item.id}`,{
+                    let response = await fetch(`https://viewanswermsapp.herokuapp.com/view_answer/for_question/${item.id}`,{
                         method: 'GET',
                         headers: {'Content-type': 'application/json', 'x-access-token':tok},
                         credentials: 'include'
@@ -274,7 +274,7 @@ function MyAskMeAnything(){
             }
             console.log(lastDate)
             setDone(false)
-            let resp = await fetch(`https://viewanswerms.herokuapp.com/view_answer/all_user/${id}/${date}`,{
+            let resp = await fetch(`https://viewanswermsapp.herokuapp.com/view_answer/all_user/${id}/${date}`,{
                 method: 'GET',
                 headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
@@ -287,7 +287,7 @@ function MyAskMeAnything(){
                  for (let i =0; i<resp.length; i++) {
                      if (mydata[i] !== undefined) {
                          try {
-                             let response = await fetch(`https://viewquestionms.herokuapp.com/view_question/id/${mydata[i].questionId}`, {
+                             let response = await fetch(`https://viewquestionmsapp.herokuapp.com/view_question/id/${mydata[i].questionId}`, {
                                  method: 'GET',
                                  headers: {'Content-type': 'application/json', 'x-access-token':tok},
                                  credentials: 'include'

@@ -1,7 +1,7 @@
 
 export default async function checkCredentials(username,password){
     try{
-        const resp=await fetch('https://manageusersms.herokuapp.com/auth/login',{
+        const resp=await fetch('https://manageusersmsapp.herokuapp.com/auth/login',{
             method: 'POST',
             headers:{'Content-type':'application/json'},
             credentials:'include',

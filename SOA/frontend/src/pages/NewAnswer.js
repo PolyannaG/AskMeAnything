@@ -26,7 +26,7 @@ function NewAnswer(){
     const GetQuestionByID = async (Question) =>{
         console.log(Question)
         if (Question !== null) {
-            let resp= await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/question/id/${Question.id}`,{
+            let resp= await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/question/id/${Question.id}`,{
                 method: 'GET',
                 headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
@@ -51,7 +51,7 @@ function NewAnswer(){
                     }
                 })
 
-                let response = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/answer/for_question/${Question.id}`,{
+                let response = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/answer/for_question/${Question.id}`,{
                     method: 'GET',
                     headers: {'Content-type': 'application/json', 'x-access-token':tok},
                     credentials: 'include'
@@ -87,7 +87,7 @@ function NewAnswer(){
         }
         else
         {
-            let resp = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/question/all_titles`, {
+            let resp = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/question/all_titles`, {
                 method: 'GET',
                 headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
@@ -124,7 +124,7 @@ function NewAnswer(){
             event.stopPropagation()
             //history.go(-1) //we need to go to the previous page
             try {
-                let resp = await fetch(`https://userinteractionsoa.herokuapp.com/user_interaction/answer/${specificQuestion.id}`, {
+                let resp = await fetch(`https://userinteractionsoaapp.herokuapp.com/user_interaction/answer/${specificQuestion.id}`, {
                     method: 'POST',
                     headers: {'Content-type': 'application/json', 'x-access-token':tok},
                     credentials: 'include',

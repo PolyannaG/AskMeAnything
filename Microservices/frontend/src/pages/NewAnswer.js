@@ -26,7 +26,7 @@ function NewAnswer(){
     const GetQuestionByID = async (Question) =>{
         console.log(Question)
         if (Question !== null) {
-            let resp= await fetch(` https://viewquestionms.herokuapp.com/view_question/id/${Question.id}`,{
+            let resp= await fetch(` https://viewquestionmsapp.herokuapp.com/view_question/id/${Question.id}`,{
                 method: 'GET',
                 headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
@@ -51,7 +51,7 @@ function NewAnswer(){
                     }
                 })
 
-                let response = await fetch(` https://viewanswerms.herokuapp.com/view_answer/for_question/${Question.id}`,{
+                let response = await fetch(` https://viewanswermsapp.herokuapp.com/view_answer/for_question/${Question.id}`,{
                     method: 'GET',
                     headers: {'Content-type': 'application/json', 'x-access-token':tok},
                     credentials: 'include'
@@ -87,7 +87,7 @@ function NewAnswer(){
         }
         else
         {
-            let resp = await fetch(` https://viewquestionms.herokuapp.com/view_question/all_titles`, {
+            let resp = await fetch(` https://viewquestionmsapp.herokuapp.com/view_question/all_titles`, {
                 method: 'GET',
                 headers: {'Content-type': 'application/json', 'x-access-token':tok},
                 credentials: 'include'
@@ -124,7 +124,7 @@ function NewAnswer(){
             event.stopPropagation()
             //history.go(-1) //we need to go to the previous page
             try {
-                let resp = await fetch(` https://answerquestionms.herokuapp.com/create_answer/${specificQuestion.id}`, {
+                let resp = await fetch(` https://answerquestionmsapp.herokuapp.com/create_answer/${specificQuestion.id}`, {
                     method: 'POST',
                     headers: {'Content-type': 'application/json', 'x-access-token':tok},
                     credentials: 'include',

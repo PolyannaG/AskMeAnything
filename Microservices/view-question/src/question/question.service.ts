@@ -192,7 +192,7 @@ export class QuestionService {
   async subscribeQuestions (): Promise<string> {
     let sub = await this.client.hget('subscribers', 'questions');
     let subscribers = JSON.parse(sub);
-    let myAddress = "https://viewquestionms.herokuapp.com/view_question/question_message";
+    let myAddress = "https://viewquestionmsapp.herokuapp.com/view_question/question_message";
     let alreadySubscribed = false;
 
     if (subscribers == null){
@@ -245,7 +245,7 @@ export class QuestionService {
   async subscribeAnswers (): Promise<string> {
     let sub = await this.client.hget('subscribers', 'answers');
     let subscribers = JSON.parse(sub);
-    let myAddress = "https://viewquestionms.herokuapp.com/view_question/answer_message";
+    let myAddress = "https://viewquestionmsapp.herokuapp.com/view_question/answer_message";
     let alreadySubscribed = false;
 
     if (subscribers == null){
@@ -338,7 +338,7 @@ export class QuestionService {
   }
 
   async retrieveLostQuestionMessages() : Promise<string> {
-    let msg = await this.client.hget('questionMessages', "https://viewquestionms.herokuapp.com/view_question/question_message");
+    let msg = await this.client.hget('questionMessages', "https://viewquestionmsapp.herokuapp.com/view_question/question_message");
     let messages = JSON.parse(msg);
 
     if (messages == null || messages == []) {
@@ -350,13 +350,13 @@ export class QuestionService {
         await this.updateQuestionDatabases(messages[i])
       }
 
-      await this.client.hset('questionMessages', "https://viewquestionms.herokuapp.com/view_question/question_message", JSON.stringify([]));
+      await this.client.hset('questionMessages', "https://viewquestionmsapp.herokuapp.com/view_question/question_message", JSON.stringify([]));
       return "Saved data successfully";
     }
   }
 
   async retrieveLostAnswerMessages() : Promise<string> {
-    let msg = await this.client.hget('answerMessages', "https://viewquestionms.herokuapp.com/view_question/answer_message");
+    let msg = await this.client.hget('answerMessages', "https://viewquestionmsapp.herokuapp.com/view_question/answer_message");
     let messages = JSON.parse(msg);
 
     if (messages == null || messages == []) {
@@ -368,7 +368,7 @@ export class QuestionService {
         await this.updateSumAnswers(messages[i]);
       }
 
-      await this.client.hset('answerMessages', "https://viewquestionms.herokuapp.com/view_question/answer_message", JSON.stringify([]));
+      await this.client.hset('answerMessages', "https://viewquestionmsapp.herokuapp.com/view_question/answer_message", JSON.stringify([]));
       return "Saved data successfully";
     }
   }
@@ -380,7 +380,7 @@ export class QuestionService {
       const body = {
         token: cookie
       }
-      return await this.httpService.post("https://choreographerms.herokuapp.com/get_auth", body).pipe(map(response => response.data)).toPromise();
+      return await this.httpService.post("https://choreographermsapp.herokuapp.com/get_auth", body).pipe(map(response => response.data)).toPromise();
     } catch (e) {
       return null
     }
@@ -395,7 +395,7 @@ export class QuestionService {
         token: cookie
       };
 
-      return await this.httpService.post("https://choreographerms.herokuapp.com/get_userId", body).pipe(map(response => response.data)).toPromise();
+      return await this.httpService.post("https://choreographermsapp.herokuapp.com/get_userId", body).pipe(map(response => response.data)).toPromise();
     } catch (e) {
       return null
     }

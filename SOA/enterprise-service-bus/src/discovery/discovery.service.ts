@@ -15,7 +15,7 @@ export class DiscoveryService {
     }
 
     async getAllProvidedServices(): Promise<Object[]> {
-        let registered = await this.httpService.get(" https://esbsoa.herokuapp.com/management/allRegistered").pipe(map(response =>response.data)).toPromise();
+        let registered = await this.httpService.get(" https://esbsoaapp.herokuapp.com/management/allRegistered").pipe(map(response =>response.data)).toPromise();
         let services = [];
 
         if (registered != null ) {

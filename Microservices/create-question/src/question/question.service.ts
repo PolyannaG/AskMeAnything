@@ -77,7 +77,7 @@ export class QuestionService {
         msg["sum_answers"] = 0;
       }
 
-      await this.httpService.post( 'https://choreographerms.herokuapp.com/questions', msg).pipe(
+      await this.httpService.post( 'https://choreographermsapp.herokuapp.com/questions', msg).pipe(
           catchError(async e => {
             let m = await this.client.hget('choreographer', 'questions');
             let lost_questions = JSON.parse(m);
@@ -105,7 +105,7 @@ export class QuestionService {
       const body = {
         token: cookie
       }
-      return await this.httpService.post("https://choreographerms.herokuapp.com/get_auth", body).pipe(map(response => response.data)).toPromise();
+      return await this.httpService.post("https://choreographermsapp.herokuapp.com/get_auth", body).pipe(map(response => response.data)).toPromise();
     } catch (e) {
       return null
     }
@@ -120,7 +120,7 @@ export class QuestionService {
         token: cookie
       };
 
-      return await this.httpService.post(" https://choreographerms.herokuapp.com/get_userId", body).pipe(map(response => response.data)).toPromise();
+      return await this.httpService.post(" https://choreographermsapp.herokuapp.com/get_userId", body).pipe(map(response => response.data)).toPromise();
     } catch (e) {
       return null
     }

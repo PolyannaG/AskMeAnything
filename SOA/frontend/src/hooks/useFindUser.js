@@ -21,7 +21,7 @@ export default function useFindUser() {
         async function findUser() {
             console.log('finfDuseCalled')
             const tok = localStorage.getItem('token');
-            await fetch('https://manageuserssoa.herokuapp.com/authentication/user',{
+            await fetch('https://manageuserssoaapp.herokuapp.com/authentication/user',{
                 method : 'GET',
                 headers:{'Content-type':'application/json', 'x-access-token':tok},
                 credentials:'include'

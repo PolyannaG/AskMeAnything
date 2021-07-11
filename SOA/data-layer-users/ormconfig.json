@@ -1,10 +1,10 @@
 {
   "type": "postgres",
-  "username": "vnafzeaxsnooda",
-  "password": "e01738a329f42f7ccf240baee9afde995d3859e4ab1871eeaaaff1ab315de535",
+  "username": "cpuvqttlgeycpg",
+  "password": "eb43c37a6d481189bab31e4d49f613d04cafca7632a4764dd59a525575588bba",
   "port": 5432,
-  "host": "ec2-54-73-58-75.eu-west-1.compute.amazonaws.com",
-  "database": "df6b8iou398vt8",
+  "host": "ec2-54-155-87-214.eu-west-1.compute.amazonaws.com",
+  "database": "d3oqd60tmd62c4",
   "entities": [
     "dist/**/*.entity{.ts,.js}"
   ],

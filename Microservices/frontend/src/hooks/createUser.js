@@ -1,6 +1,6 @@
 export default async function createUser(username,password, email){
     try{
-        const resp=await fetch('https://manageusersms.herokuapp.com/auth/register',{
+        const resp=await fetch('https://manageusersmsapp.herokuapp.com/auth/register',{
             method: 'POST',
             headers:{'Content-type':'application/json'},
             credentials:'include',
