@@ -79,8 +79,8 @@ replace the URL given as origin with the URL of the frontend you are deploying, 
 
 6) Since app URLS are unique in Heroku, the URLS of the microservices and service (in SOA) you are deploying will be different from the ones
 we have used. For this reason, **all fetch requests in the frontend and backend will have to be adapted**, in order for the requests to be sent
-to the apps you are deploying. The URLS we are using are very staightforward: For example the manage-users microservice has a URL: 
-https://manageusersmsapp.herokuapp.com and the manage-users soa service has a URL: https://manageuserssoaapp.herokuapp.com, so you will have no problem 
+to the apps you are deploying. The URLS we are using are very staightforward. <br /> For example the manage-users microservice has a URL: 
+https://manageusersmsapp.herokuapp.com <br /> and the manage-users soa service has a URL: https://manageuserssoaapp.herokuapp.com, <br /> so you will have no problem 
 understanding which app you will have to call each time.
 
 7) **For the frontend only:** Our frontend has been developed using ReactJS. Heroku allows you to deploy React apps but you will have to add the appropriate
