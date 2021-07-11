@@ -10,7 +10,8 @@ The project is divided in independent microservices, each of which has a specifi
 
 For microsevices communication and data synchronization a choreographer service is implemented, which is implemented with the publisher-subscriber logic. Ιn more detail, each microservice adds itself in the wanted subscribers channel and for each message a publisher sends to this channel the choreographer makes sure that all the channel subscribers will receive it. The choreographer mediates between all microservices' communications, which in this particular app is requests for access token validation and user ids (to verify that the access token that is provided with a request that needs authenticated access is valid, and to return the user id encoded into a valid access token), which both are implmented in manage_users. In addition it manages the data synchronization, in order for all the different databases to be up to date and have consistent data, which is achieved by using a Redis Server to store the data-sync messages. The choreographer is implemented in a way that no messages are lost even if the subscriber or/and choreographer services are not connected or if a service subscribes after messages have been sent in the subscriber's-channel, as the messages will be stored and sent asynchronously.  
 
-## For a more detailed explanation look at the project documentation the following diagrams:
+## For a more detailed explanation look at the project documentation
+In https://github.com/PolyannaG/AskMeAnything/tree/main/Documentation the documentation vpp file can be found, where one should look at the following diagrams:
 * Component Diagram : Microservices
 * Sequence Diagram : Microservices (Choreographer)
 * Deployment Diagram : Microservices
