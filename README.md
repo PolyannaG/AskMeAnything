@@ -58,7 +58,7 @@ git remote rename heroku  app_name
 ```
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**where**: *app_name* the name of the current app (for example: createquestionms)
 
-3) You will then need to add a remote database for each of the SOA-services/microservices that uses one. <br /> **For the Microservices architecture databases need to be added for the apps:** <br /> answer-question, create-question, msanage-users, statistics, view-answer, view-question. <br /> **For the SOA architecture it is needed to add databases to the apps:** <br /> data-layer-users, data-layer. <br /> The database can be added using Heroku's graphical interface on you rbrowser by clicking on "Resources" and adding the **Heroku Postgres** Add-on. <br /> ***Altrenatively*** you can add the database using the terminal. Type:
+3) You will then need to add a remote database for each of the SOA-services/microservices that uses one. <br /> **For the Microservices architecture databases need to be added for the apps:** <br /> answer-question, create-question, msanage-users, statistics, view-answer, view-question. <br /> **For the SOA architecture it is needed to add databases to the apps:** <br /> data-layer-users, data-layer. <br /> The database can be added using Heroku's graphical interface on you rbrowser by clicking on "Resources" and adding the **Heroku Postgres** Add-on. <br /> <br /> ***Altrenatively*** you can add the database using the terminal. Type:
 ```diff
 heroku addons:create heroku-postgresql:hobby-dev
 ```
