@@ -21,6 +21,7 @@ Full Name | NTUA id number (ΑΜ) | Github
 * NodeJS
 * NestJS
 * Express
+* TypeORM
 * Redis *(for communication between services and data synchronization)*
 * JSON Web Tokens (JWT), bcrypt *(for authentication)*
 ### Databases
