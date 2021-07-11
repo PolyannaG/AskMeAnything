@@ -1,7 +1,7 @@
 # AskMeAnything
 This is a project that was created for Saas course of Electrical Engineering and Computer Science department of NTUA during the year of 2020-2021. The goal of this project was to develop a full stack implementation of a Q&A application running on cloud, using different architectures like a microservice based architecture and a Service Oriented Architecture (SOA). 
 
-###### * Read notes in deployment
+###### * Read notes in Deployment headline below
 
 ## Team Saas-48 Members:
 Full Name | NTUA id number (ΑΜ) | Github
