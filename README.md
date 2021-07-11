@@ -29,9 +29,32 @@ Full Name | NTUA id number (ΑΜ) | Github
 * Python
 
 ## Deployment
-The project has been deployed using Heroku for both architectures. You can use the following links to access the user interface:
-* for Microservices : https://askmeanythingmsapp.herokuapp.com/
-* for SOA : https://askmeanythingsoaapp.herokuapp.com/
+The project has been deployed using Heroku for both architectures.
+* **for Microservices :**
+    * URL to access the user interface :  https://askmeanythingmsapp.herokuapp.com/
+    * Sample User for sign in : 
+       * username : 
+       ```diff 
+       jumpyGarlic4
+       ```
+       * password : 
+       ```diff 
+       CqwPT9UTOwtDo
+       ```
+    * All users' usernames and passwords table : https://github.com/PolyannaG/AskMeAnything/blob/main/Microservices/Data/passwords.csv 
+
+* **for SOA :** https://askmeanythingsoaapp.herokuapp.com/
+    * URL to access the user interface :  https://askmeanythingmsapp.herokuapp.com/
+    * Sample User for sign in : 
+       * username : 
+       ```diff 
+       bubblyFish5
+       ```
+       * password : 
+       ```diff 
+       Kz73matC6xEl
+       ```
+    * All users' usernames and passwords table : https://github.com/PolyannaG/AskMeAnything/blob/main/SOA/Data/passwords.csv 
 
 - - - -
 ### Notes
