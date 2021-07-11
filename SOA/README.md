@@ -24,7 +24,8 @@ Manage-Users, Statistcs) can exchange services, in an organized and strict manne
 execution interface. Using the first, a service can offer its functionality to the outside world, through the service bus, and it can also register (and unregister) in order to use the service bus and provide its services. Using the second,
 one can get a list of all available services that can be provided through the service bus. Using the third, a service can request a functionallity, after it has discovered it from the service discovery of the esb, that is provided by another service.
 
-## For a more detailed explanation look at the project documentation the following diagrams:
+## For a more detailed explanation look at the project documentation
+In https://github.com/PolyannaG/AskMeAnything/tree/main/Documentation the documentation vpp file can be found, where one should look at the following diagrams:
 * Component Diagram : SOA
 * Sequence Diagram : SOA (ESB)
 * Deployment Diagram : SOA
