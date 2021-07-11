@@ -43,8 +43,8 @@ The project has been deployed using Heroku for both architectures.
        ```
     * All users' usernames and passwords table : https://github.com/PolyannaG/AskMeAnything/blob/main/Microservices/Data/passwords.csv 
 
-* **for SOA :** https://askmeanythingsoaapp.herokuapp.com/
-    * URL to access the user interface :  https://askmeanythingmsapp.herokuapp.com/
+* **for SOA :** 
+    * URL to access the user interface :  https://askmeanythingsoaapp.herokuapp.com/
     * Sample User for sign in : 
        * username : 
        ```diff 
