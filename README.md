@@ -29,41 +29,7 @@ Full Name | NTUA id number (ΑΜ) | Github
 ### Data Generation
 * Python
 
-## Deployment
-The project has been deployed using Heroku for both architectures.
-* **for Microservices :**
-    * URL to access the user interface :  https://askmeanythingmsapp.herokuapp.com/
-    * Sample User for sign in : 
-       * username : 
-       ```diff 
-       jumpyGarlic4
-       ```
-       * password : 
-       ```diff 
-       CqwPT9UTOwtDo
-       ```
-    * All users' usernames and passwords table : https://github.com/PolyannaG/AskMeAnything/blob/main/Microservices/Data/passwords.csv 
-
-* **for SOA :** 
-    * URL to access the user interface :  https://askmeanythingsoaapp.herokuapp.com/
-    * Sample User for sign in : 
-       * username : 
-       ```diff 
-       bubblyFish5
-       ```
-       * password : 
-       ```diff 
-       Kz73matC6xEl
-       ```
-    * All users' usernames and passwords table : https://github.com/PolyannaG/AskMeAnything/blob/main/SOA/Data/passwords.csv 
-
-- - - -
-### Notes
-When accessing the user interface for the deployed projects you will notice that you may need to wait a little in order for the data to be fetched or for the services to be provided (when signing in or submiting a question or answer). Do not be alarmed, this is because the apps on Heroku, when using the free version of dynos, go into idle state when they have not been used for 30 minutes. They become active again when a service is requested from them, but it takes some time for them to wake up and answer to the first request. \
-**So be patient!** :smiley:	
-- - - -
-
-### Deployment instructions
+## Deployment instructions
 To deploy this project on Heroku yourself follow the 9 steps that are described bellow:
 
 Each subfolder of the main "Microservices" directory and each subfolder of the main "SOA" directory should
